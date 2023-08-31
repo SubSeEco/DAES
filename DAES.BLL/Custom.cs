@@ -3317,8 +3317,8 @@ namespace DAES.BLL
                     //documento.Content = SignPDF(documento.DocumentoId, documento.NumeroFolio, documento.Content, documento.DocumentoId.ToString(), documento.Firmante, false, documento.TipoDocumentoId, proceso.Organizacion.TipoOrganizacionId);
                     var objDoc = db.Documento.Where(q => q.DocumentoId == documento.DocumentoId).First();
                     var procesoId = documento.ProcesoId;
-                    var a = SignResoAuto(documento, /*"jmontesl@economia.cl"*/firmantes.Nombre, documento.ProcesoId.Value);
-                    documento.Content = a;
+                   var a = SignResoAuto(documento, /*"jmontesl@economia.cl"*/firmantes.Nombre, documento.ProcesoId.Value);
+                             documento.Content = a;
                     documento.FileName = string.Concat(documento.DocumentoId, ".pdf");
                     documento.Firmado = true;
 
@@ -6305,8 +6305,8 @@ namespace DAES.BLL
                     //}
                     /**/
 
-                    if (rubrica == null)
-                        response.Errors.Add("No se encontraron firmas habilitadas para el usuario");
+                   // if (rubrica == null)
+                     //   response.Errors.Add("No se encontraron firmas habilitadas para el usuario");
 
                     var HSMUser = db.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.UserHSM);
                     if (HSMUser == null)
@@ -6321,10 +6321,11 @@ namespace DAES.BLL
                         response.Errors.Add("La configuración de password de HSM es inválida.");
                     //test
                     var url_tramites_interno_test = db.Configuracion.FirstOrDefault(q => q.Nombre == nameof(Infrastructure.Enum.Configuracion.url_tramites_interno));
+                    //var url_tramites_interno_test = db.Configuracion.FirstOrDefault(q => q.Nombre == nameof(Infrastructure.Enum.Configuracion.AsuntoCorreoNotificacion));
                     if (url_tramites_interno_test == null)
                         response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
-                    if (url_tramites_interno_test != null && url_tramites_interno_test.Valor.IsNullOrWhiteSpace())
-                        response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
+                   // if (url_tramites_interno_test != null && url_tramites_interno_test.Valor.IsNullOrWhiteSpace())
+                     //   response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
 
                     //Prod
                     //var url_tramites_en_linea = db.Configuracion.FirstOrDefault(q => q.Nombre == nameof(Infrastructure.Enum.Configuracion.url_tramites_en_linea));
@@ -6336,7 +6337,9 @@ namespace DAES.BLL
 
                     if (response.IsValid)
                     {
-                        var persona = sg.GetUserByEmail(rubrica.Email);
+                        
+                        //var persona = sg.GetUserByEmail(rubrica.Email);
+                        var persona = sg.GetUserByEmail("jmontesl@economia.cl");
 
                         /*se buscar la persona para determinar la subsecretaria*/
                         if (!string.IsNullOrEmpty(email))
@@ -6388,7 +6391,8 @@ namespace DAES.BLL
 
                         //generar código QR
                         //byte[] qr = fl.CreateQr(string.Concat(url_tramites_en_linea.Valor, "/VerificarDocumento/Finish/", documento.DocumentoId));
-                        byte[] qr = fl.CreateQr(string.Concat(url_tramites_interno_test.Valor, "Finish/", documento.DocumentoId));
+                        //byte[] qr = fl.CreateQr(string.Concat(url_tramites_interno_test.Valor, "Finish/", documento.DocumentoId));
+                        byte[] qr = fl.CreateQr(string.Concat("prueba sin variable", "Finish/", documento.DocumentoId));
                         documento.Content = obj.Content;
                         //si el documento ya tiene folio no solicitarlo nuevamente
                         if (string.IsNullOrWhiteSpace(documento.Folio))
@@ -6418,7 +6422,8 @@ namespace DAES.BLL
                         var tipoOrgaId = Orga.FirstOrDefault().TipoOrganizacionId;
                         var TipoOrganizacion = db.TipoOrganizacion.Where(q => q.TipoOrganizacionId == tipoOrgaId).FirstOrDefault().Nombre;
                         //var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, url_tramites_en_linea.Valor, qr, TipoOrganizacion);
-                        var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, string.Concat(url_tramites_interno_test.Valor, "Finish/" + documento.DocumentoId), qr, TipoOrganizacion);
+                        // var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, string.Concat(url_tramites_interno_test.Valor, "Finish/" + documento.DocumentoId), qr, TipoOrganizacion);
+                        var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, string.Concat("prueba sin variable", "Finish/" + documento.DocumentoId), qr, TipoOrganizacion);
                         documento.Content = docto;
                         //documento.Signed = true;
                         documento.Firmado = true;
