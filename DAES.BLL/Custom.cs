@@ -22,6 +22,7 @@ using System.Web.ModelBinding;
 using DAES.Infrastructure.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Utilities;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 //using DAES.bll.Interfaces;
 
@@ -1196,30 +1197,15 @@ namespace DAES.BLL
                 string parrafoone = string.Format(configuracioncertificado.Parrafo1 != null ? configuracioncertificado.Parrafo1 : " ");
                 string parrafos = string.Format(configuracioncertificado.Parrafo1 != null ? configuracioncertificado.Parrafo1 : " ");
 
-                Paragraph paragraphUNO = null ;
-                String numero = organizacion.NumeroRegistro;
+                var tipoOrganizacion = context.TipoOrganizacion.Find(organizacion.TipoOrganizacionId);
                 if (!string.IsNullOrEmpty(organizacion.NumeroRegistro))
                 {
-
-                    string guardarRmplazo = parrafo_uno.Replace("[ROL]", organizacion.NumeroRegistro);
-                    paragraphUNO = new Paragraph();
-
-                    paragraphUNO.Add(new Chunk(guardarRmplazo, _fontVariables));
-                    Chunk numeroRegistroChunk = new Chunk(organizacion.NumeroRegistro, _fontVariables);
-                 
-
-                    paragraphUNO.Add(numeroRegistroChunk);
-                    paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
-
+                    parrafo_uno = parrafo_uno.Replace("[ROL]", "#Número " + organizacion.NumeroRegistro + "#");
                 }
                 if (!string.IsNullOrEmpty(organizacion.RazonSocial))
                 {
-                    string variableN = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial);
-                    paragraphUNO = new Paragraph();
-                    paragraphUNO.Add(new Chunk(variableN, _fontVariables));
-                    Chunk numeroRegistroChunk = new Chunk(organizacion.NumeroRegistro, _fontVariables);
-                    paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
-
+                    parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", "#" + organizacion.RazonSocial + "#");
+                    parrafo_uno = parrafo_uno.Replace("[COOGRE]", "#" + tipoOrganizacion + "#");
                 }
                 if (organizacion.Region != null)
                 {
@@ -1243,7 +1229,45 @@ namespace DAES.BLL
                 paragraphTITULO.Alignment = centrar;
 
                 //Paragraph paragraphUNO = new Paragraph(parrafo_uno, _fontStandard);
-                // paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
+
+                //paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
+                string[] parafo1;
+                parafo1 = parrafo_uno.Split('#');
+                Font _fontNegrita = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);//variables??
+                int index = 0;
+                Phrase PhraseUNO;
+                Paragraph comb = new Paragraph();
+                foreach (string element in parafo1)
+                {
+                    if(index % 2 == 0)
+                    {
+                        PhraseUNO = new Phrase(element, _fontStandard);
+                    }
+                    else
+                    {
+                        PhraseUNO = new Phrase(element, _fontNegrita);
+                    }
+                    comb.Add(PhraseUNO);
+                    index++;
+                }
+                //Phrase PhraseUNO1 = new Phrase(parafo1[0], _fontStandard);              
+                //Phrase PhraseUNO2 = new Phrase(parafo1[1], _fontNegrita);                
+                //Phrase PhraseUNO3 = new Phrase(parafo1[2], _fontStandard);
+                //Phrase PhraseUNO4 = new Phrase(parafo1[3], _fontNegrita);
+                //Phrase PhraseUNO5 = new Phrase(parafo1[4], _fontStandard);
+                //Phrase PhraseUNO6 = new Phrase(parafo1[5], _fontNegrita);
+                //Phrase PhraseUNO7 = new Phrase(parafo1[6], _fontStandard);
+
+                //Paragraph comb = new Paragraph();
+                //comb.Add(PhraseUNO1);
+                //comb.Add(PhraseUNO2);
+                //comb.Add(PhraseUNO3);
+                //comb.Add(PhraseUNO4);
+                //comb.Add(PhraseUNO5);
+                //comb.Add(PhraseUNO6);
+                //comb.Add(PhraseUNO7);
+                comb.Alignment = Element.ALIGN_JUSTIFIED;
+
 
                 Paragraph paragraphDOS = new Paragraph(parrafo_dos, _fontStandard);
                 paragraphDOS.Alignment = Element.ALIGN_JUSTIFIED;
@@ -1559,7 +1583,12 @@ namespace DAES.BLL
                     TipoDocumentoId != (int)Infrastructure.Enum.TipoDocumento.CertificadoDisolucionTest)
                 {
                     doc.Add(SaltoLinea);
-                    doc.Add(paragraphUNO);
+                    doc.Add(SaltoLinea);
+                    doc.Add(SaltoLinea);
+                    doc.Add(SaltoLinea);
+                    //doc.Add(paragraphUNO);
+                    //Paragraph union = paragraphUNO1 + " " + paragraphUNO2 + " " + paragraphUNO3;
+                    doc.Add(comb); 
                     doc.Add(SaltoLinea);
                 }
 
@@ -3338,7 +3367,7 @@ namespace DAES.BLL
                     //documento.Content = SignPDF(documento.DocumentoId, documento.NumeroFolio, documento.Content, documento.DocumentoId.ToString(), documento.Firmante, false, documento.TipoDocumentoId, proceso.Organizacion.TipoOrganizacionId);
                     var objDoc = db.Documento.Where(q => q.DocumentoId == documento.DocumentoId).First();
                     var procesoId = documento.ProcesoId;
-                    var a = SignResoAuto(documento, /*"jmontesl@economia.cl"*/firmantes.Nombre, documento.ProcesoId.Value);
+                    var a = SignResoAuto(documento, /*"padiaz@economia.cl"*/firmantes.Nombre, documento.ProcesoId.Value);
                     documento.Content = a;
                     documento.FileName = string.Concat(documento.DocumentoId, ".pdf");
                     documento.Firmado = true;
@@ -6327,7 +6356,7 @@ namespace DAES.BLL
                     /**/
 
                     if (rubrica == null)
-                        response.Errors.Add("No se encontraron firmas habilitadas para el usuario");
+                       response.Errors.Add("No se encontraron firmas habilitadas para el usuario");
 
                     var HSMUser = db.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.UserHSM);
                     if (HSMUser == null)
@@ -6357,6 +6386,7 @@ namespace DAES.BLL
 
                     if (response.IsValid)
                     {
+                        
                         var persona = sg.GetUserByEmail(rubrica.Email);
 
                         /*se buscar la persona para determinar la subsecretaria*/
@@ -6409,7 +6439,8 @@ namespace DAES.BLL
 
                         //generar código QR
                         //byte[] qr = fl.CreateQr(string.Concat(url_tramites_en_linea.Valor, "/VerificarDocumento/Finish/", documento.DocumentoId));
-                        byte[] qr = fl.CreateQr(string.Concat(url_tramites_interno_test.Valor, "Finish/", documento.DocumentoId));
+                        //byte[] qr = fl.CreateQr(string.Concat(url_tramites_interno_test.Valor, "Finish/", documento.DocumentoId));
+                        byte[] qr = fl.CreateQr(string.Concat("prueba sin variable", "Finish/", documento.DocumentoId));
                         documento.Content = obj.Content;
                         //si el documento ya tiene folio no solicitarlo nuevamente
                         if (string.IsNullOrWhiteSpace(documento.Folio))
@@ -6439,7 +6470,8 @@ namespace DAES.BLL
                         var tipoOrgaId = Orga.FirstOrDefault().TipoOrganizacionId;
                         var TipoOrganizacion = db.TipoOrganizacion.Where(q => q.TipoOrganizacionId == tipoOrgaId).FirstOrDefault().Nombre;
                         //var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, url_tramites_en_linea.Valor, qr, TipoOrganizacion);
-                        var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, string.Concat(url_tramites_interno_test.Valor, "Finish/" + documento.DocumentoId), qr, TipoOrganizacion);
+                        // var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, string.Concat(url_tramites_interno_test.Valor, "Finish/" + documento.DocumentoId), qr, TipoOrganizacion);
+                        var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, string.Concat("prueba sin variable", "Finish/" + documento.DocumentoId), qr, TipoOrganizacion);
                         documento.Content = docto;
                         //documento.Signed = true;
                         documento.Firmado = true;
