@@ -23,6 +23,7 @@ using DAES.Infrastructure.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Utilities;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -1179,6 +1180,7 @@ namespace DAES.BLL
                 Font _fontNumero = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.DARK_GRAY);
                 Font _fontFirmante = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.DARK_GRAY);
                 Font _fontStandard = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
+                Font _fontVariables = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);//variables??
                 Font _fontStandardBold = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
 
                 MemoryStream memStream = new MemoryStream();
@@ -1194,6 +1196,7 @@ namespace DAES.BLL
                 string parrafo_cinco = string.Format(configuracioncertificado.Parrafo5 != null ? configuracioncertificado.Parrafo5 : " ");
                 string parrafoone = string.Format(configuracioncertificado.Parrafo1 != null ? configuracioncertificado.Parrafo1 : " ");
                 string parrafos = string.Format(configuracioncertificado.Parrafo1 != null ? configuracioncertificado.Parrafo1 : " ");
+
                 var tipoOrganizacion = context.TipoOrganizacion.Find(organizacion.TipoOrganizacionId);
                 if (!string.IsNullOrEmpty(organizacion.NumeroRegistro))
                 {
@@ -1213,6 +1216,8 @@ namespace DAES.BLL
                     parrafo_uno.Replace("[DOMICILLIOSOCIAL]", organizacion.Direccion);
                 }
 
+
+
                 var aux = organizacion.Disolucions.FirstOrDefault();
                 doc.Open();
 
@@ -1224,6 +1229,7 @@ namespace DAES.BLL
                 paragraphTITULO.Alignment = centrar;
 
                 //Paragraph paragraphUNO = new Paragraph(parrafo_uno, _fontStandard);
+
                 //paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
                 string[] parafo1;
                 parafo1 = parrafo_uno.Split('#');
@@ -1261,6 +1267,7 @@ namespace DAES.BLL
                 //comb.Add(PhraseUNO6);
                 //comb.Add(PhraseUNO7);
                 comb.Alignment = Element.ALIGN_JUSTIFIED;
+
 
                 Paragraph paragraphDOS = new Paragraph(parrafo_dos, _fontStandard);
                 paragraphDOS.Alignment = Element.ALIGN_JUSTIFIED;
@@ -2318,7 +2325,7 @@ namespace DAES.BLL
 
 
                 Paragraph responsable = new Paragraph(firmante.Nombre, _fontStandardBold);
-                responsable.Alignment = centrar;
+               responsable.Alignment = centrar;
                 doc.Add(responsable);
 
                 Paragraph _cargo = new Paragraph(firmante.Cargo, _fontStandardBold);
