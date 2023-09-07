@@ -22,6 +22,7 @@ using System.Web.ModelBinding;
 using DAES.Infrastructure.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Utilities;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -1193,14 +1194,15 @@ namespace DAES.BLL
                 string parrafo_cinco = string.Format(configuracioncertificado.Parrafo5 != null ? configuracioncertificado.Parrafo5 : " ");
                 string parrafoone = string.Format(configuracioncertificado.Parrafo1 != null ? configuracioncertificado.Parrafo1 : " ");
                 string parrafos = string.Format(configuracioncertificado.Parrafo1 != null ? configuracioncertificado.Parrafo1 : " ");
-
+                var tipoOrganizacion = context.TipoOrganizacion.Find(organizacion.TipoOrganizacionId);
                 if (!string.IsNullOrEmpty(organizacion.NumeroRegistro))
                 {
-                    parrafo_uno = parrafo_uno.Replace("[ROL]", organizacion.NumeroRegistro);
+                    parrafo_uno = parrafo_uno.Replace("[ROL]", "#Número " + organizacion.NumeroRegistro + "#");
                 }
                 if (!string.IsNullOrEmpty(organizacion.RazonSocial))
                 {
-                    parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial);
+                    parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", "#" + organizacion.RazonSocial + "#");
+                    parrafo_uno = parrafo_uno.Replace("[COOGRE]", "#" + tipoOrganizacion + "#");
                 }
                 if (organizacion.Region != null)
                 {
@@ -1221,8 +1223,44 @@ namespace DAES.BLL
                 Paragraph paragraphTITULO = new Paragraph(configuracioncertificado.Titulo, _fontTitulo);
                 paragraphTITULO.Alignment = centrar;
 
-                Paragraph paragraphUNO = new Paragraph(parrafo_uno, _fontStandard);
-                paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
+                //Paragraph paragraphUNO = new Paragraph(parrafo_uno, _fontStandard);
+                //paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
+                string[] parafo1;
+                parafo1 = parrafo_uno.Split('#');
+                Font _fontNegrita = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);//variables??
+                int index = 0;
+                Phrase PhraseUNO;
+                Paragraph comb = new Paragraph();
+                foreach (string element in parafo1)
+                {
+                    if(index % 2 == 0)
+                    {
+                        PhraseUNO = new Phrase(element, _fontStandard);
+                    }
+                    else
+                    {
+                        PhraseUNO = new Phrase(element, _fontNegrita);
+                    }
+                    comb.Add(PhraseUNO);
+                    index++;
+                }
+                //Phrase PhraseUNO1 = new Phrase(parafo1[0], _fontStandard);              
+                //Phrase PhraseUNO2 = new Phrase(parafo1[1], _fontNegrita);                
+                //Phrase PhraseUNO3 = new Phrase(parafo1[2], _fontStandard);
+                //Phrase PhraseUNO4 = new Phrase(parafo1[3], _fontNegrita);
+                //Phrase PhraseUNO5 = new Phrase(parafo1[4], _fontStandard);
+                //Phrase PhraseUNO6 = new Phrase(parafo1[5], _fontNegrita);
+                //Phrase PhraseUNO7 = new Phrase(parafo1[6], _fontStandard);
+
+                //Paragraph comb = new Paragraph();
+                //comb.Add(PhraseUNO1);
+                //comb.Add(PhraseUNO2);
+                //comb.Add(PhraseUNO3);
+                //comb.Add(PhraseUNO4);
+                //comb.Add(PhraseUNO5);
+                //comb.Add(PhraseUNO6);
+                //comb.Add(PhraseUNO7);
+                comb.Alignment = Element.ALIGN_JUSTIFIED;
 
                 Paragraph paragraphDOS = new Paragraph(parrafo_dos, _fontStandard);
                 paragraphDOS.Alignment = Element.ALIGN_JUSTIFIED;
@@ -1538,7 +1576,12 @@ namespace DAES.BLL
                     TipoDocumentoId != (int)Infrastructure.Enum.TipoDocumento.CertificadoDisolucionTest)
                 {
                     doc.Add(SaltoLinea);
-                    doc.Add(paragraphUNO);
+                    doc.Add(SaltoLinea);
+                    doc.Add(SaltoLinea);
+                    doc.Add(SaltoLinea);
+                    //doc.Add(paragraphUNO);
+                    //Paragraph union = paragraphUNO1 + " " + paragraphUNO2 + " " + paragraphUNO3;
+                    doc.Add(comb); 
                     doc.Add(SaltoLinea);
                 }
 
@@ -3317,8 +3360,8 @@ namespace DAES.BLL
                     //documento.Content = SignPDF(documento.DocumentoId, documento.NumeroFolio, documento.Content, documento.DocumentoId.ToString(), documento.Firmante, false, documento.TipoDocumentoId, proceso.Organizacion.TipoOrganizacionId);
                     var objDoc = db.Documento.Where(q => q.DocumentoId == documento.DocumentoId).First();
                     var procesoId = documento.ProcesoId;
-                   var a = SignResoAuto(documento, /*"jmontesl@economia.cl"*/firmantes.Nombre, documento.ProcesoId.Value);
-                             documento.Content = a;
+                    var a = SignResoAuto(documento, /*"padiaz@economia.cl"*/firmantes.Nombre, documento.ProcesoId.Value);
+                    documento.Content = a;
                     documento.FileName = string.Concat(documento.DocumentoId, ".pdf");
                     documento.Firmado = true;
 
@@ -6305,8 +6348,8 @@ namespace DAES.BLL
                     //}
                     /**/
 
-                   // if (rubrica == null)
-                     //   response.Errors.Add("No se encontraron firmas habilitadas para el usuario");
+                    if (rubrica == null)
+                       response.Errors.Add("No se encontraron firmas habilitadas para el usuario");
 
                     var HSMUser = db.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.UserHSM);
                     if (HSMUser == null)
@@ -6321,11 +6364,10 @@ namespace DAES.BLL
                         response.Errors.Add("La configuración de password de HSM es inválida.");
                     //test
                     var url_tramites_interno_test = db.Configuracion.FirstOrDefault(q => q.Nombre == nameof(Infrastructure.Enum.Configuracion.url_tramites_interno));
-                    //var url_tramites_interno_test = db.Configuracion.FirstOrDefault(q => q.Nombre == nameof(Infrastructure.Enum.Configuracion.AsuntoCorreoNotificacion));
                     if (url_tramites_interno_test == null)
                         response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
-                   // if (url_tramites_interno_test != null && url_tramites_interno_test.Valor.IsNullOrWhiteSpace())
-                     //   response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
+                    if (url_tramites_interno_test != null && url_tramites_interno_test.Valor.IsNullOrWhiteSpace())
+                        response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
 
                     //Prod
                     //var url_tramites_en_linea = db.Configuracion.FirstOrDefault(q => q.Nombre == nameof(Infrastructure.Enum.Configuracion.url_tramites_en_linea));
@@ -6338,8 +6380,7 @@ namespace DAES.BLL
                     if (response.IsValid)
                     {
                         
-                        //var persona = sg.GetUserByEmail(rubrica.Email);
-                        var persona = sg.GetUserByEmail("jmontesl@economia.cl");
+                        var persona = sg.GetUserByEmail(rubrica.Email);
 
                         /*se buscar la persona para determinar la subsecretaria*/
                         if (!string.IsNullOrEmpty(email))
