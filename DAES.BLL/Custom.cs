@@ -22,6 +22,7 @@ using System.Web.ModelBinding;
 using DAES.Infrastructure.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Newtonsoft.Json;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -1178,6 +1179,7 @@ namespace DAES.BLL
                 Font _fontNumero = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.DARK_GRAY);
                 Font _fontFirmante = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.DARK_GRAY);
                 Font _fontStandard = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
+                Font _fontVariables = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);//variables??
                 Font _fontStandardBold = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
 
                 MemoryStream memStream = new MemoryStream();
@@ -1194,13 +1196,30 @@ namespace DAES.BLL
                 string parrafoone = string.Format(configuracioncertificado.Parrafo1 != null ? configuracioncertificado.Parrafo1 : " ");
                 string parrafos = string.Format(configuracioncertificado.Parrafo1 != null ? configuracioncertificado.Parrafo1 : " ");
 
+                Paragraph paragraphUNO = null ;
+                String numero = organizacion.NumeroRegistro;
                 if (!string.IsNullOrEmpty(organizacion.NumeroRegistro))
                 {
-                    parrafo_uno = parrafo_uno.Replace("[ROL]", organizacion.NumeroRegistro);
+
+                    string guardarRmplazo = parrafo_uno.Replace("[ROL]", organizacion.NumeroRegistro);
+                    paragraphUNO = new Paragraph();
+
+                    paragraphUNO.Add(new Chunk(guardarRmplazo, _fontVariables));
+                    Chunk numeroRegistroChunk = new Chunk(organizacion.NumeroRegistro, _fontVariables);
+                 
+
+                    paragraphUNO.Add(numeroRegistroChunk);
+                    paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
+
                 }
                 if (!string.IsNullOrEmpty(organizacion.RazonSocial))
                 {
-                    parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial);
+                    string variableN = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial);
+                    paragraphUNO = new Paragraph();
+                    paragraphUNO.Add(new Chunk(variableN, _fontVariables));
+                    Chunk numeroRegistroChunk = new Chunk(organizacion.NumeroRegistro, _fontVariables);
+                    paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
+
                 }
                 if (organizacion.Region != null)
                 {
@@ -1210,6 +1229,8 @@ namespace DAES.BLL
                 {
                     parrafo_uno.Replace("[DOMICILLIOSOCIAL]", organizacion.Direccion);
                 }
+
+
 
                 var aux = organizacion.Disolucions.FirstOrDefault();
                 doc.Open();
@@ -1221,8 +1242,8 @@ namespace DAES.BLL
                 Paragraph paragraphTITULO = new Paragraph(configuracioncertificado.Titulo, _fontTitulo);
                 paragraphTITULO.Alignment = centrar;
 
-                Paragraph paragraphUNO = new Paragraph(parrafo_uno, _fontStandard);
-                paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
+                //Paragraph paragraphUNO = new Paragraph(parrafo_uno, _fontStandard);
+                // paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
 
                 Paragraph paragraphDOS = new Paragraph(parrafo_dos, _fontStandard);
                 paragraphDOS.Alignment = Element.ALIGN_JUSTIFIED;
@@ -2275,7 +2296,7 @@ namespace DAES.BLL
 
 
                 Paragraph responsable = new Paragraph(firmante.Nombre, _fontStandardBold);
-                responsable.Alignment = centrar;
+               responsable.Alignment = centrar;
                 doc.Add(responsable);
 
                 Paragraph _cargo = new Paragraph(firmante.Cargo, _fontStandardBold);
