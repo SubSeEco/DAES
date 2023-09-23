@@ -451,258 +451,269 @@
 
 
     }
-    <div class="panel panel-default">
-        <div class="panel-heading">Disolución</div>
-        <div class="panel-body">
-            <div id="disolucion">
-                @Html.Partial("_DisolucionEdit", Model)
+    if (Model.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.Cooperativa)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">Transitorio</div>
+            <div class="panel-body">
+                <div id="transitorio">
+                    @Html.Partial("_TransitorioEdit", Model)
+                </div>
             </div>
         </div>
-    </div>
+    }
+        <div class="panel panel-default">
+            <div class="panel-heading">Disolución</div>
+            <div class="panel-body">
+                <div id="disolucion">
+                    @Html.Partial("_DisolucionEdit", Model)
+                </div>
+            </div>
+        </div>
 
-    <input type="submit" value="Guardar" class="btn btn-primary my-3" />
-    <p></p>
-
-}
-
-@if (Model.Saneamientos.Any())
-{
-    <input type="hidden" id="a" value="1" />
-}
-else
-{
-    <input id="a" value="0" type="hidden" />
-}
-
-@if (Model.ExistenciaAnteriors.Any())
-{
-    <input type="hidden" id="tieneExis" value="1" />
-}
-else
-{
-    <input id="tieneExis" value="0" type="hidden" />
-}
-
-@if (Model.ExistenciaPosteriors.Any())
-{
-    <input type="hidden" id="tieneExisPost" value="1" />
-}
-else
-{
-    <input id="tieneExisPost" value="0" type="hidden" />
-}
-
-@if (Model.ReformaPosteriors.Any())
-{
-    <input type="hidden" id="tieneRefP" value="1" />
-}
-else
-{
-    <input id="tieneRefP" value="0" type="hidden" />
-}
-
-@if (Model.ReformaAnteriors.Any())
-{
-    <input type="hidden" id="tieneRefA" value="1" />
-}
-else
-{
-    <input id="tieneRefA" value="0" type="hidden" />
-}
-
-@Html.ActionLink("Volver al listado", "Index", null, null, htmlAttributes: new { @class = "btn btn-info" })
-
-
-
-<script type="text/javascript">
-
-    $("#Tiene").change(function () {
-        if ($("#Tiene").is(':checked')) {
-            $("#divSane").show();
-        } else {
-            $("#divSane").hide();
-        }
-    });
-
-
-
-    function actualizarRefA() {
-        $("#reformaDiv").show();
-        $("#FReforma1").prop("checked", false);
-        $("#FReforma2").prop("checked", true);
-        $("#reformaDivPost").hide();
+        <input type="submit" value="Guardar" class="btn btn-primary my-3" />
+        <p></p>
 
     }
 
-    function actualizarRefP() {
-        $("#reformaDiv").hide();
-        $("#FReforma1").prop("checked", true);
-        $("#FReforma2").prop("checked", false);
-        $("#reformaDivPost").show();
-
+    @if (Model.Saneamientos.Any())
+    {
+        <input type="hidden" id="a" value="1" />
+    }
+    else
+    {
+        <input id="a" value="0" type="hidden" />
     }
 
-    function actualizarExis() {
-        $("#divExis").show();
-        $("#Constitucion1").prop("checked", false);
-        $("#Constitucion2").prop("checked", true);
-        $("#CPostRPost").hide();
+    @if (Model.ExistenciaAnteriors.Any())
+    {
+        <input type="hidden" id="tieneExis" value="1" />
+    }
+    else
+    {
+        <input id="tieneExis" value="0" type="hidden" />
     }
 
-    function actualizarExisPost() {
-        $("#divExis").hide();
-        $("#Constitucion1").prop("checked", true);
-        $("#Constitucion2").prop("checked", false);
-        $("#CPostRPost").show();
+    @if (Model.ExistenciaPosteriors.Any())
+    {
+        <input type="hidden" id="tieneExisPost" value="1" />
+    }
+    else
+    {
+        <input id="tieneExisPost" value="0" type="hidden" />
     }
 
-
-    function LimpiarCamposAnt() {
-
-        document.getElementById("ExistenciaAnteriors_0__Autorizado").value = "";
-        document.getElementById("ExistenciaAnteriors_0__FechaPublicacion").value = "";
-        document.getElementById("ExistenciaAnteriors_0__FNorma").value = "";
-        document.getElementById("ExistenciaAnteriors_0__NNorma").value = "";
-        document.getElementById("ExistenciaAnteriors_0__TipoNormaId").value = "";
+    @if (Model.ReformaPosteriors.Any())
+    {
+        <input type="hidden" id="tieneRefP" value="1" />
+    }
+    else
+    {
+        <input id="tieneRefP" value="0" type="hidden" />
     }
 
-    function LimpiarCamposAnt() {
-
-        document.getElementById("ExistenciaAnteriors_0__Autorizado").value = "";
-        document.getElementById("ExistenciaAnteriors_0__FechaPublicacion").value = "";
-        document.getElementById("ExistenciaAnteriors_0__FNorma").value = "";
-        document.getElementById("ExistenciaAnteriors_0__NNorma").value = "";
-        document.getElementById("ExistenciaAnteriors_0__TipoNormaId").value = "";
+    @if (Model.ReformaAnteriors.Any())
+    {
+        <input type="hidden" id="tieneRefA" value="1" />
+    }
+    else
+    {
+        <input id="tieneRefA" value="0" type="hidden" />
     }
 
-    function LimpiarCampos() {
-
-        document.getElementById("ExistenciaLegals_0__AutorizadoPor").value = "";
-        document.getElementById("ExistenciaLegals_0__FechaPublicacionn").value = "";
-        document.getElementById("ExistenciaLegals_0__FechaNorma").value = "";
-        document.getElementById("ExistenciaLegals_0__NumeroNorma").value = "";
-        document.getElementById("ExistenciaLegals_0__TipoNormaId").value = "";
-    }
+    @Html.ActionLink("Volver al listado", "Index", null, null, htmlAttributes: new { @class = "btn btn-info" })
 
 
-    function LimpiarCampoExisPosterior() {
 
-        document.getElementById("ExistenciaPosteriors_0__FechaConstitutivaSocios").value = "";
-        document.getElementById("ExistenciaPosteriors_0__FechaPublicacionn").value = "";
-        document.getElementById("ExistenciaPosteriors_0__FechaEscrituraPublica").value = "";
-        document.getElementById("ExistenciaPosteriors_0__DatosGeneralesNotario").value = "";
-        document.getElementById("ExistenciaPosteriors_0__Fojas").value = "";
-        document.getElementById("ExistenciaPosteriors_0__AnoInscripcion").value = "";
-        document.getElementById("ExistenciaPosteriors_0__DatosCBR").value = "";
-    }
+    <script type="text/javascript">
 
-    function LimpiarCamposSanemiento() {
-
-        document.getElementById("Saneamientos_0__FechaEscrituraPublicaa").value = "";
-        document.getElementById("Saneamientos_0__FechaaPublicacionDiario").value = "";
-        document.getElementById("Saneamientos_0__DatoGeneralesNotario").value = "";
-        document.getElementById("Saneamientos_0__Fojass").value = "";
-        document.getElementById("Saneamientos_0__FechaaInscripcion").value = "";
-        document.getElementById("Saneamientos_0__DatossCBR").value = "";
-    }
-
-    function LimpiarCamposAGAC() {
-
-        document.getElementById("ExistenciaLegals_0__FechaConstitutivaSocios").value = "";
-        document.getElementById("ExistenciaLegals_0__NumeroOficio").value = "";
-        document.getElementById("ExistenciaLegals_0__FechaOficio").value = "";
-        document.getElementById("ExistenciaLegals_0__AprobacionId").value = "";
-    }
-
-    function PresentarView() {
-        $("#reformaDivPost").show();
-        $("#reformaDiv").hide();
-    }
-    function PresentarViewAnterior() {
-        $("#reformaDivPost").hide();
-        $("#reformaDiv").show();
-    }
-
-    function PresentarViewPost() {
-        $("#divExis").hide();
-        $("#CPostRPost").show();
-
-    }
-
-    function PresentarViewAnt() {
-        $("#divExis").show();
-        $("#CPostRPost").hide();
-    }
-
-
-    $(document).ready(function () {
-
-
-        $("#limpiar").on("click", function () {
-            LimpiarCamposAnt()
-        });
-
-        $("#limpiarExiPost").on("click", function () {
-            LimpiarCampoExisPosterior()
-        });
-
-        $("#limpiarSan").on("click", function () {
-            LimpiarCamposSanemiento()
-        });
-
-        $("#limpiarAGAC").on("click", function () {
-            LimpiarCamposAGAC()
+        $("#Tiene").change(function () {
+            if ($("#Tiene").is(':checked')) {
+                $("#divSane").show();
+            } else {
+                $("#divSane").hide();
+            }
         });
 
 
-        if ("#a".val == 1) {
-            $("#Tiene").prop("checked", true)
-            $("#divSane").show();
-        } else {
-            $("#divSane").hide();
-        }
 
-        //if (document.getElementById('ExistenciaPosteriors_0__FechaPublicacion').value != null) {
-        //    alert("entro al posterior")
-        //} else {
-        //    alert()
-        //}
-
-
-        var objeto = document.getElementById('a').value;
-        if (objeto > 0) {
-            $("#divSane").show();
-            $("#Tiene").prop("checked", true)
-        }
-        else {
-            $("#divSane").hide();
+        function actualizarRefA() {
+            $("#reformaDiv").show();
+            $("#FReforma1").prop("checked", false);
+            $("#FReforma2").prop("checked", true);
+            $("#reformaDivPost").hide();
 
         }
 
-        var objetos = document.getElementById('tieneExis').value;
-        if (objetos > 0) {
-            actualizarExis();
+        function actualizarRefP() {
+            $("#reformaDiv").hide();
+            $("#FReforma1").prop("checked", true);
+            $("#FReforma2").prop("checked", false);
+            $("#reformaDivPost").show();
+
         }
 
-        var objetos = document.getElementById('tieneExisPost').value;
-        if (objetos > 0) {
-            actualizarExisPost();
+        function actualizarExis() {
+            $("#divExis").show();
+            $("#Constitucion1").prop("checked", false);
+            $("#Constitucion2").prop("checked", true);
+            $("#CPostRPost").hide();
+        }
+
+        function actualizarExisPost() {
+            $("#divExis").hide();
+            $("#Constitucion1").prop("checked", true);
+            $("#Constitucion2").prop("checked", false);
+            $("#CPostRPost").show();
         }
 
 
+        function LimpiarCamposAnt() {
 
-        var objetoss = document.getElementById('tieneRefP').value;
-        if (objetoss > 0) {
-            actualizarRefP();
+            document.getElementById("ExistenciaAnteriors_0__Autorizado").value = "";
+            document.getElementById("ExistenciaAnteriors_0__FechaPublicacion").value = "";
+            document.getElementById("ExistenciaAnteriors_0__FNorma").value = "";
+            document.getElementById("ExistenciaAnteriors_0__NNorma").value = "";
+            document.getElementById("ExistenciaAnteriors_0__TipoNormaId").value = "";
         }
 
-        var objetoss = document.getElementById('tieneRefA').value;
-        if (objetoss > 0) {
-            actualizarRefA();
+        function LimpiarCamposAnt() {
+
+            document.getElementById("ExistenciaAnteriors_0__Autorizado").value = "";
+            document.getElementById("ExistenciaAnteriors_0__FechaPublicacion").value = "";
+            document.getElementById("ExistenciaAnteriors_0__FNorma").value = "";
+            document.getElementById("ExistenciaAnteriors_0__NNorma").value = "";
+            document.getElementById("ExistenciaAnteriors_0__TipoNormaId").value = "";
+        }
+
+        function LimpiarCampos() {
+
+            document.getElementById("ExistenciaLegals_0__AutorizadoPor").value = "";
+            document.getElementById("ExistenciaLegals_0__FechaPublicacionn").value = "";
+            document.getElementById("ExistenciaLegals_0__FechaNorma").value = "";
+            document.getElementById("ExistenciaLegals_0__NumeroNorma").value = "";
+            document.getElementById("ExistenciaLegals_0__TipoNormaId").value = "";
         }
 
 
-    });
+        function LimpiarCampoExisPosterior() {
 
-</script>
+            document.getElementById("ExistenciaPosteriors_0__FechaConstitutivaSocios").value = "";
+            document.getElementById("ExistenciaPosteriors_0__FechaPublicacionn").value = "";
+            document.getElementById("ExistenciaPosteriors_0__FechaEscrituraPublica").value = "";
+            document.getElementById("ExistenciaPosteriors_0__DatosGeneralesNotario").value = "";
+            document.getElementById("ExistenciaPosteriors_0__Fojas").value = "";
+            document.getElementById("ExistenciaPosteriors_0__AnoInscripcion").value = "";
+            document.getElementById("ExistenciaPosteriors_0__DatosCBR").value = "";
+        }
+
+        function LimpiarCamposSanemiento() {
+
+            document.getElementById("Saneamientos_0__FechaEscrituraPublicaa").value = "";
+            document.getElementById("Saneamientos_0__FechaaPublicacionDiario").value = "";
+            document.getElementById("Saneamientos_0__DatoGeneralesNotario").value = "";
+            document.getElementById("Saneamientos_0__Fojass").value = "";
+            document.getElementById("Saneamientos_0__FechaaInscripcion").value = "";
+            document.getElementById("Saneamientos_0__DatossCBR").value = "";
+        }
+
+        function LimpiarCamposAGAC() {
+
+            document.getElementById("ExistenciaLegals_0__FechaConstitutivaSocios").value = "";
+            document.getElementById("ExistenciaLegals_0__NumeroOficio").value = "";
+            document.getElementById("ExistenciaLegals_0__FechaOficio").value = "";
+            document.getElementById("ExistenciaLegals_0__AprobacionId").value = "";
+        }
+
+        function PresentarView() {
+            $("#reformaDivPost").show();
+            $("#reformaDiv").hide();
+        }
+        function PresentarViewAnterior() {
+            $("#reformaDivPost").hide();
+            $("#reformaDiv").show();
+        }
+
+        function PresentarViewPost() {
+            $("#divExis").hide();
+            $("#CPostRPost").show();
+
+        }
+
+        function PresentarViewAnt() {
+            $("#divExis").show();
+            $("#CPostRPost").hide();
+        }
+
+
+        $(document).ready(function () {
+
+
+            $("#limpiar").on("click", function () {
+                LimpiarCamposAnt()
+            });
+
+            $("#limpiarExiPost").on("click", function () {
+                LimpiarCampoExisPosterior()
+            });
+
+            $("#limpiarSan").on("click", function () {
+                LimpiarCamposSanemiento()
+            });
+
+            $("#limpiarAGAC").on("click", function () {
+                LimpiarCamposAGAC()
+            });
+
+
+            if ("#a".val == 1) {
+                $("#Tiene").prop("checked", true)
+                $("#divSane").show();
+            } else {
+                $("#divSane").hide();
+            }
+
+            //if (document.getElementById('ExistenciaPosteriors_0__FechaPublicacion').value != null) {
+            //    alert("entro al posterior")
+            //} else {
+            //    alert()
+            //}
+
+
+            var objeto = document.getElementById('a').value;
+            if (objeto > 0) {
+                $("#divSane").show();
+                $("#Tiene").prop("checked", true)
+            }
+            else {
+                $("#divSane").hide();
+
+            }
+
+            var objetos = document.getElementById('tieneExis').value;
+            if (objetos > 0) {
+                actualizarExis();
+            }
+
+            var objetos = document.getElementById('tieneExisPost').value;
+            if (objetos > 0) {
+                actualizarExisPost();
+            }
+
+
+
+            var objetoss = document.getElementById('tieneRefP').value;
+            if (objetoss > 0) {
+                actualizarRefP();
+            }
+
+            var objetoss = document.getElementById('tieneRefA').value;
+            if (objetoss > 0) {
+                actualizarRefA();
+            }
+
+
+        });
+
+    </script>
 

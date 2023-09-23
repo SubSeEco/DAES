@@ -308,7 +308,7 @@ namespace DAES.Web.BackOffice.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Organizacion model, ExistenciaLegal existenciaLegals, Saneamiento san, ReformaAnterior refAnt, ReformaPosterior refPost, Disolucion disolucion, ExistenciaAnterior ExiAnt, ExistenciaPosterior ExiPost, ReformaAGAC refAG)
+        public ActionResult Edit(Organizacion model, ExistenciaLegal existenciaLegals, Saneamiento san, ReformaAnterior refAnt, ReformaPosterior refPost, Disolucion disolucion, ExistenciaAnterior ExiAnt, ExistenciaPosterior ExiPost, ReformaAGAC refAG, Transitorio transitorio)
         {
             model.FechaActualizacion = DateTime.Now;
 
@@ -392,7 +392,7 @@ namespace DAES.Web.BackOffice.Controllers
                 _custom.DirectorioUpdate(model.Directorios);
                 _custom.ModificacionUpdate(model.ModificacionEstatutos);
                 _custom.DisolucionUpdate(model.Disolucions, disolucion, model.ComisionLiquidadoras);
-
+                _custom.TransitorioUpdate(model.Transitorios, transitorio);
                 //model.Reformas = null;
                 //db.Entry(model).State = EntityState.Modified;
                 db.SaveChanges();
@@ -656,7 +656,19 @@ namespace DAES.Web.BackOffice.Controllers
             return PartialView("_ModificacionEdit", model);
         }
         #endregion
+        public ActionResult TransitorioAdd(int OrganizacionId)
+        {
+            var model = db.Organizacion.Find(OrganizacionId);
 
+            if (model.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa)
+            {
+                var transitorio = new Transitorio() { OrganizacionId = OrganizacionId };
+                db.Transitorio.Add(transitorio);
+                db.SaveChanges();
+                return PartialView("_TransitorioEdit", model);
+            }
+            return PartialView("_ErrorMessage", model);
+        }
         public ActionResult DisolucionAdd(int OrganizacionId)
         {
             var model = db.Organizacion.Find(OrganizacionId);
@@ -846,6 +858,23 @@ namespace DAES.Web.BackOffice.Controllers
             return View("Edit", model);
         }
 
+        public ActionResult TransitorioDelete(int TransitorioId, int OrganizacionId)
+        {
+            var transitorio = db.Transitorio.FirstOrDefault(q => q.TransitorioId == TransitorioId);
+
+            if (transitorio != null)
+            {
+                db.Transitorio.Remove(transitorio);
+                db.SaveChanges();
+            }
+
+            var model = db.Organizacion.Find(OrganizacionId);
+            ViewBag.CargoId = new SelectList(db.Cargo.OrderBy(q => q.Nombre).ToList(), "CargoId", "Nombre");
+            ViewBag.GeneroId = new SelectList(db.Genero.OrderBy(q => q.Nombre).ToList(), "GeneroId", "Nombre");
+            ViewBag.TipoNormaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
+
+            return PartialView("_TransitorioEdit", model);
+        }
         public ActionResult DisolucionDelete(int DisolucionId, int OrganizacionId)
         {
             var disolucion = db.Disolucions.FirstOrDefault(q => q.DisolucionId == DisolucionId);

@@ -19,6 +19,7 @@ namespace DAES.Model.SistemaIntegrado
             Articulo91s = new List<Articulo91>();
             ModificacionEstatutos = new List<ModificacionEstatuto>();
             Disolucions = new List<Disolucion>();
+            Transitorios = new List<Transitorio>();
             ExistenciaLegals = new List<ExistenciaLegal>();
             Saneamientos = new List<Saneamiento>();
             ComisionLiquidadoras = new List<ComisionLiquidadora>();
@@ -206,6 +207,7 @@ namespace DAES.Model.SistemaIntegrado
         public virtual List<Articulo91> Articulo91s { get; set; }
         public virtual List<ModificacionEstatuto> ModificacionEstatutos { get; set; }
         public virtual List<Disolucion> Disolucions { get; set; }
+        public virtual List<Transitorio> Transitorios { get; set; }
         public virtual List<ExistenciaLegal> ExistenciaLegals { get; set;}
         public virtual List<Saneamiento> Saneamientos { get; set; }
         public virtual List<Reforma> Reformas { get; set; }

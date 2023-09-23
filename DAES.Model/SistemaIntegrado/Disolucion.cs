@@ -48,6 +48,11 @@ namespace DAES.Model.SistemaIntegrado
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? FechaDisolucion { get; set; }
 
+        [Display(Name = "Fecha comisión liquidadora")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaComiLiquiJuntaSocios { get; set; }
+
         public bool? Anterior { get; set; }
 
         #region Datos Cooperativa Anterior
@@ -102,10 +107,10 @@ namespace DAES.Model.SistemaIntegrado
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? FechaAsambleaSocios { get; set; }
 
-        [Display(Name = "Nombre de la Notaría")]
+        [Display(Name = "Lugar Notaria")]
         public string NombreNotaria { get; set; }
 
-        [Display(Name = "Datos del Notario")]
+        [Display(Name = "Nombre Notario")]
         public string DatosNotario { get; set; }
 
         /*[NotMapped]

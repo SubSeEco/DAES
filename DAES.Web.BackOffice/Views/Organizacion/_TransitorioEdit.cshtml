@@ -1,0 +1,107 @@
+﻿@model DAES.Model.SistemaIntegrado.Organizacion
+@Html.HiddenFor(model => model.OrganizacionId)
+
+@if (Model.Transitorios.Count() != 0)
+{
+    @Ajax.ActionLink("Agregar Transitorio", "TransitorioAdd", null, new { Model.OrganizacionId }, new AjaxOptions { UpdateTargetId = "transitorio" }, new { @style = "display:none;", @class = "btn btn-success" })
+}
+else
+{
+
+    @Ajax.ActionLink("Agregar Transitorio", "TransitorioAdd", null, new { Model.OrganizacionId }, new AjaxOptions { UpdateTargetId = "transitorio" }, htmlAttributes: new { @class = "btn btn-success" })
+}
+@if (Model.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.Cooperativa)
+{
+    <div>
+        <table class="table table-hover table-striped dataTable">
+            @for (var i = 0; i < Model.Transitorios.Count(); i++)
+            {
+                @Html.HiddenFor(model => model.OrganizacionId)
+                @Html.HiddenFor(model => model.Transitorios[i].OrganizacionId)
+                @Html.HiddenFor(model => model.Transitorios[i].TransitorioId)
+                <table>
+                    <tr>
+                        <th>
+                            <div class="col-md-10">
+                                @Html.LabelFor(m => Model.Transitorios[i].Moneda, htmlAttributes: new { @class = "control-label col-md-10" })
+                                @Html.EditorFor(m => Model.Transitorios[i].Moneda, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col-md-10">
+                                @Html.LabelFor(m => Model.Transitorios[i].CapitalInicial, htmlAttributes: new { @class = "control-label col-md-10" })
+                                @Html.EditorFor(m => Model.Transitorios[i].CapitalInicial, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col-md-10">
+                                @Html.LabelFor(m => Model.Transitorios[i].Cuotas, htmlAttributes: new { @class = "control-label col-md-10" })
+                                @Html.EditorFor(m => Model.Transitorios[i].Cuotas, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                            </div>
+                        </th>
+                    <tr>
+                        <th>
+                            <div class="col-md-10">
+                                @Html.LabelFor(m => Model.Transitorios[i].TipoCuota, htmlAttributes: new { @class = "control-label col-md-10" })
+                                @Html.EditorFor(m => Model.Transitorios[i].TipoCuota, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col-md-10">
+                                @Html.LabelFor(m => Model.Transitorios[i].Duracion, htmlAttributes: new { @class = "control-label col-md-10" })
+                                @Html.EditorFor(m => Model.Transitorios[i].Duracion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col-md-10">
+                                @Html.LabelFor(m => Model.Transitorios[i].FechaEscrituraPublica, htmlAttributes: new { @class = "control-label col-md-10" })
+                                @Html.EditorFor(m => Model.Transitorios[i].FechaEscrituraPublica, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                            </div>
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <div class="col-md-10">
+                                @Html.LabelFor(m => Model.Transitorios[i].FechaJuntaSocios, htmlAttributes: new { @class = "control-label col-md-10" })
+                                @Html.EditorFor(m => Model.Transitorios[i].FechaJuntaSocios, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col-md-10">
+                                @Html.LabelFor(m => Model.Transitorios[i].NombreNotaria, htmlAttributes: new { @class = "control-label col-md-10" })
+                                @Html.EditorFor(m => Model.Transitorios[i].NombreNotaria, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col-md-10">
+                                @Html.LabelFor(m => Model.Transitorios[i].DatosNotario, htmlAttributes: new { @class = "control-label col-md-10" })
+                                @Html.EditorFor(m => Model.Transitorios[i].DatosNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                            </div>
+                        </th>
+                    </tr>
+                    <table>
+                        <tr>
+                            <th>
+                                <div class="col-md-10">
+                                    @Html.LabelFor(m => Model.Transitorios[i].FormaPago, htmlAttributes: new { @class = "control-label col-md-10" })
+                                    @Html.EditorFor(m => Model.Transitorios[i].FormaPago, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                                </div>
+                            </th>
+                            <th colspan="2">
+                                <div class="col-md-10">
+                                    @Html.LabelFor(m => Model.Transitorios[i].Objeto, htmlAttributes: new { @class = "control-label col-md-10" })
+                                    @Html.EditorFor(m => Model.Transitorios[i].Objeto, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                                </div>
+                            </th>
+                        </tr>
+                    </table>
+                </table>
+                <br>
+                @Ajax.ActionLink("Eliminar", "TransitorioDelete", null, new { Model.Transitorios.ToArray()[i].TransitorioId, Model.Disolucions.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "transitorio" }, htmlAttributes: new { @class = "btn btn-danger" })
+
+            }
+        </table>
+    </div>
+
+}
