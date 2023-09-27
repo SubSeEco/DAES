@@ -232,6 +232,7 @@
     <Compile Include="SistemaIntegrado\TipoPersonaJuridica.cs" />
     <Compile Include="SistemaIntegrado\TipoPrivacidad.cs" />
     <Compile Include="SistemaIntegrado\TipoWorkflow.cs" />
+    <Compile Include="SistemaIntegrado\Transitorio.cs" />
     <Compile Include="SistemaIntegrado\Workflow.cs" />
     <Compile Include="Docured\Documentos.cs" />
     <Compile Include="Docured\Empresa.cs" />

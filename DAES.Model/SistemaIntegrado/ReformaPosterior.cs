@@ -53,9 +53,17 @@ namespace DAES.Model.SistemaIntegrado
         public string DatosGeneralNotario { get; set; }
 
         //esto sirve para agregar espacios al documento.
-        [Display(Name = "Agregar espacios manuales")]
+        [Display(Name = "texto Adicional")]
+        [DataType(DataType.MultilineText)]
         public string EspaciosDoc { get; set; }
 
+        [Display(Name = "Número del Oficio")]
+        public string NumeroOficio { get; set; }
+
+        [Display(Name = "Fecha del Oficio")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaOficio { get; set; }
 
 
         [Display(Name = "Organización")]

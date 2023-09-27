@@ -55,11 +55,35 @@
                     @Html.EditorFor(m => Model.Disolucions[i].DatosCBR, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
                 <th>
-                    @Html.LabelFor(m => Model.Disolucions[i].ComisionPosterior, htmlAttributes: new { @class = "control-label col-md-10" })                    
+                    @Html.LabelFor(m => Model.Disolucions[i].DatosNotario, htmlAttributes: new { @class = "control-label col-md-10" })
+                    @Html.EditorFor(m => Model.Disolucions[i].DatosNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th>
+                    @Html.LabelFor(m => Model.Disolucions[i].NombreNotaria, htmlAttributes: new { @class = "control-label col-md-10" })
+                    @Html.EditorFor(m => Model.Disolucions[i].NombreNotaria, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+            </tr>
+
+            <tr>
+                <th>
+                    @Html.LabelFor(m => Model.Disolucions[i].FechaComiLiquiJuntaSocios, htmlAttributes: new { @class = "control-label col-md-10" })
+                    @Html.EditorFor(m => Model.Disolucions[i].FechaComiLiquiJuntaSocios, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th>
+                    @Html.LabelFor(m => Model.Disolucions[i].ComisionPosterior, htmlAttributes: new { @class = "control-label col-md-10" })
                     @Html.EditorFor(m => Model.Disolucions[i].ComisionPosterior, new { htmlAttributes = new { @id = "comisionPosterior", @class = "form-control", @style = "height: 20px;" } })
+
+                </th>
+                <th>
+                </th>
+            </tr>
+            <tr>
+                <th>
                 </th>
                 <th>
                     @Ajax.ActionLink("Eliminar", "DisolucionDelete", null, new { Model.Disolucions.ToArray()[i].DisolucionId, Model.Disolucions.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "disolucion" }, htmlAttributes: new { @class = "btn btn-danger" })
+                </th>
+                <th>
                 </th>
             </tr>
         </thead>

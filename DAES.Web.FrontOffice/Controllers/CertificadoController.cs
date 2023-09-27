@@ -126,7 +126,8 @@ namespace DAES.Web.FrontOffice.Controllers
                     var proceso = new Proceso()
                     {
                         DefinicionProcesoId = tipoDocumento.GeneracionManual ? (int)Infrastructure.Enum.DefinicionProceso.SolicitudCertificadoManual : (int)Infrastructure.Enum.DefinicionProceso.SolicitudCertificadoAutomatico,
-                        OrganizacionId = organizacion.OrganizacionId
+                        OrganizacionId = organizacion.OrganizacionId,
+                        TipoCertificadoId = model.TipoDocumentoId
                     };
 
                     proceso.Solicitante = new Solicitante()

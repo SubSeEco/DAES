@@ -98,6 +98,7 @@ namespace DAES.Model.SistemaIntegrado
         public virtual ICollection<ActualizacionRepresentante> ActualizacionRepresentantes { get; set; }
         public virtual ICollection<ActualizacionExtractoAuxiliar> ActualizacionExtractoAuxiliars { get; set; }
 
-
+        [NotMapped]
+        public int TipoCertificadoId { get; set; }
     }
 }

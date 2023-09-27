@@ -13,12 +13,17 @@ namespace DAES.Infrastructure.SistemaIntegrado
     {
         public SistemaIntegradoContext() : base("name=SistemaIntegrado")
         {
+
         }
+
+
 
 
 
         public static SistemaIntegradoContext Create()
         {
+            var dataContex = new SistemaIntegradoContext();
+            dataContex.Database.CommandTimeout = 300;
             return new SistemaIntegradoContext();
         }
 
@@ -83,6 +88,7 @@ namespace DAES.Infrastructure.SistemaIntegrado
         public virtual DbSet<Periodo> Periodo { get; set; }
         public virtual DbSet<ModificacionEstatuto> ModificacionEstatutos { get; set; }
         public virtual DbSet<Disolucion> Disolucions { get; set; }
+        public virtual DbSet<Transitorio> Transitorio { get; set; }
         public virtual DbSet<Fiscalizacion> Fiscalizacion { get; set; }
         public virtual DbSet<Hallazgo> Hallazgo { get; set; }
         public virtual DbSet<TipoFiscalizacion> TipoFiscalizacion { get; set; }
@@ -123,7 +129,6 @@ namespace DAES.Infrastructure.SistemaIntegrado
         public virtual DbSet<ActualizacionPersonaFacultada> ActualizacionPersonaFacultadas { get; set; }
         public virtual DbSet<ActualizacionRepresentante> ActualizacionRepresentantes { get; set; }
         public virtual DbSet<ActualizacionExtractoAuxiliar> ActualizacionExtractoAuxiliars { get; set; }
-
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

@@ -98,5 +98,8 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.MultilineText)]
         [Display(Name = "Parrafo de Observaciones")]
         public string ParrafoObservacion { get; set; }
+
+        [Display(Name = "anterior")]
+        public bool anterior { get; set; }
     }
 }

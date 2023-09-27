@@ -708,6 +708,59 @@ namespace DAES.BLL
             }
         }
 
+        public List<string> TransitorioUpdate(List<Transitorio> listTransitorio, Transitorio transitorio)
+        {
+
+            using (SistemaIntegradoContext context = new SistemaIntegradoContext())
+            {
+                var returnValue = new List<string>();
+                if (listTransitorio == null)
+                {
+                    return returnValue;
+                }
+                /*if(liquidadoras == null)
+                {
+                    return returnValue;
+                }*/
+
+
+                foreach (var item in listTransitorio)
+                {
+                    var newTransitorio = context.Transitorio.FirstOrDefault(q => q.TransitorioId == item.TransitorioId);
+                    var org = context.Organizacion.FirstOrDefault(q => q.OrganizacionId == item.OrganizacionId);
+                    // not Sure
+
+                    if (newTransitorio != null)
+                    {
+                        newTransitorio.FechaEscrituraPublica = item.FechaEscrituraPublica;
+
+                        newTransitorio.FechaJuntaSocios = item.FechaJuntaSocios;
+
+                        newTransitorio.Moneda = item.Moneda;
+
+                        newTransitorio.Cuotas = item.Cuotas;
+
+                        newTransitorio.TipoCuota = item.TipoCuota;
+
+                        newTransitorio.Objeto = item.Objeto;
+
+                        newTransitorio.CapitalInicial = item.CapitalInicial;
+
+                        newTransitorio.Duracion = item.Duracion;
+
+                        newTransitorio.FormaPago = item.FormaPago;
+
+                        newTransitorio.NombreNotaria = item.NombreNotaria;
+
+                        newTransitorio.DatosNotario = item.DatosNotario;
+                    }
+                }
+
+                context.SaveChanges();
+                return returnValue;
+            }
+        }
+
         public List<string> DisolucionUpdate(List<Disolucion> listDisolucion, Disolucion disolucionss, List<ComisionLiquidadora> comisionLiquidadoras)
         {
 

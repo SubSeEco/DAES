@@ -196,6 +196,11 @@ namespace DAES.Model.SistemaIntegrado
 
         [Display(Name = "Situación")]
         public int? SituacionId { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Fecha Asamblea Directorio")]
+        [DataType(DataType.Date)]
+        public DateTime? fechaasambleadirectorio { get; set; }
         public virtual Situacion Situacion { get; set; }
 
         public virtual List<Directorio> Directorios { get; set; }
@@ -206,6 +211,7 @@ namespace DAES.Model.SistemaIntegrado
         public virtual List<Articulo91> Articulo91s { get; set; }
         public virtual List<ModificacionEstatuto> ModificacionEstatutos { get; set; }
         public virtual List<Disolucion> Disolucions { get; set; }
+        public virtual List<Transitorio> Transitorios { get; set; }
         public virtual List<ExistenciaLegal> ExistenciaLegals { get; set;}
         public virtual List<Saneamiento> Saneamientos { get; set; }
         public virtual List<Reforma> Reformas { get; set; }
