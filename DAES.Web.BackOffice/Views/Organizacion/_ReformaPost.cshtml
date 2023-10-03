@@ -67,6 +67,20 @@
                 @Ajax.ActionLink("Eliminar", "ReformaDeletePost", null, new { Model.ReformaPosteriors.ToArray()[i].IdReformaPost, Model.ReformaPosteriors.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "reformaPost" }, htmlAttributes: new { @class = "btn btn-danger" })
             </td>
         </tr>
+        <tr>
+            <td>
+                <div id="DivObserR">
+                    <label>¿Observaciones?</label><br />
+                    <input id="Observacion7" name="obser" type="radio" onclick="PresentarViewObservacionReformaPost(true)" /> si
+                    <input id="Observacion8" name="obser" type="radio" onclick="PresentarViewObservacionReformaPost(false)" /> no
+                    <br>
+                </div>
+                <div id="observacionReformaAGAC">
+                    @Html.Partial("_ObservacionReformaEdit", Model)
+                </div>
+            </td>
+
+        </tr>
     </thead>
     }
 <tbody>
@@ -100,3 +114,16 @@
     }
 </tbody>
 </table>
+
+<script type="text/javascript">
+
+    function PresentarViewObservacionReformaAnt(show) {
+        if (show) {
+            $("#observacionReformaAGAC").show();
+        } else {
+            $("#observacionReformaAGAC").hide();
+        }
+
+    }
+
+</script>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -92,10 +93,10 @@ namespace DAES.Model.SistemaIntegrado
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime? FechaPublic { get; set; }
 
-    //[Display(Name = "Fecha asamblea constitutiva")]
-    //[DataType(DataType.Date)]
-    //public DateTime? FechaAsambleaConstitutiva { get; set; }
-    //public virtual List<ExistenciaLegal> ExistenciaLegals { get; set; }
+        //[Display(Name = "Fecha asamblea constitutiva")]
+        //[DataType(DataType.Date)]
+        //public DateTime? FechaAsambleaConstitutiva { get; set; }
+        //public virtual List<ExistenciaLegal> ExistenciaLegals { get; set; }
 
-  }
+    }
 }

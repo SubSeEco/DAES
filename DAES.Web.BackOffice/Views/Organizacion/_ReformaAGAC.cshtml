@@ -27,11 +27,11 @@
             </tr>
             <tr>
                 <th>
-               
+
                     @Html.DisplayNameFor(model => Model.ReformaAGACs[i].AprobacionId)
                     @*@Html.DropDownListFor(model => Model.Reformas[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.Reformas[i].AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 180px;" })*@
                     @Html.DropDownListFor(model => Model.ReformaAGACs[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ReformaAGACs[i].AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 190px;" })
-                
+
                 </th>
             </tr>
             <tr>
@@ -39,16 +39,48 @@
                     @Html.DisplayNameFor(model => Model.ReformaAGACs[i].EspaciosDocAGAC)
                     @Html.EditorFor(model => Model.ReformaAGACs[i].EspaciosDocAGAC, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
                 </th>
-                
+
             </tr>
             <tr>
                 <td>
-                    @Ajax.ActionLink("Eliminar", "ReformaDeleteAGAC", null, new { Model.ReformaAGACs.ToArray()[i].IdReformaAGAC, Model.ReformaAGACs.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "reformaAGAC" }, new { @style = "Text-Decoration : none", @class="btn btn-danger" })
+                    @Ajax.ActionLink("Eliminar", "ReformaDeleteAGAC", null, new { Model.ReformaAGACs.ToArray()[i].IdReformaAGAC, Model.ReformaAGACs.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "reformaAGAC" }, new { @style = "Text-Decoration : none", @class = "btn btn-danger" })
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <div id="DivObserR">
+                        <label>¿Observaciones?</label><br />
+                        <input id="Observacions@(i)" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAGAC(true,@(i))" /> si
+                        <input id="Observacions@(i)Segundario" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAGAC(false,@(i))" /> no
+                        <br>
+                    </div>
+                    <div id="observacionReformaAGAC@(i)">
+                        @if (true)
+                        {
+                            Model.ReformaActual = Model.ReformaAGACs[i].IdReformaAGAC;
+                            Model.posicion = i;
+                        }
+                        model es @(Model.ReformaActual)
+                        @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAGAC == Model.ReformaActual) != null ||
+                            Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == Model.ReformaActual) != null ||
+                            Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
+                        {
+                            <input type="hidden" id="tieneObsR@(i)" value="1"/>
+                        }
+                        else
+                        {
+                            <input id="tieneObsR@(i)" value="0" type="hidden"/>
+                        }
+
+                        @Html.Partial("_ObservacionReformaEdit", Model)
+                    </div>
                 </td>
 
             </tr>
         </thead>
-}
+    }
+
     <tbody>
 
         @for (var i = 0; i < Model.ReformaAGACs.Count; i++)
@@ -74,6 +106,38 @@
 
 
             </tr>
-}
+        }
     </tbody>
 </table>
+
+
+<script type="text/javascript">
+
+    function PresentarViewObservacionReformaAGAC(show, index) {
+        if (show) {
+            $("#observacionReformaAGAC" + index).show();
+        } else {
+            $("#observacionReformaAGAC" + index).hide();
+        }
+
+    }
+
+            function actualizarObsR(index) {
+            $("#observacionReformaAGAC" + index).show();
+            $("#Observacions" + index).prop("checked", true);
+            $("#Observacions" + index + "Segundario").prop("checked", false);
+        }
+
+    $(document).ready(function () {
+
+                for (var i = 0; i < Model.ReformaAGACs.Count; i++)
+                {
+                    var objetoObsR = document.getElementById("tieneObsR" + i).value;
+                    if (objetoObsR > 0) {
+                        actualizarObsR(i);
+                    }
+                }
+    });
+
+
+</script>
