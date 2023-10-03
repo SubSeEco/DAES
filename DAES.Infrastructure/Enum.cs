@@ -250,6 +250,14 @@
             Rechazada = 3,
         }
 
+        public enum TipoOficio
+        {
+            FinProceso = 1,
+            Conductor = 2,
+            Observación = 3,
+            Reiteración = 4,
+            Ninguno = 5,
+        }
         public enum Configuracion
         {
             url_tramites_en_linea,

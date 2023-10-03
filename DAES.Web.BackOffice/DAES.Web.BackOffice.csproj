@@ -1072,6 +1072,8 @@
     <Content Include="Views\Task\VerificacionActualizacion.cshtml" />
     <Content Include="Views\Task\ActualizarJuntaGeneralSocios.cshtml" />
     <Content Include="Views\Task\ActualizarDirectorio.cshtml" />
+    <Content Include="Views\Organizacion\_ObservacionEdit.cshtml" />
+    <Content Include="Views\Organizacion\_ObservacionReformaEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

@@ -175,6 +175,8 @@
     <Compile Include="SistemaIntegrado\ExtractoAuxiliar.cs" />
     <Compile Include="SistemaIntegrado\FileAttach.cs" />
     <Compile Include="SistemaIntegrado\FirmaDocumento.cs" />
+    <Compile Include="SistemaIntegrado\ObservacionLegal.cs" />
+    <Compile Include="SistemaIntegrado\ObservacionReforma.cs" />
     <Compile Include="SistemaIntegrado\PersonaFacultada.cs" />
     <Compile Include="SistemaIntegrado\RepresentanteLegal.cs" />
     <Compile Include="SistemaIntegrado\Saneamiento.cs" />
