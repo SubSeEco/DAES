@@ -44,8 +44,22 @@ namespace DAES.Model.SistemaIntegrado
         public DateTime? FechaPublicDiario { get; set; }
 
         [Display(Name = "Autorizado por")]
-        public string DatosNotario { get; set; }
+        public string AutorizadoPor { get; set; }
 
+        [Display(Name = "Nombre notario")]
+        public string DatosNotario { get; set; }
+        [Display(Name = "Lugar notario")]
+        public string LugarNotario { get; set; }
+
+        [Display(Name = "Fecha Juntya Socios")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaJuntaGeneral { get; set; }
+
+        [Display(Name = "Fecha escritura")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaEscritura { get; set; }
 
         //esto sirve para agregar espacios al documento.
         [Display(Name = "Agregar espacios manuales")]
@@ -54,9 +68,11 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Organización")]
         public int? OrganizacionId { get; set; }
         public virtual Organizacion Organizacion { get; set; }
+        [Display(Name = "Tipo General")]
+        public int? TipoGeneralId { get; set; }
+        public virtual TipoGeneral TipoGeneral { get; set; }
 
-        
-        
+
 
     }
 
