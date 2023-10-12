@@ -26,12 +26,6 @@
                         <th>
                             @Html.LabelFor(m => Model.ComisionLiquidadoras[i].Genero.Nombre, new { htmlAttributes = new { @class = "control-label col-6" } })
                         </th>
-                        <th>
-                            @Html.LabelFor(m => Model.ComisionLiquidadoras[i].FechaInicio, new { htmlAttributes = new { @class = "control-label col-6" } })
-                        </th>
-                        <th>
-                            @Html.LabelFor(m => Model.ComisionLiquidadoras[i].FechaTermino, new { htmlAttributes = new { @class = "control-label col-6" } })
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,12 +44,6 @@
                         </th>
                         <th>
                             @Html.DropDownListFor(model => model.ComisionLiquidadoras[i].GeneroId, new SelectList(ViewBag.GeneroId, "Value", "Text", Model.ComisionLiquidadoras[i].GeneroId), "Seleccione...", htmlAttributes: new { @class = "form-control col-6" })
-                        </th>
-                        <th>
-                            @Html.EditorFor(m => Model.ComisionLiquidadoras[i].FechaInicio, new { htmlAttributes = new { @class = "form-control col-6" } })
-                        </th>
-                        <th>
-                            @Html.EditorFor(m => Model.ComisionLiquidadoras[i].FechaTermino, new { htmlAttributes = new { @class = "form-control col-6" } })
                         </th>
                         <th>
                             @Ajax.ActionLink("Eliminar", "ComisionDelete", null, new { Model.ComisionLiquidadoras.ToArray()[i].ComisionLiquidadoraId, Model.ComisionLiquidadoras.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "divDirectorio" }, htmlAttributes: new { @class = "btn btn-danger" })

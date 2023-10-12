@@ -65,10 +65,18 @@
         </tr>
         <tr>
             <th>
+                @Html.LabelFor(m => Model.Disolucions[i].FechaInicio, htmlAttributes: new { @class = "control-label col-md-10" })
+                @Html.EditorFor(m => Model.Disolucions[i].FechaInicio, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
+            <th>
+                @Html.LabelFor(m => Model.Disolucions[i].FechaTermino, htmlAttributes: new { @class = "control-label col-md-10" })
+                @Html.EditorFor(m => Model.Disolucions[i].FechaTermino, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
+            <th>
                 @Html.LabelFor(m => Model.Disolucions[i].ComisionAnterior, htmlAttributes: new { @class = "control-label col-md-10" })
                 @Html.EditorFor(m => Model.Disolucions[i].ComisionAnterior, new { htmlAttributes = new { @id = "comisionAnterior", @class = "form-control", @style = "height: 20px;" } })
-            <th>
             </th>
+
         </tr>
         <tr>
             <th>

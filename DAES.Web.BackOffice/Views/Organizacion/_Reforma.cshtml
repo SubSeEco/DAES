@@ -18,37 +18,46 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaReforma)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaReforma, new { htmlAttributes = new { @class = "form-control", @style = "width: 170px;" } })
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaReforma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
-
+            <th>
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaPublicDiario)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaPublicDiario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
+            <th colspan="2">
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].AutorizadoPor)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].AutorizadoPor, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
         </tr>
         <tr>
             <th>
                 @Html.LabelFor(model => model.TipoNormaId, "Tipo de Norma", htmlAttributes: new { @class = "control-label col-md-10" })
-                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoNormaId, new SelectList(ViewBag.TipoNormaaId, "Value", "Text", Model.ReformaAnteriors[i].TipoNormaId), "Seleccione...", new { @class = "form-control", @style = "width: 180px;" })
+                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoNormaId, new SelectList(ViewBag.TipoNormaaId, "Value", "Text", Model.ReformaAnteriors[i].TipoNormaId), "Seleccione...", new { @class = "form-control col-md-10"})
             </th>
             <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].NNorma)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].NNorma, new { htmlAttributes = new { @class = "form-control", @style = "width: 180px;" } })
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].NNorma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
-        </tr>
-        <tr>
             <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaNorma)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaNorma, new { htmlAttributes = new { @class = "form-control", @style = "width: 170px;" } })
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaNorma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].TipoGeneralId)
+                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ReformaAnteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10"})
             </th>
             <th>
-                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaPublicDiario)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaPublicDiario, new { htmlAttributes = new { @class = "form-control", @style = "width: 170px;" } })
-            </th>
-        </tr>
-        <tr>
-            <th colspan="2">
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].DatosNotario)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].DatosNotario, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].DatosNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].LugarNotario)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].LugarNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
         </tr>
-        <tr>
+        <tr> 
             <th colspan="2">
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].EspaciosDocAnterior)
                 @Html.EditorFor(model => Model.ReformaAnteriors[i].EspaciosDocAnterior, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })

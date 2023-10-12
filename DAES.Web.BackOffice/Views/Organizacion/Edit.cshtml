@@ -480,18 +480,21 @@
 
 
     }
-
-    if (Model.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.Cooperativa)
+    if (Model.ExistenciaAnteriors.Any())
     {
-        <div class="panel panel-default" id="transitorioDiv" style="display:none">
-            <div class="panel-heading">Transitorio</div>
-            <div class="panel-body">
-                <div id="transitorio">
-                    @Html.Partial("_TransitorioEdit", Model)
+        if (Model.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.Cooperativa && Model.ExistenciaAnteriors.FirstOrDefault().FNorma != null)
+        {
+            <div class="panel panel-default" id="transitorioDiv">
+                <div class="panel-heading">Transitorio</div>
+                <div class="panel-body">
+                    <div id="transitorio">
+                        @Html.Partial("_TransitorioEdit", Model)
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     }
+
 
     <div class="panel panel-default">
         <div class="panel-heading">Disolución</div>
@@ -699,13 +702,11 @@ else
     function PresentarViewPost() {
         $("#divExis").hide();
         $("#CPostRPost").show();
-        $("#transitorioDiv").hide();
     }
 
     function PresentarViewAnt() {
         $("#divExis").show();
         $("#CPostRPost").hide();
-        $("#transitorioDiv").show();
     }
 
     function PresentarViewObservacion(show) {

@@ -53,6 +53,15 @@ namespace DAES.Model.SistemaIntegrado
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? FechaComiLiquiJuntaSocios { get; set; }
 
+        [Display(Name = "Fecha de inicio")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaInicio { get; set; }
+
+        [Display(Name = "Fecha de término")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaTermino { get; set; }
         public bool? Anterior { get; set; }
 
         #region Datos Cooperativa Anterior

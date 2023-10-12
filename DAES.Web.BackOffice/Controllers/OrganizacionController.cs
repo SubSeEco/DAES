@@ -304,6 +304,7 @@ namespace DAES.Web.BackOffice.Controllers
             ViewBag.AprobacionId = new SelectList(db.Aprobacion.OrderBy(q => q.Nombre), "AprobacionId", "Nombre");
             ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion).ToList(), "AsambleaDepId", "Descripcion");
             ViewBag.TipoOficioId = new SelectList(db.TipoOficio.OrderBy(q => q.Descripcion).ToList(), "TipoOficioId", "Descripcion");
+            ViewBag.TipoGeneralId = new SelectList(db.TipoGeneral.OrderBy(q => q.Nombre), "TipoGeneralId", "Nombre");
             return View(organizacion);
 
         }
@@ -394,7 +395,7 @@ namespace DAES.Web.BackOffice.Controllers
                 _custom.DirectorioUpdate(model.Directorios);
                 _custom.ModificacionUpdate(model.ModificacionEstatutos);
                 _custom.DisolucionUpdate(model.Disolucions, disolucion, model.ComisionLiquidadoras);
-                _custom.TransitorioUpdate(model.Transitorios, transitorio);
+                //_custom.TransitorioUpdate(model.Transitorios, transitorio);
                 _custom.ObservacionLegalUpdate(model.ObservacionLegals, observacionLegal);
                 _custom.ObservacionReformaUpdate(model.ObservacionReformas, observacionReforma);
                 //model.Reformas = null;
@@ -665,10 +666,13 @@ namespace DAES.Web.BackOffice.Controllers
         public ActionResult TransitorioAdd(int OrganizacionId)
         {
             var model = db.Organizacion.Find(OrganizacionId);
-
+            ViewBag.TipoGeneralId = new SelectList(db.TipoGeneral.OrderBy(q => q.Nombre), "TipoGeneralId", "Nombre");
             if (model.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa)
             {
-                var transitorio = new Transitorio() { OrganizacionId = OrganizacionId };
+                var transitorio = new Transitorio() { 
+                    OrganizacionId = OrganizacionId
+                    //TipoGeneralId = 0
+                };
                 db.Transitorio.Add(transitorio);
                 db.SaveChanges();
                 return PartialView("_TransitorioEdit", model);
@@ -781,7 +785,7 @@ namespace DAES.Web.BackOffice.Controllers
                         GeneroId = item.GeneroId,
                         FechaInicio = item.FechaInicio,
                         FechaTermino = item.FechaTermino,
-                        /*EsMiembro = model.ComisionLiquidadoras.FirstOrDefault().EsMiembro,*/
+                        EsMiembro = true,
                         Rut = item.Rut,
                         DirectorioId = item.DirectorioId,
                         NombreCompleto = item.NombreCompleto
@@ -814,7 +818,7 @@ namespace DAES.Web.BackOffice.Controllers
             //ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion), "AsambleaDepId", "Descripcion");
             ViewBag.TipoNormaaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
             ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion).ToList(), "AsambleaDepId", "Descripcion");
-
+            ViewBag.TipoGeneralId = new SelectList(db.TipoGeneral.OrderBy(q => q.Nombre), "TipoGeneralId", "Nombre");
 
             var model = db.Organizacion.Find(OrganizacionId);
             return PartialView("_Reforma", model);
@@ -1054,7 +1058,10 @@ namespace DAES.Web.BackOffice.Controllers
             ViewBag.TipoNormaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
 
             var model = db.Organizacion.Find(OrganizacionId);
-            var comi = db.ComisionLiquidadora.Add(new ComisionLiquidadora() { OrganizacionId = OrganizacionId });
+            var comi = db.ComisionLiquidadora.Add(new ComisionLiquidadora() { 
+                OrganizacionId = OrganizacionId, 
+                EsMiembro = true
+            });
 
             db.SaveChanges();
 
