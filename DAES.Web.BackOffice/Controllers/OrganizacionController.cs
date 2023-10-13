@@ -862,8 +862,11 @@ namespace DAES.Web.BackOffice.Controllers
             var obs = db.ObservacionReforma.FirstOrDefault(q => q.IdReformaPost == IdReformaPost);
             if (reforma != null)
             {
+                if (obs != null)
+                {
+                    db.ObservacionReforma.Remove(obs);
+                }
                 db.ReformaPosterior.Remove(reforma);
-                db.ObservacionReforma.Remove(obs);
                 db.SaveChanges();
             }
             ViewBag.TipoNormaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre), "TipoNormaId", "Nombre");
@@ -898,11 +901,11 @@ namespace DAES.Web.BackOffice.Controllers
             var obs = db.ObservacionReforma.FirstOrDefault(q => q.IdReformaAGAC == IdReformaAGAC);
             if (reforma != null)
             {
-                db.ReformaAGAC.Remove(reforma);            
-            }
-            if(obs != null)
-            {
-                db.ObservacionReforma.Remove(obs);
+                if(obs != null){
+                    db.ObservacionReforma.Remove(obs);
+                }
+                db.ReformaAGAC.Remove(reforma);
+                db.SaveChanges();
             }
             db.SaveChanges();
             ViewBag.TipoNormaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre), "TipoNormaId", "Nombre");
@@ -920,8 +923,11 @@ namespace DAES.Web.BackOffice.Controllers
             var obs = db.ObservacionReforma.FirstOrDefault(q => q.IdReformaAnterior == IdReformaAnterior);
             if (reforma != null)
             {
+                if (obs != null)
+                {
+                    db.ObservacionReforma.Remove(obs);
+                }
                 db.ReformaAnterior.Remove(reforma);
-                db.ObservacionReforma.Remove(obs);
                 db.SaveChanges();
             }
             ViewBag.TipoNormaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre), "TipoNormaId", "Nombre");

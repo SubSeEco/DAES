@@ -63,17 +63,16 @@
                         {
                             Model.ReformaActual = Model.ReformaAGACs[i].IdReformaAGAC;
                             Model.posicion = i;
+                            Model.TipoReforma = "observacionReformaAGAC";
                         }
-                        model es @(Model.ReformaActual)
-                        @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAGAC == Model.ReformaActual) != null ||
-                            Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == Model.ReformaActual) != null ||
-                            Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
+
+                        @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAGAC == Model.ReformaActual) != null)
                         {
-                            <input type="hidden" id="tieneObsR@(i)" value="1"/>
+                            <input type="hidden" id="tieneObsR@(i)" value="1" />
                         }
                         else
                         {
-                            <input id="tieneObsR@(i)" value="0" type="hidden"/>
+                            <input id="tieneObsR@(i)" value="0" type="hidden" />
                         }
 
                         @Html.Partial("_ObservacionReformaEdit", Model)

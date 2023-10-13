@@ -1996,16 +1996,16 @@ namespace DAES.BLL
                                     parrafo = parrafo.Replace("[FECHAESCRITURA]", aux.FechaEscrituraPublica != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaEscrituraPublica.Value) + "#" : "[ERROR_Disolucion]");
                                     parrafo = parrafo.Replace("[LUGARNOTARIO]", aux.NombreNotaria != null ? "#" + aux.NombreNotaria + "#" : "[ERROR_Disolucion]");
                                     parrafo = parrafo.Replace("[DATOGENERALNOTARIO]", aux.DatosNotario != null ? "#" + aux.DatosNotario + "#" : "[ERROR_Disolucion]");
-                                    parrafo = parrafo.Replace("[FECHAPUBLICACIONDIARIOOFICIAL]", aux.FechaPubliccionDiarioOficial != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaPubliccionDiarioOficial.Value) + "#" : "[ERROR_Disolucio]");
-                                    parrafo = parrafo.Replace("[FOJASNÚMERO]", aux.NumeroFojas != null ? "#" + aux.NumeroFojas + "#" : "[ERROR_Disolucion]");
-                                    parrafo = parrafo.Replace("[DATOSCONSRVADORBIENESRAÍCES]", aux.DatosCBR != null ? "#" + aux.DatosCBR + "#" : "[ERROR_Disolucion]");
-                                    parrafo = parrafo.Replace("[AÑODEINSCRIPCIÓN]", aux.AñoInscripcion != null ? "#" + aux.AñoInscripcion + "#" : "[ERROR_Disolucion]");
+                                    parrafo = parrafo.Replace("[FECHAPUBLICACION]", aux.FechaPubliccionDiarioOficial != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaPubliccionDiarioOficial.Value) + "#" : "[ERROR_Disolucio]");
+                                    parrafo = parrafo.Replace("[FOJASNUMERO]", aux.NumeroFojas != null ? "#" + aux.NumeroFojas + "#" : "[ERROR_Disolucion]");
+                                    parrafo = parrafo.Replace("[COMUNACBR]", aux.DatosCBR != null ? "#" + aux.DatosCBR + "#" : "[ERROR_Disolucion]");
+                                    parrafo = parrafo.Replace("[AÑOINSCRIPCION]", aux.AñoInscripcion != null ? "#" + aux.AñoInscripcion + "#" : "[ERROR_Disolucion]");
 
                                 string[] diso = parrafo.Split('#');
 
-                                    parrafo2 = parrafo2.Replace("[FECHACELEBRACION]", aux.FechaComiLiquiJuntaSocios != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaComiLiquiJuntaSocios.Value) + "#," : "");
+                                    parrafo2 = parrafo2.Replace("[FECHACELEBRACION]", aux.FechaComiLiquiJuntaSocios != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaComiLiquiJuntaSocios.Value) + "#," : "");
 
-                                    string[] diso2 = parrafo2.Split('#');
+                                string[] diso2 = parrafo2.Split('#');
                                     if (parrafo.Contains("ERROR_Disolucion") || parrafo2.Contains("ERROR_Disolucion"))
                                     {
                                         throw new Exception(string.Format("Error al emitir, el apartado de Disolucion no tiene todos los campos requeridos"));

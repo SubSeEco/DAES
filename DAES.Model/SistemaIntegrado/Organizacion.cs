@@ -29,6 +29,7 @@ namespace DAES.Model.SistemaIntegrado
             ReformaAnteriors = new List<ReformaAnterior>();
             ObservacionLegals = new List<ObservacionLegal>();
             ObservacionReformas = new List<ObservacionReforma>();
+            ReformaActual = 0;
             /*DisolucionCooperativas = new List<DisolucionCooperativa>();
             DisolucionAsociacions = new List<DisolucionAsociacion>();*/
         }
@@ -246,5 +247,8 @@ namespace DAES.Model.SistemaIntegrado
         public virtual int ReformaActual { get; set; }
         [NotMapped]
         public virtual int posicion { get; set; }
+
+        [NotMapped]
+        public virtual String TipoReforma { get; set; }
     }
 }

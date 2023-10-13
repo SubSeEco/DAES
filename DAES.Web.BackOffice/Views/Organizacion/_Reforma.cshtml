@@ -32,7 +32,7 @@
         <tr>
             <th>
                 @Html.LabelFor(model => model.TipoNormaId, "Tipo de Norma", htmlAttributes: new { @class = "control-label col-md-10" })
-                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoNormaId, new SelectList(ViewBag.TipoNormaaId, "Value", "Text", Model.ReformaAnteriors[i].TipoNormaId), "Seleccione...", new { @class = "form-control col-md-10"})
+                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoNormaId, new SelectList(ViewBag.TipoNormaaId, "Value", "Text", Model.ReformaAnteriors[i].TipoNormaId), "Seleccione...", new { @class = "form-control col-md-10" })
             </th>
             <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].NNorma)
@@ -46,7 +46,7 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].TipoGeneralId)
-                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ReformaAnteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10"})
+                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ReformaAnteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10" })
             </th>
             <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].DatosNotario)
@@ -57,7 +57,7 @@
                 @Html.EditorFor(model => Model.ReformaAnteriors[i].LugarNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
         </tr>
-        <tr> 
+        <tr>
             <th colspan="2">
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].EspaciosDocAnterior)
                 @Html.EditorFor(model => Model.ReformaAnteriors[i].EspaciosDocAnterior, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
@@ -74,17 +74,33 @@
             <td>
                 <div id="DivObserR">
                     <label>¿Observaciones?</label><br />
-                    <input id="Observacion3" name="obser" type="radio" onclick="PresentarViewObservacionReformaAnt(true)" /> si
-                    <input id="Observacion4" name="obser" type="radio" onclick="PresentarViewObservacionReformaAnt(false)" /> no
+                    <input id="ObservacionsAnt@(i)" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAnt(true,@(i))" /> si
+                    <input id="ObservacionsAnt@(i)Segundario" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAnt(false,@(i))" /> no
                     <br>
                 </div>
-                <div id="observacionReformaAGAC">
+                <div id="observacionReformaAnt@(i)">
+                    @if (true)
+                    {
+                        Model.ReformaActual = Model.ReformaAnteriors[i].IdReformaAnterior;
+                        Model.posicion = i;
+                        Model.TipoReforma = "observacionReformaAnt";
+                    }
+
+
+                    @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == Model.ReformaActual) != null)
+                    {
+                        <input type="hidden" id="tieneObsRAnt@(i)" value="1" />
+                    }
+                    else
+                    {
+                        <input id="tieneObsRAnt@(i)" value="0" type="hidden" />
+                    }
                     @Html.Partial("_ObservacionReformaEdit", Model)
                 </div>
-            </td>
+                    </td>
 
-        </tr>
-    </thead>
+                    </tr>
+                </thead>
         
             }
 
@@ -121,14 +137,30 @@
 
 <script type="text/javascript">
 
-    function PresentarViewObservacionReformaAnt(show) {
+    function PresentarViewObservacionReformaAnt(show, index) {
         if (show) {
-            $("#observacionReformaAGAC").show();
+            $("#observacionReformaAnt" + index).show();
         } else {
-            $("#observacionReformaAGAC").hide();
+            $("#observacionReformaAnt" + index).hide();
         }
 
     }
 
-</script>
+    function actualizarObsR(index) {
+        $("#observacionReformaAnt" + index).show();
+        $("#ObservacionsAnt" + index).prop("checked", true);
+        $("#ObservacionsAnt" + index + "Segundario").prop("checked", false);
+    }
 
+    $(document).ready(function () {
+
+        for (var i = 0; i < Model.ReformaAnteriors.Count; i++) {
+            var objetoObsR = document.getElementById("tieneObsRAnt" + i).value;
+            if (objetoObsR > 0) {
+                actualizarObsR(i);
+            }
+        }
+    });
+
+
+</script>
