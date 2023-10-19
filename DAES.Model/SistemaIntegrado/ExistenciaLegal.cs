@@ -93,6 +93,9 @@ namespace DAES.Model.SistemaIntegrado
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime? FechaPublic { get; set; }
 
+        [Display(Name = "Tipo Junta")]
+        public int? TipoGeneralId { get; set; }
+        public virtual TipoGeneral TipoGeneral { get; set; }
         //[Display(Name = "Fecha asamblea constitutiva")]
         //[DataType(DataType.Date)]
         //public DateTime? FechaAsambleaConstitutiva { get; set; }

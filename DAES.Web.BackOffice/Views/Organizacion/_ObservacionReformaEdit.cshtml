@@ -1,15 +1,41 @@
 ﻿@model DAES.Model.SistemaIntegrado.Organizacion
 @Html.HiddenFor(model => model.OrganizacionId)
 <table class="table table-hover table-striped ">
+    @switch (Model.TipoReforma)
+    {
+        case "observacionReformaPost":
+            if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
+            {
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+            }
+            else
+            {
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
+            }
+            break;
+        case "observacionReformaAnt":
+            if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == Model.ReformaActual) != null)
+            {
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+            }
+            else
+            {
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
+            }
+            break;
 
-    @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == Model.ReformaActual) != null)
-    {
-        @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = Model.TipoReforma + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+        default:
+            if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAGAC == Model.ReformaActual) != null)
+            {
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAGAC" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+            }
+            else
+            {
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAGAC" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
+            }
+            break;
     }
-    else
-    {
-        @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = Model.TipoReforma + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
-    }
+
 
     @switch (Model.TipoReforma)
     {
@@ -22,36 +48,36 @@
                     @Html.HiddenFor(model => model.ObservacionReformas[i].observacionRId)
                     @Html.HiddenFor(model => model.ObservacionReformas[i].IdReformaAnterior)
 
-                        if (Model.ObservacionReformas[i].IdReformaAnterior == Model.ReformaActual)
-                        {
-                            <thead>
-                                <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => Model.ObservacionReformas[i].NumeroOficio)
-                                        @Html.EditorFor(model => Model.ObservacionReformas[i].NumeroOficio, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => Model.ObservacionReformas[i].AprobacionId)
-                                        @Html.DropDownListFor(model => Model.ObservacionReformas[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ObservacionReformas[i].AprobacionId), "Seleccione...", htmlAttributes: new { @class = "form-control", @style = "width: 190px;" })
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => Model.ObservacionReformas[i].FechaOficio)
-                                        @Html.EditorFor(model => Model.ObservacionReformas[i].FechaOficio, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
-                                    </th>
-                                    <th>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        @Ajax.ActionLink("Eliminar", "ObservacionReformaDelete", null, new { Model.ObservacionReformas.ToArray()[i].observacionRId, Model.ObservacionReformas.ToArray()[i].OrganizacionId, Model.ReformaActual, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion }, new { @style = "Text-Decoration : none", @class = "btn btn-danger" })
-                                    </td>
+                    if (Model.ObservacionReformas[i].IdReformaAnterior == Model.ReformaActual)
+                    {
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => Model.ObservacionReformas[i].NumeroOficio)
+                                    @Html.EditorFor(model => Model.ObservacionReformas[i].NumeroOficio, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => Model.ObservacionReformas[i].AprobacionId)
+                                    @Html.DropDownListFor(model => Model.ObservacionReformas[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ObservacionReformas[i].AprobacionId), "Seleccione...", htmlAttributes: new { @class = "form-control", @style = "width: 190px;" })
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => Model.ObservacionReformas[i].FechaOficio)
+                                    @Html.EditorFor(model => Model.ObservacionReformas[i].FechaOficio, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Ajax.ActionLink("Eliminar", "ObservacionReformaDelete", null, new { Model.ObservacionReformas.ToArray()[i].observacionRId, Model.ObservacionReformas.ToArray()[i].OrganizacionId, Model.ReformaActual, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion }, new { @style = "Text-Decoration : none", @class = "btn btn-danger" })
+                                </td>
 
-                                </tr>
-                            </thead>
-                        }
-                    
+                            </tr>
+                        </thead>
+                    }
+
 
                 }
             }
@@ -65,35 +91,35 @@
                     @Html.HiddenFor(model => model.ObservacionReformas[i].observacionRId)
                     @Html.HiddenFor(model => model.ObservacionReformas[i].IdReformaPost)
 
-                        if (Model.ObservacionReformas[i].IdReformaPost == Model.ReformaActual)
-                        {
-                            <thead>
-                                <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => Model.ObservacionReformas[i].NumeroOficio)
-                                        @Html.EditorFor(model => Model.ObservacionReformas[i].NumeroOficio, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => Model.ObservacionReformas[i].AprobacionId)
-                                        @Html.DropDownListFor(model => Model.ObservacionReformas[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ObservacionReformas[i].AprobacionId), "Seleccione...", htmlAttributes: new { @class = "form-control", @style = "width: 190px;" })
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => Model.ObservacionReformas[i].FechaOficio)
-                                        @Html.EditorFor(model => Model.ObservacionReformas[i].FechaOficio, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
-                                    </th>
-                                    <th>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        @Ajax.ActionLink("Eliminar", "ObservacionReformaDelete", null, new { Model.ObservacionReformas.ToArray()[i].observacionRId, Model.ObservacionReformas.ToArray()[i].OrganizacionId, Model.ReformaActual, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" }, new { @style = "Text-Decoration : none", @class = "btn btn-danger" })
-                                    </td>
+                    if (Model.ObservacionReformas[i].IdReformaPost == Model.ReformaActual)
+                    {
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => Model.ObservacionReformas[i].NumeroOficio)
+                                    @Html.EditorFor(model => Model.ObservacionReformas[i].NumeroOficio, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => Model.ObservacionReformas[i].AprobacionId)
+                                    @Html.DropDownListFor(model => Model.ObservacionReformas[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ObservacionReformas[i].AprobacionId), "Seleccione...", htmlAttributes: new { @class = "form-control", @style = "width: 190px;" })
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => Model.ObservacionReformas[i].FechaOficio)
+                                    @Html.EditorFor(model => Model.ObservacionReformas[i].FechaOficio, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Ajax.ActionLink("Eliminar", "ObservacionReformaDelete", null, new { Model.ObservacionReformas.ToArray()[i].observacionRId, Model.ObservacionReformas.ToArray()[i].OrganizacionId, Model.ReformaActual, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, new { @style = "Text-Decoration : none", @class = "btn btn-danger" })
+                                </td>
 
-                                </tr>
-                            </thead>
-                        }
+                            </tr>
+                        </thead>
+                    }
 
                 }
             }

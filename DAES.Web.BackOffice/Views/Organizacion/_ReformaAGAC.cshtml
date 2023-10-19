@@ -36,6 +36,10 @@
                     @Html.DropDownListFor(model => Model.ReformaAGACs[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ReformaAGACs[i].AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 190px;" })
 
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ReformaAGACs[i].TipoGeneralId)
+                    @Html.DropDownListFor(model => Model.ReformaAGACs[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ReformaAGACs[i].TipoGeneralId), "Seleccione...", new { @class = "form-control", @style = "width: 190px;" })
+                </th>
             </tr>
             <tr>
                 <th colspan="2">

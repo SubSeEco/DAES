@@ -203,7 +203,7 @@ namespace DAES.Model.SistemaIntegrado
         public int? SituacionId { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Fecha Asamblea Directorio")]
+        [Display(Name = "Fecha Com. Adm./Directorio")]
         [DataType(DataType.Date)]
         public DateTime? fechaasambleadirectorio { get; set; }
         public virtual Situacion Situacion { get; set; }

@@ -273,6 +273,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.fechaasambleadirectorio, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
+
                         @Html.EditorFor(model => model.fechaasambleadirectorio, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.fechaasambleadirectorio, "", new { @class = "text-danger" })
                     </div>
@@ -798,5 +799,13 @@ else
 
     });
 
+    function miFuncion() {
+            alert("La función se ha activado desde el evento onload.");
+        }
+
+        // El evento onload se dispara cuando la página se carga completamente.
+        window.onload = function() {
+            miFunción();
+        };
 </script>
 

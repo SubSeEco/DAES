@@ -605,7 +605,7 @@ namespace DAES.Web.BackOffice.Controllers
             ViewBag.AprobacionId = new SelectList(db.Aprobacion.OrderBy(q => q.Nombre), "AprobacionId", "Nombre");
             ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion), "AsambleaDepId", "Descripcion");
             ViewBag.TipoNormaaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
-
+            ViewBag.TipoGeneralId = new SelectList(db.TipoGeneral.OrderBy(q => q.Nombre), "TipoGeneralId", "Nombre");
             var model = db.Organizacion.Find(OrganizacionId);
             return PartialView("_modificacionEdit", model);
         }
@@ -834,7 +834,7 @@ namespace DAES.Web.BackOffice.Controllers
             //ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion), "AsambleaDepId", "Descripcion");
             ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion).ToList(), "AsambleaDepId", "Descripcion");
             ViewBag.TipoNormaaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
-            
+            ViewBag.TipoGeneralId = new SelectList(db.TipoGeneral.OrderBy(q => q.Nombre), "TipoGeneralId", "Nombre");
 
             var model = db.Organizacion.Find(OrganizacionId);
             return PartialView("_ReformaAGAC", model);
@@ -851,7 +851,7 @@ namespace DAES.Web.BackOffice.Controllers
             //ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion), "AsambleaDepId", "Descripcion");
             ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion).ToList(), "AsambleaDepId", "Descripcion");
             ViewBag.TipoNormaaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
-
+            ViewBag.TipoGeneralId = new SelectList(db.TipoGeneral.OrderBy(q => q.Nombre), "TipoGeneralId", "Nombre");
             var model = db.Organizacion.Find(OrganizacionId);
             return PartialView("_ReformaPost", model);
         }

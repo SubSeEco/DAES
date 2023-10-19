@@ -1,5 +1,5 @@
 ﻿@model DAES.Model.SistemaIntegrado.Organizacion
-@{ Model.ReformaAnteriors = Model.ReformaAnteriors.ToList().OrderByDescending(q => q.FechaReforma).ToList(); }
+@{ Model.ReformaAnteriors = Model.ReformaAnteriors.ToList().OrderByDescending(q => q.FechaPublicDiario).ToList(); }
 
 
 
@@ -58,6 +58,16 @@
             </th>
         </tr>
         <tr>
+            <th >
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaJuntaGeneral)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaJuntaGeneral, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
+            </th>
+            <th >
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaEscritura)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaEscritura, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
+            </th>
+        </tr>
+        <tr>
             <th colspan="2">
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].EspaciosDocAnterior)
                 @Html.EditorFor(model => Model.ReformaAnteriors[i].EspaciosDocAnterior, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
@@ -97,10 +107,10 @@
                     }
                     @Html.Partial("_ObservacionReformaEdit", Model)
                 </div>
-                    </td>
+            </td>
 
-                    </tr>
-                </thead>
+        </tr>
+    </thead>
         
             }
 
