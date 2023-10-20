@@ -40,6 +40,23 @@ namespace DAES.Model.SistemaIntegrado
         public int? OrganizacionId { get; set; }
         public virtual Organizacion Organizacion { get; set; }
 
+        [Display(Name = "Tipo Junta")]
+        public int? TipoGeneralId { get; set; }
+        public virtual TipoGeneral TipoGeneral { get; set; }
 
+        [Display(Name = "Nombre notario")]
+        public string DatosGeneralNotario { get; set; }
+        [Display(Name = "Lugar notario")]
+        public string LugarNotario { get; set; }
+
+        [Display(Name = "Fecha Junta Socios")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaJuntaGeneral { get; set; }
+
+        [Display(Name = "Fecha escritura")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaEscritura { get; set; }
     }
 }

@@ -62,8 +62,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=6.2.9.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.6.2.9\lib\net462\EPPlus.dll</HintPath>
+    <Reference Include="EPPlus, Version=4.5.2.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.2.1\lib\net40\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus.Interfaces, Version=6.1.1.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.Interfaces.6.1.1\lib\net462\EPPlus.Interfaces.dll</HintPath>
@@ -1072,6 +1072,10 @@
     <Content Include="Views\Task\VerificacionActualizacion.cshtml" />
     <Content Include="Views\Task\ActualizarJuntaGeneralSocios.cshtml" />
     <Content Include="Views\Task\ActualizarDirectorio.cshtml" />
+    <Content Include="Views\Organizacion\_ObservacionEdit.cshtml" />
+    <Content Include="Views\Organizacion\_ObservacionReformaEdit.cshtml" />
+    <Content Include="Views\Organizacion\_TransitorioEdit.cshtml" />
+    <Content Include="Views\Organizacion\_ObservacionReformaAntEdit .cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

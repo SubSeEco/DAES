@@ -1,65 +1,130 @@
 ﻿@model DAES.Model.SistemaIntegrado.Organizacion
 
 <table class="table table-hover table-striped ">
-
+    
     @if (!Model.ExistenciaAnteriors.Any())
     {
-<thead>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().TipoNormaId)
-            @Html.DropDownListFor(model => model.TipoNormaId, null, "Seleccione...", htmlAttributes: new { @class = "form-control col-md-10" })
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().NNorma)
-            @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().NNorma, new { htmlAttributes = new { @class = "form-control" } })
-        </th>
-        <th colspan="2">
-            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FNorma)
-            @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FNorma, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaPublicacion)
-            @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaPublicacion, new { htmlAttributes = new { @class = "form-control" } })
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().Autorizado)
-            @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().Autorizado, new { htmlAttributes = new { @class = "form-control" } })
-        </th>
-    </tr>
-    
-</thead>
-}
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().TipoNormaId)
+                    @Html.DropDownListFor(model => model.TipoNormaId, null, "Seleccione...", new { @class = "form-control col-md-10" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().NNorma)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().NNorma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FNorma)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FNorma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+
+            </tr>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaPublicacion)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaPublicacion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().Autorizado)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().Autorizado, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaJuntaGeneral)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaJuntaGeneral, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().TipoGeneralId)
+                    @Html.DropDownListFor(model => model.ExistenciaAnteriors.FirstOrDefault().TipoGeneralId, null, "Seleccione...", new { @class = "form-control col-md-10" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().LugarNotario)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().LugarNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().DatosGeneralNotario)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().DatosGeneralNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaEscritura)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaEscritura, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th>
+
+                </th>
+                <th>
+
+                </th>
+            </tr>
+
+        </thead>
+    }
     @for (var i = 0; i < Model.ExistenciaAnteriors.Count(); i++)
     {
         @Html.HiddenFor(model => model.ExistenciaAnteriors[i].IdExistenciaAnterior)
         @Html.HiddenFor(model => model.ExistenciaAnteriors[i].OrganizacionId)
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].TipoNormaId)
-                    @Html.DropDownListFor(model => Model.ExistenciaAnteriors[i].TipoNormaId, new SelectList(ViewBag.TipoNormaId, "Value", "Text", Model.ExistenciaAnteriors[i].TipoNormaId), "Seleccione...", new { @class = "form-control", @style = "width: 190px;" })
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].NNorma)
-                    @Html.EditorFor(model => Model.ExistenciaAnteriors[i].NNorma, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
-                </th>
-                <th colspan="2">
-                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FNorma)
-                    @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FNorma, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FechaPublicacion)
-                    @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FechaPublicacion, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].Autorizado)
-                    @Html.EditorFor(model => Model.ExistenciaAnteriors[i].Autorizado, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
-                </th>
-            </tr>
-            
-        </thead>
-}
+<thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].TipoNormaId)
+            @Html.DropDownListFor(model => Model.ExistenciaAnteriors[i].TipoNormaId, new SelectList(ViewBag.TipoNormaId, "Value", "Text", Model.ExistenciaAnteriors[i].TipoNormaId), "Seleccione...", new { @class = "form-control col-md-10" })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].NNorma)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].NNorma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FNorma)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FNorma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+        </th>
+
+    </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FechaPublicacion)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FechaPublicacion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].Autorizado)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].Autorizado, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FechaJuntaGeneral)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FechaJuntaGeneral, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+        </th>
+    </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId)
+            @Html.DropDownListFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ExistenciaAnteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10" })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].LugarNotario)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].LugarNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].DatosGeneralNotario)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].DatosGeneralNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+        </th>
+    </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FechaEscritura)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FechaEscritura, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+        </th>
+        <th>
+
+        </th>
+        <th>
+
+        </th>
+    </tr>
+</thead>
+    }
 
     <tbody>
     </tbody>

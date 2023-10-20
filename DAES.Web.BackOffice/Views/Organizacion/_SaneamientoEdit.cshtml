@@ -8,27 +8,31 @@
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => Model.Saneamientos.FirstOrDefault().FechaEscrituraPublicaa)
-                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().FechaEscrituraPublicaa, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().FechaEscrituraPublicaa, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => Model.Saneamientos.FirstOrDefault().FechaaPublicacionDiario)
-                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().FechaaPublicacionDiario, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().FechaaPublicacionDiario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
             </tr>
             <tr>
-                <th colspan="2">
+                <th >
                     @Html.DisplayNameFor(model => Model.Saneamientos.FirstOrDefault().DatoGeneralesNotario)
-                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().DatoGeneralesNotario, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
+                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().DatoGeneralesNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => Model.Saneamientos.FirstOrDefault().LugarNotario)
+                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().LugarNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
             </tr>
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => Model.Saneamientos.FirstOrDefault().Fojass)
-                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().Fojass, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().Fojass, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => Model.Saneamientos.FirstOrDefault().FechaaInscripcion)
-                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().FechaaInscripcion, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => Model.Saneamientos.FirstOrDefault().FechaaInscripcion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
             </tr>
             <tr>
@@ -48,27 +52,31 @@
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => Model.Saneamientos[i].FechaEscrituraPublicaa)
-                    @Html.EditorFor(model => Model.Saneamientos[i].FechaEscrituraPublicaa, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
+                    @Html.EditorFor(model => Model.Saneamientos[i].FechaEscrituraPublicaa, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => Model.Saneamientos[i].FechaaPublicacionDiario)
-                    @Html.EditorFor(model => Model.Saneamientos[i].FechaaPublicacionDiario, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
+                    @Html.EditorFor(model => Model.Saneamientos[i].FechaaPublicacionDiario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
             </tr>
             <tr>
-                <th colspan="2">
+                <th >
                     @Html.DisplayNameFor(model => Model.Saneamientos[i].DatoGeneralesNotario)
-                    @Html.EditorFor(model => Model.Saneamientos[i].DatoGeneralesNotario, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
+                    @Html.EditorFor(model => Model.Saneamientos[i].DatoGeneralesNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => Model.Saneamientos[i].LugarNotario)
+                    @Html.EditorFor(model => Model.Saneamientos[i].LugarNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
             </tr>
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => Model.Saneamientos[i].Fojass)
-                    @Html.EditorFor(model => Model.Saneamientos[i].Fojass, new { htmlAttributes = new {@class = "form-control", @style = "width: 190px;" } })
+                    @Html.EditorFor(model => Model.Saneamientos[i].Fojass, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => Model.Saneamientos[i].FechaaInscripcion)
-                    @Html.EditorFor(model => Model.Saneamientos[i].FechaaInscripcion, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
+                    @Html.EditorFor(model => Model.Saneamientos[i].FechaaInscripcion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
             </tr>
             <tr>

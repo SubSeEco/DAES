@@ -57,5 +57,9 @@ namespace DAES.Model.SistemaIntegrado
 
         [Display(Name = "Forma Pago")]
         public string FormaPago { get; set; }
+
+        [Display(Name = "Tipo General")]
+        public int? TipoGeneralId { get; set; }
+        public virtual TipoGeneral TipoGeneral { get; set; }
     }
 }

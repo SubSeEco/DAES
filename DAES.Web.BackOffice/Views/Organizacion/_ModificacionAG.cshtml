@@ -25,9 +25,15 @@
                     @Html.EditorFor(model => Model.ExistenciaLegals.FirstOrDefault().FechaOficio, new { htmlAttributes = new { @class = "form-control", @style = "width: 190px;" } })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => Model.ExistenciaLegals.FirstOrDefault().AprobacionId) 
-                    @Html.DropDownListFor(model => model.ExistenciaLegals.FirstOrDefault().AprobacionId, null,"Selecione..", htmlAttributes: new { @class = "form-control", @style = "width: 190px;" })
+                    @Html.DisplayNameFor(model => Model.ExistenciaLegals.FirstOrDefault().AprobacionId)
+                    @Html.DropDownListFor(model => model.ExistenciaLegals.FirstOrDefault().AprobacionId, null, "Selecione..", htmlAttributes: new { @class = "form-control", @style = "width: 190px;" })
                     @*@Html.DropDownListFor(model => Model.ExistenciaLegals.FirstOrDefault().AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ExistenciaLegals.FirstOrDefault().AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 180px;" })*@
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaLegals.FirstOrDefault().TipoGeneralId)
+                    @Html.DropDownListFor(model => model.ExistenciaLegals.FirstOrDefault().TipoGeneralId, null, "Seleccione...", new { @class = "form-control col-md-10" })
                 </th>
             </tr>
         </thead>
@@ -56,6 +62,13 @@
                 <th>
                     @Html.DisplayNameFor(model => Model.ExistenciaLegals[i].AprobacionId)
                     @Html.DropDownListFor(model => Model.ExistenciaLegals[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ExistenciaLegals[i].AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 190px;" })
+                </th>
+
+            </tr>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaLegals[i].TipoGeneralId)
+                    @Html.DropDownListFor(model => Model.ExistenciaLegals[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ExistenciaLegals[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10" })
                 </th>
 
             </tr>

@@ -89,6 +89,9 @@ namespace DAES.Infrastructure.SistemaIntegrado
         public virtual DbSet<ModificacionEstatuto> ModificacionEstatutos { get; set; }
         public virtual DbSet<Disolucion> Disolucions { get; set; }
         public virtual DbSet<Transitorio> Transitorio { get; set; }
+        public virtual DbSet<TipoGeneral> TipoGeneral { get; set; }
+        public virtual DbSet<ObservacionLegal> ObservacionLegal { get; set; }
+        public virtual DbSet<ObservacionReforma> ObservacionReforma { get; set; }
         public virtual DbSet<Fiscalizacion> Fiscalizacion { get; set; }
         public virtual DbSet<Hallazgo> Hallazgo { get; set; }
         public virtual DbSet<TipoFiscalizacion> TipoFiscalizacion { get; set; }

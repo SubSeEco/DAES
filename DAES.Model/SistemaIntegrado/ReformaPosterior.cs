@@ -52,6 +52,9 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Datos generales del notario Público y Notaría")]
         public string DatosGeneralNotario { get; set; }
 
+        [Display(Name = "Lugar notario")]
+        public string LugarNotario { get; set; }
+
         //esto sirve para agregar espacios al documento.
         [Display(Name = "texto Adicional")]
         [DataType(DataType.MultilineText)]
@@ -70,6 +73,8 @@ namespace DAES.Model.SistemaIntegrado
         public int? OrganizacionId { get; set; }
         public virtual Organizacion Organizacion { get; set; }
 
-        
+        [Display(Name = "Tipo Junta")]
+        public int? TipoGeneralId { get; set; }
+        public virtual TipoGeneral TipoGeneral { get; set; }
     }
 }

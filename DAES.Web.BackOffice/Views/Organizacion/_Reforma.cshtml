@@ -1,5 +1,5 @@
 ﻿@model DAES.Model.SistemaIntegrado.Organizacion
-@{ Model.ReformaAnteriors = Model.ReformaAnteriors.ToList().OrderByDescending(q => q.FechaReforma).ToList(); }
+@{ Model.ReformaAnteriors = Model.ReformaAnteriors.ToList().OrderByDescending(q => q.FechaPublicDiario).ToList(); }
 
 
 
@@ -18,34 +18,53 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaReforma)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaReforma, new { htmlAttributes = new { @class = "form-control", @style = "width: 170px;" } })
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaReforma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
-
+            <th>
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaPublicDiario)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaPublicDiario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
+            <th colspan="2">
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].AutorizadoPor)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].AutorizadoPor, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
         </tr>
         <tr>
             <th>
                 @Html.LabelFor(model => model.TipoNormaId, "Tipo de Norma", htmlAttributes: new { @class = "control-label col-md-10" })
-                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoNormaId, new SelectList(ViewBag.TipoNormaaId, "Value", "Text", Model.ReformaAnteriors[i].TipoNormaId), "Seleccione...", new { @class = "form-control", @style = "width: 180px;" })
+                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoNormaId, new SelectList(ViewBag.TipoNormaaId, "Value", "Text", Model.ReformaAnteriors[i].TipoNormaId), "Seleccione...", new { @class = "form-control col-md-10" })
             </th>
             <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].NNorma)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].NNorma, new { htmlAttributes = new { @class = "form-control", @style = "width: 180px;" } })
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].NNorma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
-        </tr>
-        <tr>
             <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaNorma)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaNorma, new { htmlAttributes = new { @class = "form-control", @style = "width: 170px;" } })
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaPublicDiario)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaPublicDiario, new { htmlAttributes = new { @class = "form-control", @style = "width: 170px;" } })
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaNorma, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
         </tr>
         <tr>
-            <th colspan="2">
+            <th>
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].TipoGeneralId)
+                @Html.DropDownListFor(model => Model.ReformaAnteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ReformaAnteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10" })
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].DatosNotario)
-                @Html.EditorFor(model => Model.ReformaAnteriors[i].DatosNotario, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].DatosNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].LugarNotario)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].LugarNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            </th>
+        </tr>
+        <tr>
+            <th >
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaJuntaGeneral)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaJuntaGeneral, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
+            </th>
+            <th >
+                @Html.DisplayNameFor(model => Model.ReformaAnteriors[i].FechaEscritura)
+                @Html.EditorFor(model => Model.ReformaAnteriors[i].FechaEscritura, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
             </th>
         </tr>
         <tr>
@@ -57,9 +76,39 @@
         <tr>
             <td>
 
-                @Ajax.ActionLink("Eliminar", "ReformaDeleteAnterior", null, new { Model.ReformaAnteriors.ToArray()[i].IdReformaAnterior, Model.ReformaAnteriors.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "reforma" }, new { @style = "Text-Decoration : none", @class="btn btn-danger" })
+                @Ajax.ActionLink("Eliminar", "ReformaDeleteAnterior", null, new { Model.ReformaAnteriors.ToArray()[i].IdReformaAnterior, Model.ReformaAnteriors.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "reforma" }, new { @style = "Text-Decoration : none", @class = "btn btn-danger" })
 
             </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="DivObserR">
+                    <label>¿Observaciones?</label><br />
+                    <input id="ObservacionsAnt@(i)" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAnt(true,@(i))" /> si
+                    <input id="ObservacionsAnt@(i)Segundario" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAnt(false,@(i))" /> no
+                    <br>
+                </div>
+                <div id="observacionReformaAnt@(i)">
+                    @if (true)
+                    {
+                        Model.ReformaActual = Model.ReformaAnteriors[i].IdReformaAnterior;
+                        Model.posicion = i;
+                        Model.TipoReforma = "observacionReformaAnt";
+                    }
+
+
+                    @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == Model.ReformaActual) != null)
+                    {
+                        <input type="hidden" id="tieneObsRAnt@(i)" value="1" />
+                    }
+                    else
+                    {
+                        <input id="tieneObsRAnt@(i)" value="0" type="hidden" />
+                    }
+                    @Html.Partial("_ObservacionReformaEdit", Model)
+                </div>
+            </td>
+
         </tr>
     </thead>
         
@@ -96,5 +145,32 @@
     </tbody>
 </table>
 
+<script type="text/javascript">
+
+    function PresentarViewObservacionReformaAnt(show, index) {
+        if (show) {
+            $("#observacionReformaAnt" + index).show();
+        } else {
+            $("#observacionReformaAnt" + index).hide();
+        }
+
+    }
+
+    function actualizarObsR(index) {
+        $("#observacionReformaAnt" + index).show();
+        $("#ObservacionsAnt" + index).prop("checked", true);
+        $("#ObservacionsAnt" + index + "Segundario").prop("checked", false);
+    }
+
+    $(document).ready(function () {
+
+        for (var i = 0; i < Model.ReformaAnteriors.Count; i++) {
+            var objetoObsR = document.getElementById("tieneObsRAnt" + i).value;
+            if (objetoObsR > 0) {
+                actualizarObsR(i);
+            }
+        }
+    });
 
 
+</script>

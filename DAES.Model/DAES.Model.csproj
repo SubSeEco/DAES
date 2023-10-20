@@ -76,9 +76,12 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
@@ -175,6 +178,8 @@
     <Compile Include="SistemaIntegrado\ExtractoAuxiliar.cs" />
     <Compile Include="SistemaIntegrado\FileAttach.cs" />
     <Compile Include="SistemaIntegrado\FirmaDocumento.cs" />
+    <Compile Include="SistemaIntegrado\ObservacionLegal.cs" />
+    <Compile Include="SistemaIntegrado\ObservacionReforma.cs" />
     <Compile Include="SistemaIntegrado\PersonaFacultada.cs" />
     <Compile Include="SistemaIntegrado\RepresentanteLegal.cs" />
     <Compile Include="SistemaIntegrado\Saneamiento.cs" />
@@ -228,6 +233,7 @@
     <Compile Include="SistemaIntegrado\OrganizacionLog.cs" />
     <Compile Include="SistemaIntegrado\Proceso.cs" />
     <Compile Include="SistemaIntegrado\TipoAprobacion.cs" />
+    <Compile Include="SistemaIntegrado\TipoGeneral.cs" />
     <Compile Include="SistemaIntegrado\TipoNorma.cs" />
     <Compile Include="SistemaIntegrado\TipoPersonaJuridica.cs" />
     <Compile Include="SistemaIntegrado\TipoPrivacidad.cs" />

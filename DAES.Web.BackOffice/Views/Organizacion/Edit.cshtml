@@ -273,6 +273,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.fechaasambleadirectorio, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
+
                         @Html.EditorFor(model => model.fechaasambleadirectorio, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.fechaasambleadirectorio, "", new { @class = "text-danger" })
                     </div>
@@ -383,6 +384,27 @@
                 </div>
             </div>
         }
+
+
+    </div>
+
+
+    <div id="DivObser">
+        <label>¿Observaciones?</label><br />
+        <input id="Observacionx" name="obser" type="radio" onclick="PresentarViewObservacion(true)" /> si
+        <input id="Observaciony" name="obser" type="radio" onclick="PresentarViewObservacion(false)" /> no
+        <br>
+    </div>
+
+    <div class="panel panel-default" id="observacionDiv" style="display:none">
+        <div class="panel-heading">Observaciones</div>
+        <div class="panel-body">
+            <div id="observacion">
+                @Html.Partial("_ObservacionEdit", Model)
+            </div>
+            <br />
+            <input type="button" value="Limpiar campos" id="limpiarObservacion" class="btn btn-primary" />
+        </div>
     </div>
 
 
@@ -459,18 +481,21 @@
 
 
     }
-
-    if (Model.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.Cooperativa)
+    if (Model.ExistenciaAnteriors.Any())
     {
-        <div class="panel panel-default" id="transitorioDiv" style="display:none">
-            <div class="panel-heading">Transitorio</div>
-            <div class="panel-body">
-                <div id="transitorio">
-                    @Html.Partial("_TransitorioEdit", Model)
+        if (Model.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.Cooperativa && Model.ExistenciaAnteriors.FirstOrDefault().FNorma != null)
+        {
+            <div class="panel panel-default" id="transitorioDiv">
+                <div class="panel-heading">Transitorio</div>
+                <div class="panel-body">
+                    <div id="transitorio">
+                        @Html.Partial("_TransitorioEdit", Model)
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     }
+
 
     <div class="panel panel-default">
         <div class="panel-heading">Disolución</div>
@@ -531,6 +556,16 @@ else
     <input id="tieneRefA" value="0" type="hidden" />
 }
 
+@if (Model.ObservacionLegals.Any())
+{
+    <input type="hidden" id="tieneObs" value="1" />
+}
+else
+{
+    <input id="tieneObs" value="0" type="hidden" />
+}
+
+
 @Html.ActionLink("Volver al listado", "Index", null, null, htmlAttributes: new { @class = "btn btn-info" })
 
 
@@ -575,6 +610,12 @@ else
         $("#Constitucion1").prop("checked", true);
         $("#Constitucion2").prop("checked", false);
         $("#CPostRPost").show();
+    }
+
+    function actualizarObs() {
+        $("#observacionDiv").show();
+        $("#Observacionx").prop("checked", true);
+        $("#Observaciony").prop("checked", false);
     }
 
 
@@ -635,6 +676,21 @@ else
         document.getElementById("ExistenciaLegals_0__AprobacionId").value = "";
     }
 
+    function LimpiarCamposObservacion() {
+
+        document.getElementById("Observacions_0__NumeroOficio").value = "";
+        document.getElementById("Observacions_0__TipoOficioId").value = "";
+        document.getElementById("Observacions_0__FechaOficio").value = "";
+        document.getElementById("Observacions_0__FechaDeposito").value = "";
+    }
+
+    function LimpiarCamposTransitorio() {
+
+        document.getElementById("Transitorios_0__FechaConstitutivaSocios").value = "";
+        document.getElementById("Transitorios_0__NumeroOficio").value = "";
+        document.getElementById("Transitorios_0__FechaOficio").value = "";
+        document.getElementById("Transitorios_0__AprobacionId").value = "";
+    }
     function PresentarView() {
         $("#reformaDivPost").show();
         $("#reformaDiv").hide();
@@ -647,15 +703,21 @@ else
     function PresentarViewPost() {
         $("#divExis").hide();
         $("#CPostRPost").show();
-        $("#transitorioDiv").hide();
     }
 
     function PresentarViewAnt() {
         $("#divExis").show();
         $("#CPostRPost").hide();
-        $("#transitorioDiv").show();
     }
 
+    function PresentarViewObservacion(show) {
+        if (show) {
+            $("#observacionDiv").show();
+        } else {
+            $("#observacionDiv").hide();
+        }
+
+    }
 
     $(document).ready(function () {
 
@@ -676,6 +738,13 @@ else
             LimpiarCamposAGAC()
         });
 
+        $("#limpiarObservacion").on("click", function () {
+            LimpiarCamposObservacion()
+        });
+
+        $("#limpiarTransitorio").on("click", function () {
+            LimpiarCamposTransitorio()
+        });
 
         if ("#a".val == 1) {
             $("#Tiene").prop("checked", true)
@@ -723,8 +792,20 @@ else
             actualizarRefA();
         }
 
+        var objetoObs = document.getElementById('tieneObs').value;
+        if (objetoObs > 0) {
+            actualizarObs();
+        }
 
     });
 
+    function miFuncion() {
+            alert("La función se ha activado desde el evento onload.");
+        }
+
+        // El evento onload se dispara cuando la página se carga completamente.
+        window.onload = function() {
+            miFunción();
+        };
 </script>
 

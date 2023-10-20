@@ -27,12 +27,19 @@
                     @Html.DisplayNameFor(model => Model.ExistenciaPosteriors[i].FechaPublicacionn)
                     @Html.EditorFor(model => model.ExistenciaPosteriors[i].FechaPublicacionn, new { htmlAttributes = new { @class = "form-control" } })
                 </th>
-            </tr>
-            <tr>
-                <th colspan="2">
-                    @Html.DisplayNameFor(model => Model.ExistenciaPosteriors[i].DatosGeneralesNotario)
-                    @Html.EditorFor(model => model.ExistenciaPosteriors[i].DatosGeneralesNotario, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId)
+                    @Html.DropDownListFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ExistenciaAnteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10" })
                 </th>
+                    </tr>
+            <tr>
+                <th >
+                    @Html.DisplayNameFor(model => Model.ExistenciaPosteriors[i].DatosGeneralesNotario)
+                    @Html.EditorFor(model => model.ExistenciaPosteriors[i].DatosGeneralesNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => Model.ExistenciaPosteriors[i].LugarNotario)
+                    @Html.EditorFor(model => model.ExistenciaPosteriors[i].LugarNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </tr>
             <tr>
                 <th>
@@ -83,11 +90,19 @@
                         @Html.DisplayNameFor(model => Model.ExistenciaPosteriors.FirstOrDefault().FechaPublicacionn)
                         @Html.EditorFor(model => model.ExistenciaPosteriors.FirstOrDefault().FechaPublicacionn, new { htmlAttributes = new { @class = "form-control" } })
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.ExistenciaPosteriors.FirstOrDefault().TipoGeneralId)
+                        @Html.DropDownListFor(model => model.ExistenciaPosteriors.FirstOrDefault().TipoGeneralId, null, "Seleccione...", new { @class = "form-control col-md-10" })
+<th>
                 </tr>
                 <tr>
-                    <th colspan="2">
+                    <th >
                         @Html.DisplayNameFor(model => Model.ExistenciaPosteriors.FirstOrDefault().DatosGeneralesNotario)
-                        @Html.EditorFor(model => model.ExistenciaPosteriors.FirstOrDefault().DatosGeneralesNotario, new { htmlAttributes = new { @class = "form-control", @style = "max-width: 1200px;" } })
+                        @Html.EditorFor(model => model.ExistenciaPosteriors.FirstOrDefault().DatosGeneralesNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.ExistenciaPosteriors.FirstOrDefault().LugarNotario)
+                        @Html.EditorFor(model => model.ExistenciaPosteriors.FirstOrDefault().LugarNotario, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                     </th>
                 </tr>
                 <tr>

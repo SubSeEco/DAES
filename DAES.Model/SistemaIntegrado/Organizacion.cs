@@ -24,7 +24,12 @@ namespace DAES.Model.SistemaIntegrado
             ComisionLiquidadoras = new List<ComisionLiquidadora>();
             Reformas = new List<Reforma>();
             ExistenciaAnteriors = new List<ExistenciaAnterior>();
-            
+            ExistenciaPosteriors = new List<ExistenciaPosterior>();
+            ReformaPosteriors = new List<ReformaPosterior>();
+            ReformaAnteriors = new List<ReformaAnterior>();
+            ObservacionLegals = new List<ObservacionLegal>();
+            ObservacionReformas = new List<ObservacionReforma>();
+            ReformaActual = 0;
             /*DisolucionCooperativas = new List<DisolucionCooperativa>();
             DisolucionAsociacions = new List<DisolucionAsociacion>();*/
         }
@@ -198,7 +203,7 @@ namespace DAES.Model.SistemaIntegrado
         public int? SituacionId { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Fecha Asamblea Directorio")]
+        [Display(Name = "Fecha Com. Adm./Directorio")]
         [DataType(DataType.Date)]
         public DateTime? fechaasambleadirectorio { get; set; }
         public virtual Situacion Situacion { get; set; }
@@ -212,6 +217,8 @@ namespace DAES.Model.SistemaIntegrado
         public virtual List<ModificacionEstatuto> ModificacionEstatutos { get; set; }
         public virtual List<Disolucion> Disolucions { get; set; }
         public virtual List<Transitorio> Transitorios { get; set; }
+        public virtual List<ObservacionLegal> ObservacionLegals { get; set; }
+        public virtual List<ObservacionReforma> ObservacionReformas { get; set; }
         public virtual List<ExistenciaLegal> ExistenciaLegals { get; set;}
         public virtual List<Saneamiento> Saneamientos { get; set; }
         public virtual List<Reforma> Reformas { get; set; }
@@ -235,5 +242,13 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Nota directorio")]
         [DataType(DataType.MultilineText)]
         public string NotaDirectorio { get; set; }
+
+        [NotMapped]
+        public virtual int ReformaActual { get; set; }
+        [NotMapped]
+        public virtual int posicion { get; set; }
+
+        [NotMapped]
+        public virtual String TipoReforma { get; set; }
     }
 }
