@@ -11,6 +11,7 @@ namespace DAES.Model.SistemaIntegrado
         public Workflow()
         {
             Documentos = new HashSet<Documento>();
+            DocOficio = new List<DocOficio>();
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -75,6 +76,9 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Funcionario")]
         public string To { get; set; }
 
-        
+
+        public virtual List<DocOficio> DocOficio { get; set; }
+
+
     }
 }

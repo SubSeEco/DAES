@@ -1299,6 +1299,13 @@ namespace DAES.BLL
         }
 
 
+
+
+
+
+
+
+
         public byte[] CrearCertificadoPDF(ConfiguracionCertificado configuracioncertificado, Organizacion organizacion, Firmante firmante, int id, int TipoDocumentoId)
         {
             using (SistemaIntegradoContext context = new SistemaIntegradoContext())

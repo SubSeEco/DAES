@@ -1600,6 +1600,64 @@ namespace DAES.Web.BackOffice.Controllers
         //    return View(model);
         //}
 
+        public ActionResult VistaFormularioOfi(int WorkflowId)
+        {
+            var model = new TaskModel();
+            var wf = db.Workflow.Find(WorkflowId);
+
+
+
+            //var def_workflow = model.Workflow.DefinicionWorkflow;
+            model.Workflow = db.Workflow.FirstOrDefault(q => q.WorkflowId == WorkflowId);
+            //Se debe ver la forma en que no actualice la informacion de la organizacion
+            model.Organizacion = db.Organizacion.Find(model.Workflow.Proceso.OrganizacionId);
+            model.Directorios = db.Directorio.Where(q => q.OrganizacionId == model.Organizacion.OrganizacionId).ToList();
+            model.ActualizacionOrganizacion = db.ActualizacionOrganizacion.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId);
+            var modelos = db.ActualizacionDirectorioOrganizacion.Where(q => q.ActualizacionOrganizacionId
+                                                        == model.ActualizacionOrganizacion.ActualizacionOrganizacionId).ToList();
+
+
+
+
+            ViewBag.CiudadId = new SelectList(db.Ciudad.OrderBy(q => q.Nombre), "CiudadId", "Nombre");
+            ViewBag.ComunaId = new SelectList(db.Comuna.OrderBy(q => q.Nombre), "ComunaId", "Nombre");
+            ViewBag.EstadoId = new SelectList(db.Estado.OrderBy(q => q.Nombre), "EstadoId", "Nombre");
+            ViewBag.SituacionId = new SelectList(db.Situacion.OrderBy(q => q.Nombre), "SituacionId", "Nombre");
+            ViewBag.RegionId = new SelectList(db.Region.OrderBy(q => q.Nombre), "RegionId", "Nombre");
+            ViewBag.RubroId = new SelectList(db.Rubro.OrderBy(q => q.Nombre), "RubroId", "Nombre");
+            ViewBag.SubRubroId = new SelectList(db.SubRubro.OrderBy(q => q.Nombre), "SubRubroId", "Nombre");
+            ViewBag.TipoOrganizacionId = new SelectList(db.TipoOrganizacion.OrderBy(q => q.Nombre), "TipoOrganizacionId", "Nombre");
+            ViewBag.CargoId = new SelectList(db.Cargo.OrderBy(q => q.Nombre), "CargoId", "Nombre");
+            ViewBag.GeneroId = new SelectList(db.Genero.OrderBy(q => q.Nombre), "GeneroId", "Nombre");
+            var tipoDeUsuario = Helper.Helper.CurrentUser.Perfil.Nombre;
+            ViewBag.TipoUsuario = tipoDeUsuario;
+            ViewBag.modelos = modelos;
+
+
+
+            //Mejorar
+            //Definir si es la ultima tarea o no
+            var definicion_ = wf.DefinicionWorkflow.Secuencia;
+            ViewBag.validador = wf.DefinicionWorkflow.Secuencia != 2 ? true : false;
+
+
+
+            var listado = db.ComisionLiquidadora.Where(q => q.OrganizacionId == model.Organizacion.OrganizacionId && q.EsMiembro).ToList();
+            var listado_count = listado.Count();
+
+
+
+            ViewBag.listado_count = listado_count;
+            ViewBag.listado = listado;
+
+
+
+
+            return View(model);
+        }
+
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -1608,6 +1666,16 @@ namespace DAES.Web.BackOffice.Controllers
             }
             base.Dispose(disposing);
         }
+
+    }
+
+
+    public class DocOficio
+    {
+        public int WorkFlowId { get; set; }
+        public string Parrafo1 { get; set; }
+        public string Parrafo2 { get; set; }
+        public string Tabla { get; set; }
 
     }
 }

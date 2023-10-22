@@ -360,6 +360,7 @@
     <Compile Include="Controllers\ModeloSupervisionController.cs" />
     <Compile Include="Controllers\DocumentoController.cs" />
     <Compile Include="Controllers\FiscalizacionController.cs" />
+    <Compile Include="Controllers\PruebaAController.cs" />
     <Compile Include="Controllers\Situacion.cs" />
     <Compile Include="Controllers\EstadoController.cs" />
     <Compile Include="Controllers\FirmaController.cs" />
@@ -1075,6 +1076,8 @@
     <Content Include="Views\Organizacion\_ObservacionEdit.cshtml" />
     <Content Include="Views\Organizacion\_ObservacionReformaEdit.cshtml" />
     <Content Include="Views\Organizacion\_TransitorioEdit.cshtml" />
+    <Content Include="Views\PruebaA\Prueba.cshtml" />
+    <Content Include="Views\Task\_VistaFormularioOfi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
@@ -1096,7 +1099,6 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\AuthenticationService\" />
     <Folder Include="Views\FirmaDocumento\" />
     <Folder Include="Views\UserExtended\" />
   </ItemGroup>

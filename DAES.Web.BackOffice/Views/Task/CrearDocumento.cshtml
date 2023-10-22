@@ -91,11 +91,11 @@
                             @for (int i = 0; i < Model.Documentos.Count(); i++)
                             {
                                 @*using (Html.BeginForm())
-                                    {
-                                        @Html.AntiForgeryToken()
-                                        @Html.Hidden("WorkflowId", Model.Documentos.ToArray()[i].WorkflowId)
-                                        @Html.Hidden("DocumentoId", Model.Documentos.ToArray()[i].DocumentoId)
-                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("WorkflowId", Model.Documentos.ToArray()[i].WorkflowId)
+                                    @Html.Hidden("DocumentoId", Model.Documentos.ToArray()[i].DocumentoId)
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
                                 <tr>
                                     <td>
                                         @Html.DisplayFor(model => Model.Documentos.ToArray()[i].DocumentoId)
@@ -126,14 +126,14 @@
                                         @*<input type="submit" value="Firmar documento" class="btn btn-primary" />*@
                                         @*@Html.ActionLink("Firmar documento", "FirmarDocumentosPost", null, new { id = Model.Documentos.ToArray()[i].DocumentoId }, new { @class = "btn btn-primary" })*@
                                         @*@using (Html.BeginForm("SignResolucion", "Task", new { id = Model.Documentos.ToArray()[i].DocumentoId, idProceso = Model.Documentos.ToArray()[i].ProcesoId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                            {
+                                        {
 
-                                                @Html.DropDownList("RubricaID", null, "Seleccione...", new { @class = "form-control" })
-                                                @Html.AntiForgeryToken()
-                                                @Html.HiddenFor(model => Model.ProcesoId)
-                                                <br /> <br />
-                                                <button class="btn btn-primary" type="submit">Firmar Documento</button>
-                                            }*@
+                                            @Html.DropDownList("RubricaID", null, "Seleccione...", new { @class = "form-control" })
+                                            @Html.AntiForgeryToken()
+                                            @Html.HiddenFor(model => Model.ProcesoId)
+                                            <br /> <br />
+                                            <button class="btn btn-primary" type="submit">Firmar Documento</button>
+                                        }*@
 
 
                                     </td>
@@ -161,6 +161,8 @@
                 </div>
             </div>
         }
+        
+        @Html.Partial("_VistaFormularioOfi", Model)
 
         <div class="panel panel-default">
             <div class="panel-heading">Nuevo documento</div>
@@ -328,8 +330,6 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
-
-
 
 
 

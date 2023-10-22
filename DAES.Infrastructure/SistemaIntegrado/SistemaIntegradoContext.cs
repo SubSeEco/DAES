@@ -39,6 +39,8 @@ namespace DAES.Infrastructure.SistemaIntegrado
         public virtual DbSet<Ciudad> Ciudad { get; set; }
         public virtual DbSet<Comuna> Comuna { get; set; }
         public virtual DbSet<ConfiguracionCertificado> ConfiguracionCertificado { get; set; }
+
+        public virtual DbSet<DocOficio> DocOficios { get; set; }
         public virtual DbSet<Configuracion> Configuracion { get; set; }
         public virtual DbSet<Directorio> Directorio { get; set; }
         public virtual DbSet<Estado> Estado { get; set; }
