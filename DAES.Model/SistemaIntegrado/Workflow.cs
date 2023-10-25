@@ -79,6 +79,13 @@ namespace DAES.Model.SistemaIntegrado
 
         public virtual List<DocOficio> DocOficio { get; set; }
 
+        [NotMapped]
+        public virtual string Parrafo1 { get; set; }
+        [NotMapped]
+        public virtual string Parrafo2 { get; set; }
+
+        [NotMapped]
+        public virtual string Tabla { get; set; }
 
     }
 }

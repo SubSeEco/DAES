@@ -1024,6 +1024,125 @@ namespace DAES.BLL
         }
 
         //TODO: Se crea nuevo metodo para documento configuracion
+        public byte[] CrearDocumentoConfOficio(DocOficio docofi)
+        {
+            #region Configurar PreDocumento
+            EventoTitulos ev = new EventoTitulos();
+            Font _fontTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.DARK_GRAY);
+            Font _fontNumero = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.DARK_GRAY);
+            Font _fontFirmante = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.DARK_GRAY);
+            Font _fontStandard = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
+            Font _fontStandardBold = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
+
+            MemoryStream memStream = new MemoryStream();
+            Document doc = new Document(PageSize.LEGAL);
+            PdfWriter write = PdfWriter.GetInstance(doc, memStream);
+            write.PageEvent = ev;
+            Chunk SaltoLinea = Chunk.NEWLINE;
+
+            //NEW
+            doc.Open();
+            doc.AddTitle(docofi.Parrafo1);
+
+            var centrar = Element.ALIGN_CENTER;
+            Paragraph paragraphTITULO = new Paragraph(docofi.Parrafo1, _fontTitulo);
+            paragraphTITULO.Alignment = centrar;
+
+            var logo = context.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.URLImagenLogo);
+            if (logo == null)
+            {
+                throw new Exception("No se encontró la configuración de url de rúbrica.");
+            }
+
+            if (logo != null && logo.Valor.IsNullOrWhiteSpace())
+            {
+                throw new Exception("La configuración de url de rúbrica es inválida.");
+            }
+
+            Image imagenLogo = Image.GetInstance(logo.Valor);
+            imagenLogo.ScalePercent(20);
+
+            PdfPTable tableHeader = new PdfPTable(3);
+            tableHeader.WidthPercentage = 100f;
+            tableHeader.DefaultCell.Border = Rectangle.NO_BORDER;
+            tableHeader.DefaultCell.Border = 0;
+
+            //logo
+            PdfPCell cell = new PdfPCell(imagenLogo);
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BorderWidth = 0;
+            cell.PaddingTop = 20;
+            cell.Border = Rectangle.NO_BORDER;
+            tableHeader.AddCell(cell);
+
+            //title
+            cell = new PdfPCell(new Phrase(docofi.Parrafo1, _fontTitulo));
+            cell.HorizontalAlignment = Element.ALIGN_CENTER;
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cell.BorderWidth = 0;
+            cell.PaddingTop = 20;
+            cell.Border = Rectangle.NO_BORDER;
+            tableHeader.AddCell(cell);
+
+            //Id
+            var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
+            paragrafId.Alignment = Element.ALIGN_RIGHT;
+
+            var paragrafDate = new Paragraph(string.Format("{0:dd-MM-yyyy HH:mm:ss}", DateTime.Now), _fontStandard);
+            paragrafDate.Alignment = Element.ALIGN_RIGHT;
+
+            cell = new PdfPCell();
+            cell.AddElement(paragrafId);
+            cell.AddElement(paragrafDate);
+
+            cell.HorizontalAlignment = Element.ALIGN_RIGHT;
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cell.BorderWidth = 0;
+            cell.PaddingTop = 20;
+            cell.Border = Rectangle.NO_BORDER;
+            tableHeader.AddCell(cell);
+
+            doc.Add(tableHeader);
+            doc.Add(SaltoLinea);
+            doc.Add(new Paragraph());
+
+            /*
+            ////Configuracion - Parrafos / Se deben agregar todos los parrafos aqui
+            string parrafo_1 = string.Format(docofi.Parrafo1 != null ? docofi.Parrafo1 : string.Empty);
+            string parrafo_2 = string.Format(docofi.Parrafo2 != null ? docofi.Parrafo2 : string.Empty);
+            string parrafo_3 = string.Format(docofi.Tabla != null ? docofi.Tabla : string.Empty);
+
+            //para cuando se necesite con color
+            string parrafo_fin = "Se hace presente que no se registra en nuestros archivos la cancelación de la personalidad jurídica de dicha Cooperativa."
+                             + "\n" + "\n" + "Saluda atentamente a ustedes";
+
+            //para cuando se necesite sin color
+            string parrafo_final = "Saluda atentamente a ustedes.";
+            
+
+           
+            Paragraph paragraphUNO = new Paragraph(parrafo_1, _fontStandard);
+            paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
+
+            Paragraph paragraphDOS = new Paragraph(parrafo_2, _fontStandard);
+            paragraphDOS.Alignment = Element.ALIGN_JUSTIFIED;
+
+            Paragraph paragraphTabla = new Paragraph(parrafo_3, _fontStandard);
+            paragraphTabla.Alignment = Element.ALIGN_JUSTIFIED;
+
+
+
+            doc.Add(paragraphUNO);
+            doc.Add(SaltoLinea);
+            doc.Add(paragraphDOS);
+            doc.Add(SaltoLinea);
+            doc.Add(paragraphTabla);
+            doc.Add(SaltoLinea);*/
+            doc.Close();
+            #endregion
+            return memStream.ToArray();
+        }
+
         public byte[] CrearDocumentoConfiguracion(ConfiguracionCertificado configuracioncertificado)
         {
             #region Configurar PreDocumento
@@ -1297,8 +1416,6 @@ namespace DAES.BLL
             doc.Close();
             return memStream.ToArray();
         }
-
-
 
 
 

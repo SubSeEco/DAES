@@ -1,4 +1,6 @@
-﻿using DAES.BLL;
+﻿using Antlr.Runtime;
+using com.sun.tools.doclets.@internal.toolkit.taglets;
+using DAES.BLL;
 using DAES.BLL.Interfaces;
 using DAES.Infrastructure.Interfaces;
 using DAES.Infrastructure.SistemaIntegrado;
@@ -6,14 +8,22 @@ using DAES.Model.Core;
 using DAES.Model.FirmaDocumento;
 using DAES.Model.SistemaIntegrado;
 using DAES.Web.BackOffice.Helper;
+using net.sf.ehcache.search.aggregator;
+using org.apache.sis.@internal.jaxb.gmx;
+using org.apache.tika.metadata;
+using sun.util.locale.provider;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.HtmlControls;
+using static com.sun.tools.javah.Util;
 
 namespace DAES.Web.BackOffice.Controllers
 {
@@ -71,6 +81,10 @@ namespace DAES.Web.BackOffice.Controllers
         public List<Fiscalizacion> Fiscalizacions { get; set; }
         public List<HttpPostedFileBase> Archivos { get; set; }
         public List<Proceso> Procesos { get; set; }
+
+
+
+
     }
 
     public class FileModel
@@ -178,7 +192,7 @@ namespace DAES.Web.BackOffice.Controllers
             model.Documentos = db.Documento.Where(q => q.Workflow.ProcesoId == model.Workflow.ProcesoId).OrderBy(q => q.FechaCreacion).ToList();
             var tipoDeUsuario = Helper.Helper.CurrentUser.Perfil.Nombre;
             ViewBag.TipoUsuario = tipoDeUsuario;
-
+            
             return View(model);
         }
 
@@ -1359,6 +1373,7 @@ namespace DAES.Web.BackOffice.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult FiscalizacionDelete(int id)
         {
+           
             if (ModelState.IsValid)
             {
                 var fiscalizacion = db.Fiscalizacion.Find(id);
@@ -1604,7 +1619,8 @@ namespace DAES.Web.BackOffice.Controllers
         {
             var model = new TaskModel();
             var wf = db.Workflow.Find(WorkflowId);
-
+            
+            
 
 
             //var def_workflow = model.Workflow.DefinicionWorkflow;
@@ -1656,6 +1672,57 @@ namespace DAES.Web.BackOffice.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult GuardarDocOfi(int WorkflowId , DocOficioss ofi)
+       {
+            var model = new TaskModel();
+            model.Workflow = db.Workflow.FirstOrDefault(q => q.WorkflowId == WorkflowId);
+            Debug.WriteLine("estoy en el metodo "+ofi.Parrafo1+" "+ ofi.Parrafo2);
+
+            if (model.Workflow.DocOficio.Any()) {
+                
+                
+                model.Workflow.DocOficio.FirstOrDefault().Parrafo1 = ofi.Parrafo1;
+                model.Workflow.DocOficio.FirstOrDefault().Parrafo2 = ofi.Parrafo2;
+                model.Workflow.DocOficio.FirstOrDefault().Tabla = ofi.Tabla;
+                var mirar = model.Workflow.DocOficio;
+                model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId));
+                db.SaveChanges();
+                
+            }
+            else
+            {
+                var nuevoregistro = new DocOficio
+                {
+                    WorkFlowId = WorkflowId,
+                    Parrafo1 = ofi.Parrafo1,
+                    Parrafo2 = ofi.Parrafo2,
+                    Tabla = ofi.Tabla,
+                    FileName = "DocumentoCreado" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
+                    
+                };
+                db.DocOficios.Add(nuevoregistro);
+                db.SaveChanges();
+                var exi = model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
+                exi.Content = _custom.CrearDocumentoConfOficio(exi);
+                db.SaveChanges();
+
+
+
+            }
+
+            
+            return PartialView("_VistaFormularioOfi",model);
+            //return View(model);
+
+        }
+        public async Task<ActionResult> ShowDoc(int id)
+        {
+            var model = await db.DocOficios.Where(q => q.WorkFlowId == id).FirstAsync();
+            return File(model.Content, "application/pdf");
+        }
+
+
 
 
         protected override void Dispose(bool disposing)
@@ -1670,12 +1737,20 @@ namespace DAES.Web.BackOffice.Controllers
     }
 
 
-    public class DocOficio
+    public class DocOficioss
     {
+        public int DocOficioId { get; set; }
         public int WorkFlowId { get; set; }
         public string Parrafo1 { get; set; }
         public string Parrafo2 { get; set; }
         public string Tabla { get; set; }
+
+        public byte[] Content { get; set; }
+        
+        public string FileName { get; set; }
+         public DateTime? FechaCreacion { get; set; } = DateTime.Now;
+
+
 
     }
 }

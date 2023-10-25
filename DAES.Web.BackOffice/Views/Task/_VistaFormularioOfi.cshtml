@@ -1,13 +1,10 @@
 ﻿<!--INI-->
 @model DAES.Web.BackOffice.Controllers.TaskModel
 
-
-
-
-
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <title> Editor </title>
@@ -16,11 +13,10 @@
     .editable {
         border: 1px solid #ccc;
         padding: 10px;
-        width: 400px;
-        height: 30px;
-        display: block;
-        overflow-y: scroll;
-        scroll-behavior: auto;
+        width: 500px;
+        height: auto;
+        display: inline-block;
+        word-wrap: break-word;
         margin-bottom: 20px;
     }
 
@@ -36,31 +32,30 @@
 
     <div class="panel-heading">Formulario Innova</div>
     <div class="panel-body">
+
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.Workflow.WorkflowId)
         @Html.HiddenFor(model => model.Workflow.ProcesoId)
         @Html.HiddenFor(model => model.Workflow.Proceso.OrganizacionId)
 
-
-
-
-
-
-
-
-
-
-
         <div class="col-md-6">
             <button id="boldButton" class="btn btn-danger">Negrita</button>
             <button id="italicButton" class="btn btn-danger">Italic</button>
             <button id="subButton" class="btn btn-danger">Subrayar</button>
-            <table>
+            
+            <table >
                 <tr>
                     <td>
+
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo1, htmlAttributes: new { @class = "control-label col-md-6" })
-                        <div class="col-md-12">
-                            <div id="editableDiv" class="form-control col-md-12" contenteditable="true">Prueba1... </div>
+                        
+                       <div class="col-md-12">
+                           <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable" contenteditable="true" >
+                               @if (Model.Workflow.DocOficio.Any())
+                               {
+                                   @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo1)
+                                  }
+                               </div>
                         </div>
                     </td>
                 </tr>
@@ -68,7 +63,13 @@
                     <td>
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo2, htmlAttributes: new { @class = "control-label col-md-6" })
                         <div class="col-md-12">
-                            <div id="editableDiv2" class="form-control col-md-12" contenteditable="true">Prueba2...</div>
+                            <div id="Parrafo2" class="form-control col-md-12 editable" contenteditable="true">
+
+                                @if (Model.Workflow.DocOficio.Any())
+                                {
+                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo2)
+                                }
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -76,45 +77,76 @@
                     <td>
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Tabla, htmlAttributes: new { @class = "control-label col-md-6" })
                         <div class="col-md-12">
-                            <div id="editableDiv3" class="form-control col-md-12" contenteditable="true">Prueba3 ...</div>
+                            <div id="Tabla" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {
+                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla)
+                                }
+                            </div>
                         </div>
                     </td>
                 </tr>
             </table>
 
-            
-        </div>
-
-        <div class="col-md-6">vista  prvia  </div>
-
-            <div>
-                <button id="guardar" class="btn btn-danger">Guardar</button>
-            </div>
 
         </div>
 
+        <div class="col-md-6">
+
+            @{
+                if (Model.Workflow.DocOficio.Any())
+                {
+                    Console.WriteLine("workflowid"+Model.Workflow.WorkflowId);
+                    <embed src="@Url.Action("ShowDoc", "Task", new { id = Model.Workflow.WorkflowId })" width="96%" height="990px" type="application/pdf" />
+
+                }
+                <br />
+            }
+
+        </div>
 
 
-
-
-
-
-
-        @Ajax.ActionLink("VistaPrevia", "GuardarDocOfi", null, new { Model.OrganizacionId }, new AjaxOptions { UpdateTargetId = "transitorio" }, htmlAttributes: new { @class = "btn btn-success" })
-
-
-
-
-
+        <div>
+            <button id="GuardarDocOf" type="submit" class="btn btn-danger">Vista Previa</button>
+        </div>
 
     </div>
+
+
+
+
+
+
+    
+   
+   
+
+
+    
+
+    <div id="elemento"></div>
+
+
+
+
+</div>
 <script language="JavaScript">
 
-    $(document).ready(function () {
 
-        var $editableDiv = $('#editableDiv');
-        var $editableDiv2 = $('#editableDiv2');
-        var $editableDiv3 = $('#editableDiv3');
+    $(document).ready(function () {
+        console.log($('#prueba').val());
+        if ($(".editor-for-input").val() != null)
+        {
+            console.log("entre en el if ");
+            var texto = $(".editor-for-input").val();
+            $("#divEditable").html(texto);
+        }
+
+
+
+        var $Parrafo1 = $('#Parrafo1');
+        var $Parrafo2 = $('#Parrafo2');
+        var $Tabla = $('#Tabla');
         var $boldButton = $('#boldButton');
         var $italicButton = $('#italicButton');
         var $subButton = $('#subButton');
@@ -131,15 +163,15 @@
 
         var $guardar = $('#guardar');
 
-        $editableDiv.on('mouseup', function (e) {
+        $Parrafo1.on('mouseup', function (e) {
             palabras(e);
 
         });
-        $editableDiv2.on('mouseup', function (e) {
+        $Parrafo2.on('mouseup', function (e) {
             palabras(e);
 
         });
-        $editableDiv3.on('mouseup', function (e) {
+        $Tabla.on('mouseup', function (e) {
             palabras(e);
 
         });
@@ -180,9 +212,9 @@
         };
 
         $guardar.on('click', function () {
-            var div3 = document.getElementById("editableDiv3").innerHTML;
-            var div = document.getElementById("editableDiv").innerHTML;
-            var div2 = document.getElementById("editableDiv2").innerHTML;
+            var div3 = document.getElementById("Parrafo1").innerHTML;
+            var div = document.getElementById("Parrafo2").innerHTML;
+            var div2 = document.getElementById("Tabla").innerHTML;
             alert(div + "   " + div2 + " " + div3);
 
         });
@@ -200,7 +232,7 @@
         });
 
         $(document).on('click', function (e) {
-            if ($(e.target).closest('#ediDiv').length === 0 && $(e.target).closest('#editableDiv2').length === 0 && $(e.target).closest('#editableDiv3').length === 0 && $(e.target).closest('#editableDiv').length === 0 && $(e.target).closest('#boldButton').length === 0 && $(e.target).closest('#italicButton').length === 0 && $(e.target).closest('#subButton').length === 0) {
+            if ($(e.target).closest('#ediDiv').length === 0 && $(e.target).closest('#Parrafo1').length === 0 && $(e.target).closest('#Parrafo2').length === 0 && $(e.target).closest('#Tabla').length === 0 && $(e.target).closest('#boldButton').length === 0 && $(e.target).closest('#italicButton').length === 0 && $(e.target).closest('#subButton').length === 0) {
                 $boldButton.show();
                 $italicButton.show();
                 $subButton.show();
@@ -208,6 +240,97 @@
             }
         });
     });
+
+    $(document).ready(function () {
+        // Maneja el evento de cambio en el EditorFor para actualizar el div Parrafo1
+        $("#editorForParrafo1").on("change", function () {
+            var nuevoTexto = $(this).val();
+            $("#Parrafo1").html(nuevoTexto);
+        });
+
+        // Cuando la página se carga, copia el contenido inicial del EditorFor al div Parrafo1
+        var textoInicial = $("#editorForParrafo1").val();
+        $("#Parrafo1").html(textoInicial);
+    });
+
+
+    $(document).ready(function () {
+        //var parrafo1 = document.getElementById("Parrafo1").innerHTML;
+        //var parrafo2 = document.getElementById("Parrafo2").innerHTML;
+        //var tabla = document.getElementById("Tabla").innerHTML;
+        //console.log("estoy arriba del ajax" + parrafo1 + " " + parrafo2 + "" + tabla);
+        //Model.Workflow.Parrafo1 = parrafo1;
+        //Model.Workflow.WorkflowId = workflowId;
+    
+
+        // Obtén la URL actual
+        var url = window.location.href;
+
+        // Divide la URL en partes usando el carácter '?' como separador
+        var parts = url.split('?');
+
+        if (parts.length > 1) {
+            // Obtiene la parte después del '?' que contiene los parámetros
+            var params = parts[1];
+
+            // Divide los parámetros usando '&' como separador
+            var paramArray = params.split('&');
+
+            // Inicializa una variable para almacenar el valor de WorkflowId
+            var workflowId = null;
+
+            // Recorre los parámetros para encontrar WorkflowId
+            for (var i = 0; i < paramArray.length; i++) {
+                var param = paramArray[i].split('=');
+                if (param[0] === 'WorkflowId') {
+                    // El valor de WorkflowId se encuentra en param[1]
+                    workflowId = param[1];
+                    break; // Sal del bucle una vez que lo encuentres
+                }
+            }
+
+            if (workflowId !== null) {
+                // Realiza tu lógica con el valor de WorkflowId
+                console.log("Valor de WorkflowId: " + workflowId);
+            } else {
+                console.log("WorkflowId no encontrado en la URL.");
+            }
+        } else {
+            console.log("URL no contiene parámetros.");
+        }
+
+            $("#GuardarDocOf").click(function () {
+                console.log("estoy arriba del data ");
+                 var data = {
+                              //var valorDiv = $("#miDiv").text();
+                            
+                             Parrafo1: document.getElementById("Parrafo1").innerHTML,
+                             WorkflowId: workflowId,
+                             Parrafo2: document.getElementById("Parrafo2").innerHTML,
+                             DocOficioId :null,
+                             Tabla: document.getElementById("Tabla").innerHTML,
+                              Content :null,
+                              FileName :null,
+                              FechaCreacion :null
+
+
+                            //tabla: document.getElementById("Tabla").innerHTML
+
+                };
+                console.log("estoy arriba del ajax" + data.parrafo1 + " " + data.parrafo2 + "" + data.tabla);
+            $.ajax({
+                type: "POST",
+                url: "/Task/GuardarDocOfi",
+                data : data ,
+                success: function (result) {
+                    $("#elemento").html(result);
+                }
+            });
+
+
+            });
+        });
+
 </script>
 
 <!--FIN-->
