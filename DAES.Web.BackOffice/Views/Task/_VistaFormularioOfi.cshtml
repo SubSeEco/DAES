@@ -241,27 +241,50 @@
         });
     });
 
-    $(document).ready(function () {
-        // Maneja el evento de cambio en el EditorFor para actualizar el div Parrafo1
-        $("#editorForParrafo1").on("change", function () {
-            var nuevoTexto = $(this).val();
-            $("#Parrafo1").html(nuevoTexto);
-        });
-
-        // Cuando la página se carga, copia el contenido inicial del EditorFor al div Parrafo1
-        var textoInicial = $("#editorForParrafo1").val();
-        $("#Parrafo1").html(textoInicial);
-    });
-
+   
 
     $(document).ready(function () {
-        //var parrafo1 = document.getElementById("Parrafo1").innerHTML;
-        //var parrafo2 = document.getElementById("Parrafo2").innerHTML;
-        //var tabla = document.getElementById("Tabla").innerHTML;
-        //console.log("estoy arriba del ajax" + parrafo1 + " " + parrafo2 + "" + tabla);
-        //Model.Workflow.Parrafo1 = parrafo1;
-        //Model.Workflow.WorkflowId = workflowId;
-    
+        
+        var Parrafo1 = document.getElementById("Parrafo1");
+        Parrafo1.focus();
+
+        var Parrafo2 = document.getElementById("Parrafo2");
+        Parrafo2.focus();
+        
+        var Tabla = document.getElementById("Tabla");
+        Tabla.focus();
+
+        var range1 = document.createRange();
+        var range2 = document.createRange();
+        var range3 = document.createRange();
+
+        var selection = window.getSelection();
+
+        range1.selectNodeContents(Parrafo1);
+        range2.selectNodeContents(Parrafo2);
+        range3.selectNodeContents(Tabla);
+
+        range1.collapse(true);
+        range2.collapse(true);
+        range3.collapse(true);
+
+        selection.removeAllRanges();
+        selection.addRange(range1);
+        selection.addRange(range2);
+        selection.addRange(range3);
+        
+        var contenido1 = Parrafo1.textContent;
+        contenido1 = contenido1.replace(/^\n+/, "");
+        Parrafo1.textContent = contenido1;
+
+       
+        var contenido2 = Parrafo2.textContent;
+        contenido2 = contenido2.replace(/^\n+/, "");
+        Parrafo2.textContent = contenido2;
+        
+        var contenido3 = Tabla.textContent;
+        contenido3 = contenido3.replace(/^\n+/, "");
+        Tabla.textContent = contenido3;
 
         // Obtén la URL actual
         var url = window.location.href;

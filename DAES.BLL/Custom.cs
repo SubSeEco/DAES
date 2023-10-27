@@ -10,6 +10,7 @@ using DAES.Infrastructure.Sigper;
 using FluentDateTime;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using iTextSharp.text.html.simpleparser;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ using DAES.Infrastructure.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
 using static iTextSharp.text.pdf.AcroFields;
 using System.Web.Services.Description;
+using iTextSharp.text.html.simpleparser;
+using System.Text.RegularExpressions;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -1026,19 +1029,27 @@ namespace DAES.BLL
         //TODO: Se crea nuevo metodo para documento configuracion
         public byte[] CrearDocumentoConfOficio(DocOficio docofi)
         {
-            #region Configurar PreDocumento
+            
             EventoTitulos ev = new EventoTitulos();
             Font _fontTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.DARK_GRAY);
             Font _fontNumero = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.DARK_GRAY);
             Font _fontFirmante = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.DARK_GRAY);
             Font _fontStandard = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
             Font _fontStandardBold = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
+            Font _fontNegrita = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
 
             MemoryStream memStream = new MemoryStream();
             Document doc = new Document(PageSize.LEGAL);
             PdfWriter write = PdfWriter.GetInstance(doc, memStream);
             write.PageEvent = ev;
             Chunk SaltoLinea = Chunk.NEWLINE;
+
+            var MIRAR = docofi.Parrafo1;
+            var MIRAR2 = docofi.Parrafo2;
+            
+            // Contenido HTML con formato enriquecido
+            
+            
 
             //NEW
             doc.Open();
@@ -1102,46 +1113,111 @@ namespace DAES.BLL
             cell.Border = Rectangle.NO_BORDER;
             tableHeader.AddCell(cell);
 
+            //agregar Registro --Anntecedentes -- materia 
+            PdfPTable tableEncabezadoUno = new PdfPTable(3);
+            tableEncabezadoUno.WidthPercentage = 100f;
+            tableEncabezadoUno.DefaultCell.Border = Rectangle.NO_BORDER;
+            tableEncabezadoUno.DefaultCell.Border = 0;
+            
+            tableEncabezadoUno.AddCell(new PdfPCell()); // Primera posición vacía.
+            tableEncabezadoUno.AddCell(new PdfPCell()); // Segunda posición vacía.
+
+            //Registro 
+            string ord = "ORD.: N°";
+            var paragrafR = new Paragraph(ord, _fontNegrita);
+            var parrafo11 = new Paragraph(docofi.Parrafo1, _fontStandard);
+            paragrafR.AddRange(parrafo11);
+            paragrafR.Alignment = Element.ALIGN_RIGHT;
+            //Antecedentes
+            string ANT = "ANT.: ";
+            var paragrafAnt = new Paragraph(ANT, _fontNegrita);
+            var paragrafAntP = new Paragraph(docofi.Parrafo2, _fontStandard);
+            paragrafAnt.AddRange(paragrafAntP);
+            paragrafAnt.Alignment = Element.ALIGN_RIGHT;
+
+
+            PdfPCell cell3 = new PdfPCell();
+            cell3.AddElement(paragrafR);
+            cell3.AddElement(paragrafAnt);
+            cell3.HorizontalAlignment = Element.ALIGN_RIGHT;
+            cell3.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cell3.BorderWidth = 0;
+            cell3.PaddingTop = 20;
+            cell.Border = Rectangle.NO_BORDER;
+
+            tableEncabezadoUno.AddCell(cell3);
+
+            // var paragrafAnt = new Paragraph((string.Format("ANT.: "), _fontNegrita) + docofi.Parrafo1, _fontStandard);
+            //paragrafAnt.Alignment = Element.ALIGN_RIGHT;
+            //Materia
+            //var paragrafMAT = new Paragraph((string.Format("MAT.: N°"), _fontNegrita) + docofi.Parrafo1, _fontStandard);
+            //paragrafMAT.Alignment = Element.ALIGN_RIGHT;
+
+
+            var tablitaparrafo = new Paragraph(docofi.Tabla, _fontStandard);
+            tablitaparrafo.Alignment = Element.ALIGN_LEFT;
+
+            //PdfPCell cell2 = new PdfPCell();
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //cell2.Border = Rectangle.RECTANGLE;
+            //tableEncabezadoUno.AddCell(cell2);
+
+            string contenidoHTML = "<b>Estoy en negrita</b> y <i>yo en cursiva</i> <br> <div> hola mundo </div>";
+            
+            contenidoHTML = EliminarDivYBr(contenidoHTML);
+
+            // Parsear el HTML y convertirlo a PDF con formato enriquecido
+            // Estilo del HTML
+            StyleSheet styles = new StyleSheet();
+            styles.LoadTagStyle("b", "font", "Arial");
+            styles.LoadTagStyle("i", "font", "Arial");
+
+
+
+          
+
             doc.Add(tableHeader);
             doc.Add(SaltoLinea);
-            doc.Add(new Paragraph());
-
-            /*
-            ////Configuracion - Parrafos / Se deben agregar todos los parrafos aqui
-            string parrafo_1 = string.Format(docofi.Parrafo1 != null ? docofi.Parrafo1 : string.Empty);
-            string parrafo_2 = string.Format(docofi.Parrafo2 != null ? docofi.Parrafo2 : string.Empty);
-            string parrafo_3 = string.Format(docofi.Tabla != null ? docofi.Tabla : string.Empty);
-
-            //para cuando se necesite con color
-            string parrafo_fin = "Se hace presente que no se registra en nuestros archivos la cancelación de la personalidad jurídica de dicha Cooperativa."
-                             + "\n" + "\n" + "Saluda atentamente a ustedes";
-
-            //para cuando se necesite sin color
-            string parrafo_final = "Saluda atentamente a ustedes.";
-            
-
-           
-            Paragraph paragraphUNO = new Paragraph(parrafo_1, _fontStandard);
-            paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
-
-            Paragraph paragraphDOS = new Paragraph(parrafo_2, _fontStandard);
-            paragraphDOS.Alignment = Element.ALIGN_JUSTIFIED;
-
-            Paragraph paragraphTabla = new Paragraph(parrafo_3, _fontStandard);
-            paragraphTabla.Alignment = Element.ALIGN_JUSTIFIED;
-
-
-
-            doc.Add(paragraphUNO);
+            doc.Add(tableEncabezadoUno);
             doc.Add(SaltoLinea);
-            doc.Add(paragraphDOS);
-            doc.Add(SaltoLinea);
-            doc.Add(paragraphTabla);
-            doc.Add(SaltoLinea);*/
-            doc.Close();
-            #endregion
+            doc.Add(tablitaparrafo);
+            //doc.Add(paragrafR);
+            //doc.Add(SaltoLinea);
+            //doc.Add(paragrafAnt);
+            // Parsear el HTML y convertirlo a PDF con formato enriquecido
+            List<IElement> htmlElements = HTMLWorker.ParseToList(new StringReader(contenidoHTML), styles);
+            foreach (var element in htmlElements)
+            {
+                var mirarmirar = contenidoHTML;
+                doc.Add(element);
+            }
+
+            doc.Close(); 
             return memStream.ToArray();
         }
+        public string EliminarDivYBr(string html)
+        {
+            
+            html = Regex.Replace(html, "<div.*?>", " ");
+
+          
+            html = html.Replace("</div>", "");
+
+           
+            html = html.Replace("<br>", "<br />");
+
+           
+
+            return html;
+        }
+
+
 
         public byte[] CrearDocumentoConfiguracion(ConfiguracionCertificado configuracioncertificado)
         {
