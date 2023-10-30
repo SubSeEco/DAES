@@ -33,7 +33,7 @@ namespace DAES.Infrastructure.SistemaIntegrado
 
 
 
-
+        public virtual DbSet<DocOficio> DocOficios { get; set; }
         public virtual DbSet<DocumentoConfiguracion> DocumentoConfiguracion { get; set; }
         public virtual DbSet<Cargo> Cargo { get; set; }
         public virtual DbSet<Ciudad> Ciudad { get; set; }

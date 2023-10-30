@@ -28,8 +28,8 @@
                     @Html.EditorFor(model => model.ExistenciaPosteriors[i].FechaPublicacionn, new { htmlAttributes = new { @class = "form-control" } })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId)
-                    @Html.DropDownListFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ExistenciaAnteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10" })
+                    @Html.DisplayNameFor(model => Model.ExistenciaPosteriors[i].TipoGeneralId)
+                    @Html.DropDownListFor(model => Model.ExistenciaPosteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ExistenciaPosteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10" })
                 </th>
                     </tr>
             <tr>

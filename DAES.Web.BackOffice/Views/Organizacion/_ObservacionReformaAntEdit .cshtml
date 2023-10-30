@@ -4,11 +4,11 @@
 
     @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == Model.ReformaActual) != null)
     {
-        @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = Model.TipoReforma + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+        @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
     }
     else
     {
-        @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = Model.TipoReforma + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
+        @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
     }
 
 

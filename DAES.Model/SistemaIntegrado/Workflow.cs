@@ -75,6 +75,6 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Funcionario")]
         public string To { get; set; }
 
-        
+        public virtual List<DocOficio> DocOficio { get; set; }
     }
 }

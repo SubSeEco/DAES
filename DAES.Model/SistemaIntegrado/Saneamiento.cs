@@ -26,7 +26,7 @@ namespace DAES.Model.SistemaIntegrado
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? FechaaPublicacionDiario { get; set; }
 
-        [Display(Name ="Datos generales del Notario Público y Notaría")]
+        [Display(Name ="Datos Notaría")]
         public string DatoGeneralesNotario { get; set; }
 
         [Display(Name ="Fojas; Número")]

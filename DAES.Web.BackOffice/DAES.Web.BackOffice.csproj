@@ -1076,6 +1076,7 @@
     <Content Include="Views\Organizacion\_ObservacionReformaEdit.cshtml" />
     <Content Include="Views\Organizacion\_TransitorioEdit.cshtml" />
     <Content Include="Views\Organizacion\_ObservacionReformaAntEdit .cshtml" />
+    <Content Include="Views\Task\_VistaFormularioOfi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

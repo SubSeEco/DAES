@@ -169,6 +169,7 @@
     <Compile Include="SistemaIntegrado\Certificado.cs" />
     <Compile Include="SistemaIntegrado\ActualizacionSupervisor.cs" />
     <Compile Include="SistemaIntegrado\CooperativaAbierta.cs" />
+    <Compile Include="SistemaIntegrado\DocOficio.cs" />
     <Compile Include="SistemaIntegrado\DocumentoConfiguracion.cs" />
     <Compile Include="SistemaIntegrado\EscrituraConstitucion.cs" />
     <Compile Include="SistemaIntegrado\EstudioSocioEconomico.cs" />

@@ -68,7 +68,7 @@ else
                     </table>
                 </table>
                 <br>
-                @Ajax.ActionLink("Eliminar", "TransitorioDelete", null, new { Model.Transitorios.ToArray()[i].TransitorioId, Model.Disolucions.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "transitorio" }, htmlAttributes: new { @class = "btn btn-danger" })
+                @Ajax.ActionLink("Eliminar", "TransitorioDelete", null, new { Model.Transitorios.ToArray()[i].TransitorioId, Model.Transitorios.ToArray()[i].OrganizacionId }, new AjaxOptions { UpdateTargetId = "transitorio" }, htmlAttributes: new { @class = "btn btn-danger" })
 
             }
         </table>
