@@ -3625,8 +3625,8 @@ namespace DAES.BLL
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Desde", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Hasta", _fontStandardBold)));
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
                             foreach (var item in directorio.ToList())
                             {
@@ -3675,8 +3675,8 @@ namespace DAES.BLL
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Desde", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Hasta", _fontStandardBold)));
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
 
                             foreach (var item in directorio.ToList())
@@ -3724,8 +3724,8 @@ namespace DAES.BLL
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Desde", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Hasta", _fontStandardBold)));
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
 
                             foreach (var item in directorio.ToList())
