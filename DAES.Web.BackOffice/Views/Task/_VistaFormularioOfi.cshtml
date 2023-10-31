@@ -89,14 +89,22 @@
                 <tr>
                     <td>
                         <button id="btnCrearTabla" onclick="crearTabla()" class="btn btn-danger">Agregar Tabla</button>
-                        <button id="btnEliminarTabla" onclick="EliminarTabla()" class="btn btn-danger" style = "display:none;">Eliminar Tabla</button>
+                        <button id="btnEliminarTabla" onclick="EliminarTabla()" class="btn btn-danger" style="display:none;">Eliminar Tabla</button>
                         <input id="number" type="number" class="form-control" />X<input id="number2" type="number" class="form-control" />
                     </td>
                 </tr>
             </table>
 
+            <div id="DataBase" class="form-control col-md-12 editable" contenteditable="true" style="display: none">
+                @if (Model.Workflow.DocOficio.Any())
+                {
+                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla);
+                }
+            </div>
+            <div id="DataView" class="form-control col-md-12 editable" contenteditable="true">
 
-            <table id="miTabla" border="1">
+            </div>
+            <table id="miTabla" style="width:50%;">
                 <tr>
                 </tr>
             </table>
@@ -105,13 +113,13 @@
         <div class="col-md-6">
 
             @{
-                if (Model.Workflow.DocOficio.Any())
+               /* if (Model.Workflow.DocOficio.Any())
                 {
                     Console.WriteLine("workflowid" + Model.Workflow.WorkflowId);
                     <embed src="@Url.Action("ShowDoc", "Task", new { id = Model.Workflow.WorkflowId })" width="96%" height="990px" type="application/pdf" />
 
                 }
-                <br />
+                <br />*/  
             }
 
         </div>
@@ -271,8 +279,26 @@
         //console.log("estoy arriba del ajax" + parrafo1 + " " + parrafo2 + "" + tabla);
         //Model.Workflow.Parrafo1 = parrafo1;
         //Model.Workflow.WorkflowId = workflowId;
+        var editorValue = document.getElementById("DataBase").innerHTML;
+        document.getElementById("DataView").innerHTML = editorValue;
+        if (editorValue != null)
+        {
+            $('#number').val(3)
+            $('#number2').val(3)
+            crearTabla()
 
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            if (editorValue != null) {
+                for (var i = 0; i < 3; i++) {
+                    for (var j = 0; j < 3; j++) {
+                        console.log("Asignando valor a fila" + i + j);
+                        document.getElementById("#fila" + i + j).innerHTML = "hola";
+                    }
+                }
 
+            }
+        });
         // Obtén la URL actual
         var url = window.location.href;
 
@@ -366,8 +392,9 @@
         for (var i = 0; i < table.rows[0].cells.length; i++) {
             var cell = row.insertCell(i); // Inserta una celda en la nueva fila
             //var cellId = "celda" + (i + 1); // Genera un ID único para cada celda
-            var cellId = document.createElement("input");
-            cellId.classList.add("form-control");
+            var cellId = document.createElement("div");
+            cellId.classList.add("form-control", "col-md-12", "editable");
+            cellId.setAttribute("contenteditable", "true");
             cellId.setAttribute("id", "fila" + fila + i); // Asigna un ID único a la celda
             //cell.innerHTML = cellId; // Establece el contenido como el ID
             cell.appendChild(cellId); // Agrega el nodo de texto a la celda
@@ -382,8 +409,9 @@
 
         var cell = document.createElement("td"); // Crea una nueva celda
         //var cellText = document.createTextNode("Nuevo Contenido"); // Crea un nodo de texto para el contenido de la celda
-        var cellText = document.createElement("input");
-        cellText.classList.add("form-control");
+        var cellText = document.createElement("div");
+        cellText.classList.add("form-control", "col-md-12", "editable");
+        cellText.setAttribute("contenteditable", "true");
         cellText.setAttribute("id", "fila0" + columna); // Asigna un ID único a la celda
         cell.appendChild(cellText); // Agrega el nodo de texto a la celda
         row.appendChild(cell); // Agrega la celda a la fila

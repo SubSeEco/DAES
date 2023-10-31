@@ -1465,7 +1465,7 @@ namespace DAES.BLL
 
                 doc.AddTitle(configuracioncertificado.Titulo);
                 doc.AddAuthor(firmante.Nombre);
-                var aux = context.Disolucions.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
+
                 var centrar = Element.ALIGN_CENTER;
                 Paragraph paragraphTITULO = new Paragraph(configuracioncertificado.Titulo, _fontTitulo);
                 paragraphTITULO.Alignment = centrar;
@@ -2739,6 +2739,7 @@ namespace DAES.BLL
                 //CertificadoDisolucionTest = 106 | CertificadoDisolucion = 4
                 if (TipoDocumentoId == (int)Infrastructure.Enum.TipoDocumento.CertificadoDisolución)
                 {
+                    var aux = context.Disolucions.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
                     if (aux != null)
                     {
                         string parrafo = aux.Anterior == true ? configuracioncertificado.Parrafo1DisAnt : configuracioncertificado.Parrafo1DisPos;
@@ -3672,8 +3673,8 @@ namespace DAES.BLL
                             table.HorizontalAlignment = Element.ALIGN_CENTER;
                             table.WidthPercentage = 100f;
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
-                            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
@@ -3721,8 +3722,8 @@ namespace DAES.BLL
                             table.WidthPercentage = 100.0f;
                             table.HorizontalAlignment = Element.ALIGN_CENTER;
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
-                            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
