@@ -90,8 +90,11 @@
                     <td>
                         <button id="btnCrearTabla" onclick="crearTabla()" class="btn btn-danger">Agregar Tabla</button>
                         <button id="btnEliminarTabla" onclick="EliminarTabla()" class="btn btn-danger" style="display:none;">Eliminar Tabla</button>
-                        <input id="number" type="number" class="form-control" />X<input id="number2" type="number" class="form-control" />
-                    </td>
+                        <div id="dimension">
+                            <input id="number" type="number" class="form-control" />X<input id="number2" type="number" class="form-control" />
+                        </div>
+ 
+</td>
                 </tr>
             </table>
 
@@ -101,8 +104,6 @@
                     @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla);
                 }
             </div>
-            <div id="DataView" class="form-control col-md-12 editable" contenteditable="true">
-
             </div>
             <table id="miTabla" style="width:50%;">
                 <tr>
@@ -280,13 +281,17 @@
         //Model.Workflow.Parrafo1 = parrafo1;
         //Model.Workflow.WorkflowId = workflowId;
         var editorValue = document.getElementById("DataBase").innerHTML;
-        document.getElementById("DataView").innerHTML = editorValue;
+        filas =""
+        matriz = []
         if (editorValue != null)
         {
             $('#number').val(3)
             $('#number2').val(3)
+            filas = editorValue.split(';');
+            matriz = []
+            ArmarDataTabla()
             crearTabla()
-
+            
         }
         document.addEventListener("DOMContentLoaded", function () {
             if (editorValue != null) {
@@ -337,6 +342,24 @@
 
         $("#GuardarDocOf").click(function () {
             console.log("estoy arriba del data ");
+            datoFinal =""
+            for (var i = 0; i < 3; i++)
+            {
+                for (var j = 0; j < 3; j++)
+                {
+                    if (i = 3 - 1) {
+                        if (j = 3 - 1) {
+                            datoFinal = datoFinal + matriz[i][j] + ""
+                        } else {
+                            datoFinal = datoFinal + matriz[i][j] + ";"
+                        }                        
+                    } else {
+                        datoFinal = datoFinal + matriz[i][j]+","
+                    }
+                    
+                }
+            }
+            console.log("dato final: " + datoFinal)
             var data = {
                 //var valorDiv = $("#miDiv").text();
 
@@ -344,7 +367,7 @@
                 WorkflowId: workflowId,
                 Parrafo2: document.getElementById("Parrafo2").innerHTML,
                 DocOficioId: null,
-                Tabla: document.getElementById("Tabla").innerHTML,
+                Tabla: datoFinal,
                 Content: null,
                 FileName: null,
                 FechaCreacion: null
@@ -366,24 +389,6 @@
 
         });
     });
-    /*
-    $(document).ready(function () {
-        $("#crearTablaLink").click(function (e) {
-            e.preventDefault(); // Evita el comportamiento predeterminado del enlace
-
-            // Obtén los valores de los campos de entrada
-            var xValue = $("#number").val();
-            var yValue = $("#number2").val();
-
-            // Construye la URL con los valores de X e Y
-            //var url = this.href + '?x=' + xValue + '&y=' + yValue;
-            var url = this.href + '&x=' + xValue + '&y=' + yValue;
-            // Redirige a la URL construida
-            //window.location.href = url;
-        });
-    });*/
-
-
 
     function agregarFila(fila) {
         fila++
@@ -396,13 +401,21 @@
             cellId.classList.add("form-control", "col-md-12", "editable");
             cellId.setAttribute("contenteditable", "true");
             cellId.setAttribute("id", "fila" + fila + i); // Asigna un ID único a la celda
-            //cell.innerHTML = cellId; // Establece el contenido como el ID
+            cellId.innerHTML = matriz[fila][i]
             cell.appendChild(cellId); // Agrega el nodo de texto a la celda
             row.appendChild(cell); // Agrega la celda a la fila
         }
     }
 
-
+    function ArmarDataTabla()
+    {
+        for (var i = 0; i < filas.length; i++) {
+            var elementos = filas[i].split(',');
+            matriz.push(elementos);
+        }
+        console.log(matriz);
+    }
+    //
     function agregarColumna(columna) {
         var table = document.getElementById("miTabla");
         var row = table.rows[0]; // Obtén la primera fila de la tabla (puedes ajustar esto según tus necesidades)
@@ -413,6 +426,7 @@
         cellText.classList.add("form-control", "col-md-12", "editable");
         cellText.setAttribute("contenteditable", "true");
         cellText.setAttribute("id", "fila0" + columna); // Asigna un ID único a la celda
+        cellText.innerHTML = matriz[0][columna]
         cell.appendChild(cellText); // Agrega el nodo de texto a la celda
         row.appendChild(cell); // Agrega la celda a la fila
     }
@@ -432,6 +446,7 @@
             }
             $("#btnCrearTabla").hide();
             $("#btnEliminarTabla").show();
+            $("#dimension").hide();
         } else {
             alert("fila y columna debe ser mayor a 0.");
         }
@@ -450,6 +465,7 @@
             }
             $("#btnEliminarTabla").hide();
             $("#btnCrearTabla").show();
+            $("#dimension").show();
         }
 
     }
