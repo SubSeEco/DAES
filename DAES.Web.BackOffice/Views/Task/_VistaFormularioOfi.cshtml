@@ -26,6 +26,15 @@
         z-index: 10;
         box-shadow: 3px 2px 10px 1px #b0b0b0;
     }
+    .rich-text-content div {
+        margin-bottom: 10px;
+    }
+
+    .rich-text-content br {
+        display: block;
+        content: "";
+        margin-bottom: 10px;
+    }
 </style>
 
 <div class="panel panel-default">
@@ -50,12 +59,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo1, htmlAttributes: new { @class = "control-label col-md-6" })
                         
                        <div class="col-md-12">
-                           <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable" contenteditable="true" >
-                               @if (Model.Workflow.DocOficio.Any())
-                               {
-                                   @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo1)
-                                  }
-                               </div>
+                           <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable" contenteditable="true" >@if (Model.Workflow.DocOficio.Any()){@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo1)}</div>
                         </div>
                     </td>
                 </tr>
@@ -63,26 +67,15 @@
                     <td>
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo2, htmlAttributes: new { @class = "control-label col-md-6" })
                         <div class="col-md-12">
-                            <div id="Parrafo2" class="form-control col-md-12 editable" contenteditable="true">
-
-                                @if (Model.Workflow.DocOficio.Any())
-                                {
-                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo2)
-                                }
-                            </div>
-                        </div>
+                            <div id="Parrafo2" class="form-control col-md-12 editable" contenteditable="true">@if (Model.Workflow.DocOficio.Any()){@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo2)}</div>
+                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Tabla, htmlAttributes: new { @class = "control-label col-md-6" })
                         <div class="col-md-12">
-                            <div id="Tabla" class="form-control col-md-12 editable" contenteditable="true">
-                                @if (Model.Workflow.DocOficio.Any())
-                                {
-                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla)
-                                }
-                            </div>
+                            <div id="Tabla" class="form-control col-md-12 editable" contenteditable="true">@if (Model.Workflow.DocOficio.Any()) {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla)}</div>
                         </div>
                     </td>
                 </tr>
@@ -109,6 +102,9 @@
         <div>
             <button id="GuardarDocOf" type="submit" class="btn btn-danger">Vista Previa</button>
         </div>
+
+
+
 
     </div>
 
@@ -241,7 +237,7 @@
         });
     });
 
-   
+
 
     $(document).ready(function () {
         
@@ -250,7 +246,7 @@
 
         var Parrafo2 = document.getElementById("Parrafo2");
         Parrafo2.focus();
-        
+
         var Tabla = document.getElementById("Tabla");
         Tabla.focus();
 
@@ -272,19 +268,22 @@
         selection.addRange(range1);
         selection.addRange(range2);
         selection.addRange(range3);
-        
+
         var contenido1 = Parrafo1.textContent;
         contenido1 = contenido1.replace(/^\n+/, "");
         Parrafo1.textContent = contenido1;
 
-       
+
         var contenido2 = Parrafo2.textContent;
         contenido2 = contenido2.replace(/^\n+/, "");
         Parrafo2.textContent = contenido2;
-        
+
         var contenido3 = Tabla.textContent;
         contenido3 = contenido3.replace(/^\n+/, "");
         Tabla.textContent = contenido3;
+       
+      
+
 
         // Obtén la URL actual
         var url = window.location.href;
@@ -326,12 +325,12 @@
                 console.log("estoy arriba del data ");
                  var data = {
                               //var valorDiv = $("#miDiv").text();
-                            
-                             Parrafo1: document.getElementById("Parrafo1").innerHTML,
+
+                             Parrafo1: document.getElementById("Parrafo1").innerHTML.trim(),
                              WorkflowId: workflowId,
-                             Parrafo2: document.getElementById("Parrafo2").innerHTML,
+                             Parrafo2: document.getElementById("Parrafo2").innerHTML.trim(),
                              DocOficioId :null,
-                             Tabla: document.getElementById("Tabla").innerHTML,
+                             Tabla: document.getElementById("Tabla").innerHTML.trim(),
                               Content :null,
                               FileName :null,
                               FechaCreacion :null

@@ -1046,6 +1046,7 @@ namespace DAES.BLL
 
             var MIRAR = docofi.Parrafo1;
             var MIRAR2 = docofi.Parrafo2;
+            var mirar3 = docofi.Tabla;
             
             // Contenido HTML con formato enriquecido
             
@@ -1113,6 +1114,12 @@ namespace DAES.BLL
             cell.Border = Rectangle.NO_BORDER;
             tableHeader.AddCell(cell);
 
+
+            StyleSheet styles = new StyleSheet();
+            styles.LoadTagStyle("b", "font", "Arial");
+            styles.LoadTagStyle("i", "font", "Arial");
+
+
             //agregar Registro --Anntecedentes -- materia 
             PdfPTable tableEncabezadoUno = new PdfPTable(3);
             tableEncabezadoUno.WidthPercentage = 100f;
@@ -1134,11 +1141,27 @@ namespace DAES.BLL
             var paragrafAntP = new Paragraph(docofi.Parrafo2, _fontStandard);
             paragrafAnt.AddRange(paragrafAntP);
             paragrafAnt.Alignment = Element.ALIGN_RIGHT;
+            
+            string reg = paragrafR.Content;
+            reg = EliminarDivYBr(reg);
 
-
+            string ante = paragrafAnt.Content;
+            ante = EliminarDivYBr(ante);
             PdfPCell cell3 = new PdfPCell();
-            cell3.AddElement(paragrafR);
-            cell3.AddElement(paragrafAnt);
+            List<IElement> htmlE = HTMLWorker.ParseToList(new StringReader(reg), styles);
+            foreach (var element in htmlE)
+            {
+                var mirarmirar = reg;
+                cell3.AddElement(element);
+            }
+
+            List<IElement> htmlEl = HTMLWorker.ParseToList(new StringReader(ante), styles);
+            foreach (var element in htmlEl)
+            {
+                var mirarmirar = ante;
+                cell3.AddElement(element);
+            }
+
             cell3.HorizontalAlignment = Element.ALIGN_RIGHT;
             cell3.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell3.BorderWidth = 0;
@@ -1153,10 +1176,21 @@ namespace DAES.BLL
             //var paragrafMAT = new Paragraph((string.Format("MAT.: N°"), _fontNegrita) + docofi.Parrafo1, _fontStandard);
             //paragrafMAT.Alignment = Element.ALIGN_RIGHT;
 
+            doc.Add(tableHeader);
+            doc.Add(SaltoLinea);
+            doc.Add(tableEncabezadoUno);
+            doc.Add(SaltoLinea);
 
             var tablitaparrafo = new Paragraph(docofi.Tabla, _fontStandard);
             tablitaparrafo.Alignment = Element.ALIGN_LEFT;
-
+            string tablitapar = tablitaparrafo.Content;
+            tablitapar = EliminarDivYBr(tablitapar);
+            List<IElement> htmlEle = HTMLWorker.ParseToList(new StringReader(tablitapar), styles);
+            foreach (var element in htmlEle)
+            {
+                var mirarmirar = tablitapar;
+                doc.Add(element);
+            }
             //PdfPCell cell2 = new PdfPCell();
             //
             //
@@ -1174,19 +1208,13 @@ namespace DAES.BLL
 
             // Parsear el HTML y convertirlo a PDF con formato enriquecido
             // Estilo del HTML
-            StyleSheet styles = new StyleSheet();
-            styles.LoadTagStyle("b", "font", "Arial");
-            styles.LoadTagStyle("i", "font", "Arial");
-
+           
 
 
           
 
-            doc.Add(tableHeader);
-            doc.Add(SaltoLinea);
-            doc.Add(tableEncabezadoUno);
-            doc.Add(SaltoLinea);
-            doc.Add(tablitaparrafo);
+            
+            
             //doc.Add(paragrafR);
             //doc.Add(SaltoLinea);
             //doc.Add(paragrafAnt);
@@ -1204,7 +1232,7 @@ namespace DAES.BLL
         public string EliminarDivYBr(string html)
         {
             
-            html = Regex.Replace(html, "<div.*?>", " ");
+            html = Regex.Replace(html, "<div.*?>", "<br />");
 
           
             html = html.Replace("</div>", "");
@@ -1804,10 +1832,10 @@ namespace DAES.BLL
                     {
                         var legalAnt = organizacion.ExistenciaAnteriors.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
                         var legarPost = organizacion.ExistenciaPosteriors.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
-                        if (organizacion.ExistenciaAnteriors != null)
+                        if (organizacion.ExistenciaAnteriors.Any())
                         {
                             // PARRAFO 1 - INI                         
-                            parrafo_uno = parrafo_uno.Replace("[TIPONORMA]", legalAnt.tipoNorma != null ? "#" + legalAnt.tipoNorma.Nombre + "#" : "[ERROR_legalAnt]");
+                            parrafo_uno = parrafo_uno.Replace("[TIPONORMA]", legalAnt.TipoNormaId != null ? "#" + legalAnt.tipoNorma.Nombre + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[NUMERONORMA]", legalAnt.NNorma != null ? "#" + legalAnt.NNorma + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[FECHANORMA]", legalAnt.FNorma != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}",legalAnt.FNorma.Value) + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[AUTORIZADOPOR]", legalAnt.Autorizado != null ? "#" + legalAnt.Autorizado + "#" : "[ERROR_legalAnt]");
