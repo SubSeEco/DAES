@@ -1,4 +1,4 @@
-﻿using DAES.Infrastructure.SistemaIntegrado;
+﻿ using DAES.Infrastructure.SistemaIntegrado;
 using DAES.Model.SistemaIntegrado;
 using DAES.Web.BackOffice.Helper;
 using OfficeOpenXml;
@@ -395,7 +395,7 @@ namespace DAES.Web.BackOffice.Controllers
                 _custom.DirectorioUpdate(model.Directorios);
                 _custom.ModificacionUpdate(model.ModificacionEstatutos);
                 _custom.DisolucionUpdate(model.Disolucions, disolucion, model.ComisionLiquidadoras);
-                //_custom.TransitorioUpdate(model.Transitorios, transitorio);
+                _custom.TransitorioUpdate(model.Transitorios, transitorio);
                 _custom.ObservacionLegalUpdate(model.ObservacionLegals, observacionLegal);
                 _custom.ObservacionReformaUpdate(model.ObservacionReformas, observacionReforma);
                 //model.Reformas = null;
@@ -965,7 +965,7 @@ namespace DAES.Web.BackOffice.Controllers
 
             ViewBag.TipoNormaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
             ViewBag.TipoNormaaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
-
+            ViewBag.TipoGeneralId = new SelectList(db.TipoGeneral.OrderBy(q => q.Nombre), "TipoGeneralId", "Nombre");
             return View("Edit", model);
         }
 
@@ -983,7 +983,7 @@ namespace DAES.Web.BackOffice.Controllers
             ViewBag.CargoId = new SelectList(db.Cargo.OrderBy(q => q.Nombre).ToList(), "CargoId", "Nombre");
             ViewBag.GeneroId = new SelectList(db.Genero.OrderBy(q => q.Nombre).ToList(), "GeneroId", "Nombre");
             ViewBag.TipoNormaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
-
+            ViewBag.TipoGeneralId = new SelectList(db.TipoGeneral.OrderBy(q => q.Nombre), "TipoGeneralId", "Nombre");
             return PartialView("_TransitorioEdit", model);
         }
 

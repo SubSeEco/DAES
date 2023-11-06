@@ -6,12 +6,14 @@ using DAES.Model.Core;
 using DAES.Model.FirmaDocumento;
 using DAES.Model.SistemaIntegrado;
 using DAES.Web.BackOffice.Helper;
+using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -1599,7 +1601,125 @@ namespace DAES.Web.BackOffice.Controllers
 
         //    return View(model);
         //}
+        public ActionResult VistaFormularioOfi(int WorkflowId)
+        {
+            var model = new TaskModel();
+            var wf = db.Workflow.Find(WorkflowId);
 
+
+
+
+            //var def_workflow = model.Workflow.DefinicionWorkflow;
+            model.Workflow = db.Workflow.FirstOrDefault(q => q.WorkflowId == WorkflowId);
+            //Se debe ver la forma en que no actualice la informacion de la organizacion
+            model.Organizacion = db.Organizacion.Find(model.Workflow.Proceso.OrganizacionId);
+            model.Directorios = db.Directorio.Where(q => q.OrganizacionId == model.Organizacion.OrganizacionId).ToList();
+            model.ActualizacionOrganizacion = db.ActualizacionOrganizacion.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId);
+            var modelos = db.ActualizacionDirectorioOrganizacion.Where(q => q.ActualizacionOrganizacionId
+                                                        == model.ActualizacionOrganizacion.ActualizacionOrganizacionId).ToList();
+
+
+
+
+            ViewBag.CiudadId = new SelectList(db.Ciudad.OrderBy(q => q.Nombre), "CiudadId", "Nombre");
+            ViewBag.ComunaId = new SelectList(db.Comuna.OrderBy(q => q.Nombre), "ComunaId", "Nombre");
+            ViewBag.EstadoId = new SelectList(db.Estado.OrderBy(q => q.Nombre), "EstadoId", "Nombre");
+            ViewBag.SituacionId = new SelectList(db.Situacion.OrderBy(q => q.Nombre), "SituacionId", "Nombre");
+            ViewBag.RegionId = new SelectList(db.Region.OrderBy(q => q.Nombre), "RegionId", "Nombre");
+            ViewBag.RubroId = new SelectList(db.Rubro.OrderBy(q => q.Nombre), "RubroId", "Nombre");
+            ViewBag.SubRubroId = new SelectList(db.SubRubro.OrderBy(q => q.Nombre), "SubRubroId", "Nombre");
+            ViewBag.TipoOrganizacionId = new SelectList(db.TipoOrganizacion.OrderBy(q => q.Nombre), "TipoOrganizacionId", "Nombre");
+            ViewBag.CargoId = new SelectList(db.Cargo.OrderBy(q => q.Nombre), "CargoId", "Nombre");
+            ViewBag.GeneroId = new SelectList(db.Genero.OrderBy(q => q.Nombre), "GeneroId", "Nombre");
+            var tipoDeUsuario = Helper.Helper.CurrentUser.Perfil.Nombre;
+            ViewBag.TipoUsuario = tipoDeUsuario;
+            ViewBag.modelos = modelos;
+
+
+
+            //Mejorar
+            //Definir si es la ultima tarea o no
+            var definicion_ = wf.DefinicionWorkflow.Secuencia;
+            ViewBag.validador = wf.DefinicionWorkflow.Secuencia != 2 ? true : false;
+
+
+
+            var listado = db.ComisionLiquidadora.Where(q => q.OrganizacionId == model.Organizacion.OrganizacionId && q.EsMiembro).ToList();
+            var listado_count = listado.Count();
+
+
+
+            ViewBag.listado_count = listado_count;
+            ViewBag.listado = listado;
+
+
+
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult GuardarDocOfi(int WorkflowId, DocOficioss ofi)
+        {
+            var model = new TaskModel();
+            model.Workflow = db.Workflow.FirstOrDefault(q => q.WorkflowId == WorkflowId);
+
+            if (model.Workflow.DocOficio.Any())
+            {
+
+
+                model.Workflow.DocOficio.FirstOrDefault().Parrafo1 = ofi.Parrafo1;
+                model.Workflow.DocOficio.FirstOrDefault().Parrafo2 = ofi.Parrafo2;
+                model.Workflow.DocOficio.FirstOrDefault().Tabla = ofi.Tabla;
+                var mirar = model.Workflow.DocOficio;
+                model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId));
+                db.SaveChanges();
+
+            }
+            else
+            {
+                var nuevoregistro = new DocOficio
+                {
+                    WorkFlowId = WorkflowId,
+                    Parrafo1 = ofi.Parrafo1,
+                    Parrafo2 = ofi.Parrafo2,
+                    Tabla = ofi.Tabla,
+                    FileName = "DocumentoCreado" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
+
+                };
+                db.DocOficios.Add(nuevoregistro);
+                db.SaveChanges();
+                var exi = model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
+                exi.Content = _custom.CrearDocumentoConfOficio(exi);
+                db.SaveChanges();
+
+
+
+            }
+
+
+            return PartialView("_VistaFormularioOfi", model);
+            //return View(model);
+
+        }
+        public async Task<ActionResult> ShowDoc(int id)
+        {
+            var model = await db.DocOficios.Where(q => q.WorkFlowId == id).FirstAsync();
+            return File(model.Content, "application/pdf");
+        }
+
+        public ActionResult CrearTabla(int WorkflowId, int x, int y)
+        {
+            string[,] array1 = new string[x, y];
+            
+            var model = new TaskModel();
+            model.Workflow = db.Workflow.FirstOrDefault(q => q.WorkflowId == WorkflowId);
+            ViewBag.TipoGeneralId = new SelectList(db.TipoGeneral.OrderBy(q => q.Nombre), "TipoGeneralId", "Nombre");
+            model.Workflow.DocOficio.FirstOrDefault().x = x;
+            model.Workflow.DocOficio.FirstOrDefault().y = y;
+            return PartialView("_VistaFormularioOfi", model);
+
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -1608,6 +1728,23 @@ namespace DAES.Web.BackOffice.Controllers
             }
             base.Dispose(disposing);
         }
+
+    }
+
+    public class DocOficioss
+    {
+        public int DocOficioId { get; set; }
+        public int WorkFlowId { get; set; }
+        public string Parrafo1 { get; set; }
+        public string Parrafo2 { get; set; }
+        public string Tabla { get; set; }
+
+        public byte[] Content { get; set; }
+
+        public string FileName { get; set; }
+        public DateTime? FechaCreacion { get; set; } = DateTime.Now;
+
+
 
     }
 }

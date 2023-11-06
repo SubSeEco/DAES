@@ -1,37 +1,39 @@
 ﻿@model DAES.Model.SistemaIntegrado.Organizacion
 @Html.HiddenFor(model => model.OrganizacionId)
 <table class="table table-hover table-striped ">
+
+
     @switch (Model.TipoReforma)
     {
         case "observacionReformaPost":
             if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
             {
-                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion, OnSuccess = "ajaxSuccess" }, new { @style = "display:none;", @class = "btn btn-success" })
             }
             else
             {
-                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion, OnSuccess = "ajaxSuccess" }, htmlAttributes: new { @class = "btn btn-success" })
             }
             break;
         case "observacionReformaAnt":
             if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == Model.ReformaActual) != null)
             {
-                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion, OnSuccess = "ajaxSuccess" }, new { @style = "display:none;", @class = "btn btn-success" })
             }
             else
             {
-                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAnt" + Model.posicion, OnSuccess = "ajaxSuccess" }, htmlAttributes: new { @class = "btn btn-success" })
             }
             break;
 
         default:
             if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAGAC == Model.ReformaActual) != null)
             {
-                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAGAC" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAGAC" + Model.posicion, OnSuccess = "ajaxSuccess" }, new { @style = "display:none;", @class = "btn btn-success" })
             }
             else
             {
-                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAGAC" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
+                @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaAGAC" + Model.posicion, OnSuccess = "ajaxSuccess" }, htmlAttributes: new { @class = "btn btn-success" })
             }
             break;
     }
@@ -176,3 +178,11 @@
 
 
 </table>
+
+
+
+<script type="text/javascript">
+    function ajaxSuccess() {
+ location.reload();
+    }
+</script>  

@@ -441,6 +441,7 @@ namespace DAES.BLL
                         exi.FechaInscripcion = item.FechaInscripcion;
                         exi.DatosCBR = item.DatosCBR;
                         exi.AprobacionId = item.AprobacionId;
+                        exi.TipoGeneralId = item.TipoGeneralId;
                     }
 
                 }
@@ -473,6 +474,11 @@ namespace DAES.BLL
                         exi.FNorma = item.FNorma;
                         exi.FechaPublicacion = item.FechaPublicacion;
                         exi.Autorizado = item.Autorizado;
+                        exi.LugarNotario = item.LugarNotario;
+                        exi.DatosGeneralNotario = item.DatosGeneralNotario;
+                        exi.TipoGeneralId = item.TipoGeneralId;
+                        exi.FechaEscritura = item.FechaEscritura;
+                        exi.FechaJuntaGeneral = item.FechaJuntaGeneral;
                     }
 
                 }
@@ -507,6 +513,8 @@ namespace DAES.BLL
                         exi.Fojas = item.Fojas;
                         exi.AnoInscripcion = item.AnoInscripcion;
                         exi.DatosCBR = item.DatosCBR;
+                        exi.LugarNotario = item.LugarNotario;
+                        exi.TipoGeneralId = item.TipoGeneralId;
                     }
 
                 }
@@ -626,6 +634,7 @@ namespace DAES.BLL
                         reforma.NumeroOficio = item.NumeroOficio;
                         reforma.FechaOficio = item.FechaOficio;
                         reforma.AprobacionId = item.AprobacionId;
+                        reforma.TipoGeneralId = item.TipoGeneralId;
                         //reforma.EspaciosDocAGAC = item.EspaciosDocAGAC;
 
                     }
@@ -663,6 +672,8 @@ namespace DAES.BLL
                         reforma.TipoGeneralId = item.TipoGeneralId;
                         reforma.AutorizadoPor = item.AutorizadoPor;
                         reforma.LugarNotario = item.LugarNotario;
+                        reforma.TipoGeneralId = item.TipoGeneralId;
+                        reforma.FechaEscritura = item.FechaEscritura;
                     }
                 }
 
@@ -697,6 +708,8 @@ namespace DAES.BLL
                         reforma.FechaPubliDiario = item.FechaPubliDiario;
                         reforma.DatosGeneralNotario = item.DatosGeneralNotario;
                         reforma.EspaciosDoc = item.EspaciosDoc;
+                        reforma.LugarNotario = item.LugarNotario;
+                        reforma.TipoGeneralId = item.TipoGeneralId;
                     }
                 }
 
@@ -1015,6 +1028,125 @@ namespace DAES.BLL
             }
         }
 
+
+        public byte[] CrearDocumentoConfOficio(DocOficio docofi)
+        {
+            #region Configurar PreDocumento
+            EventoTitulos ev = new EventoTitulos();
+            Font _fontTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.DARK_GRAY);
+            Font _fontNumero = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.DARK_GRAY);
+            Font _fontFirmante = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.DARK_GRAY);
+            Font _fontStandard = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
+            Font _fontStandardBold = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
+
+            MemoryStream memStream = new MemoryStream();
+            Document doc = new Document(PageSize.LEGAL);
+            PdfWriter write = PdfWriter.GetInstance(doc, memStream);
+            write.PageEvent = ev;
+            Chunk SaltoLinea = Chunk.NEWLINE;
+
+            //NEW
+            doc.Open();
+            doc.AddTitle(docofi.Parrafo1);
+
+            var centrar = Element.ALIGN_CENTER;
+            Paragraph paragraphTITULO = new Paragraph(docofi.Parrafo1, _fontTitulo);
+            paragraphTITULO.Alignment = centrar;
+
+            var logo = context.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.URLImagenLogo);
+            if (logo == null)
+            {
+                throw new Exception("No se encontró la configuración de url de rúbrica.");
+            }
+
+            if (logo != null && logo.Valor.IsNullOrWhiteSpace())
+            {
+                throw new Exception("La configuración de url de rúbrica es inválida.");
+            }
+
+            Image imagenLogo = Image.GetInstance(logo.Valor);
+            imagenLogo.ScalePercent(20);
+
+            PdfPTable tableHeader = new PdfPTable(3);
+            tableHeader.WidthPercentage = 100f;
+            tableHeader.DefaultCell.Border = Rectangle.NO_BORDER;
+            tableHeader.DefaultCell.Border = 0;
+
+            //logo
+            PdfPCell cell = new PdfPCell(imagenLogo);
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BorderWidth = 0;
+            cell.PaddingTop = 20;
+            cell.Border = Rectangle.NO_BORDER;
+            tableHeader.AddCell(cell);
+
+            //title
+            cell = new PdfPCell(new Phrase(docofi.Parrafo1, _fontTitulo));
+            cell.HorizontalAlignment = Element.ALIGN_CENTER;
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cell.BorderWidth = 0;
+            cell.PaddingTop = 20;
+            cell.Border = Rectangle.NO_BORDER;
+            tableHeader.AddCell(cell);
+
+            //Id
+            var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
+            paragrafId.Alignment = Element.ALIGN_RIGHT;
+
+            var paragrafDate = new Paragraph(string.Format("{0:dd-MM-yyyy HH:mm:ss}", DateTime.Now), _fontStandard);
+            paragrafDate.Alignment = Element.ALIGN_RIGHT;
+
+            cell = new PdfPCell();
+            cell.AddElement(paragrafId);
+            cell.AddElement(paragrafDate);
+
+            cell.HorizontalAlignment = Element.ALIGN_RIGHT;
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cell.BorderWidth = 0;
+            cell.PaddingTop = 20;
+            cell.Border = Rectangle.NO_BORDER;
+            tableHeader.AddCell(cell);
+
+            doc.Add(tableHeader);
+            doc.Add(SaltoLinea);
+            doc.Add(new Paragraph());
+
+            /*
+            ////Configuracion - Parrafos / Se deben agregar todos los parrafos aqui
+            string parrafo_1 = string.Format(docofi.Parrafo1 != null ? docofi.Parrafo1 : string.Empty);
+            string parrafo_2 = string.Format(docofi.Parrafo2 != null ? docofi.Parrafo2 : string.Empty);
+            string parrafo_3 = string.Format(docofi.Tabla != null ? docofi.Tabla : string.Empty);
+
+            //para cuando se necesite con color
+            string parrafo_fin = "Se hace presente que no se registra en nuestros archivos la cancelación de la personalidad jurídica de dicha Cooperativa."
+                             + "\n" + "\n" + "Saluda atentamente a ustedes";
+
+            //para cuando se necesite sin color
+            string parrafo_final = "Saluda atentamente a ustedes.";
+            
+
+           
+            Paragraph paragraphUNO = new Paragraph(parrafo_1, _fontStandard);
+            paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
+
+            Paragraph paragraphDOS = new Paragraph(parrafo_2, _fontStandard);
+            paragraphDOS.Alignment = Element.ALIGN_JUSTIFIED;
+
+            Paragraph paragraphTabla = new Paragraph(parrafo_3, _fontStandard);
+            paragraphTabla.Alignment = Element.ALIGN_JUSTIFIED;
+
+
+
+            doc.Add(paragraphUNO);
+            doc.Add(SaltoLinea);
+            doc.Add(paragraphDOS);
+            doc.Add(SaltoLinea);
+            doc.Add(paragraphTabla);
+            doc.Add(SaltoLinea);*/
+            doc.Close();
+            #endregion
+            return memStream.ToArray();
+        }
         //TODO: Se crea nuevo metodo para documento configuracion
         public byte[] CrearDocumentoConfiguracion(ConfiguracionCertificado configuracioncertificado)
         {
@@ -1325,7 +1457,7 @@ namespace DAES.BLL
 
                 doc.AddTitle(configuracioncertificado.Titulo);
                 doc.AddAuthor(firmante.Nombre);
-                var aux = context.Disolucions.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
+
                 var centrar = Element.ALIGN_CENTER;
                 Paragraph paragraphTITULO = new Paragraph(configuracioncertificado.Titulo, _fontTitulo);
                 paragraphTITULO.Alignment = centrar;
@@ -1535,7 +1667,7 @@ namespace DAES.BLL
                             var parrafoActual = parrafo_tres;
                             if (posicion == cantiReforma)
                             {
-                                parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + posicion + "° #y ultima");
+                                parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + posicion + "° #y última");
                             }
                             else
                             {
@@ -1549,8 +1681,8 @@ namespace DAES.BLL
                             parrafoActual = parrafoActual.Replace("[TIPOJUNTA]", item.TipoGeneralId != null ? "#" + item.TipoGeneral.Nombre + "#" : "[ERROR_Reforma]");
                             parrafoActual = parrafoActual.Replace("[FECHAJUNTAGENERALSOCIOS]", item.FechaJuntaGeneral != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", item.FechaJuntaGeneral.Value) + "#" : "[ERROR_Reforma]");
                             parrafoActual = parrafoActual.Replace("[FECHAESCRITURA]", item.FechaEscritura != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", item.FechaEscritura.Value) + "#" : "[ERROR_Reforma]");
-                            parrafoActual = parrafoActual.Replace("[LUGARNOTARIO]", item.DatosNotario != null ? "#" + item.DatosNotario + "#" : "[ERROR_Reforma]");
-                            parrafoActual = parrafoActual.Replace("[DATOGENERALNOTARIO]", item.LugarNotario != null ? "#" + item.LugarNotario + "#" : "[ERROR_Reforma]");
+                            parrafoActual = parrafoActual.Replace("[LUGARNOTARIO]", item.LugarNotario != null ? "#" + item.LugarNotario + "#" : "[ERROR_Reforma]");
+                            parrafoActual = parrafoActual.Replace("[DATOGENERALNOTARIO]", item.DatosNotario != null ? "#" + item.DatosNotario + "#" : "[ERROR_Reforma]");
                             string[] parrafo3 = parrafoActual.Split('#');
                             if (parrafoActual.Contains("ERROR_Reforma"))
                             {
@@ -1568,9 +1700,11 @@ namespace DAES.BLL
                                     PhraseTRES = new Phrase(element, _fontNegrita);
                                 }
                                 comb3.Add(PhraseTRES);
+                                
                                 index++;
                             }
-                            comb.Alignment = Element.ALIGN_JUSTIFIED;
+                            comb3.Add(SaltoLinea);
+                            comb3.Alignment = Element.ALIGN_JUSTIFIED;
                         }
 
 
@@ -1599,7 +1733,7 @@ namespace DAES.BLL
                         if (organizacion.ExistenciaAnteriors.Any())
                         {
                             // PARRAFO 1 - INI                         
-                            parrafo_uno = parrafo_uno.Replace("[TIPONORMA]", legalAnt.tipoNorma != null ? "#" + legalAnt.tipoNorma.Nombre + "#" : "[ERROR_legalAnt]");
+                            parrafo_uno = parrafo_uno.Replace("[TIPONORMA]", legalAnt.TipoNormaId != null ? "#" + legalAnt.tipoNorma.Nombre + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[NUMERONORMA]", legalAnt.NNorma != null ? "#" + legalAnt.NNorma + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[FECHANORMA]", legalAnt.FNorma != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalAnt.FNorma.Value) + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[AUTORIZADOPOR]", legalAnt.Autorizado != null ? "#" + legalAnt.Autorizado + "#" : "[ERROR_legalAnt]");
@@ -1795,9 +1929,9 @@ namespace DAES.BLL
                                     if (ObsLegal.AprobacionId == 1)
                                     {
                                         parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", legalAnt.TipoNormaId != null ? "#" + legalAnt.tipoNorma.Nombre + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", legalAnt.TipoGeneralId != null ? "#" + legalAnt.TipoGeneral.Nombre + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", legalAnt.TipoGeneralId != null ? "#" + legalAnt.TipoGeneral.Nombre + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", legalAnt.TipoGeneralId != null ? "#" + legalAnt.TipoGeneral.Nombre + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", legalAnt.NNorma != null ? "#" + legalAnt.NNorma + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", legalAnt.FNorma != null ? "#" + legalAnt.FNorma + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", legalAnt.Autorizado != null ? "#" + legalAnt.Autorizado + "#" : "ERROR_Opcional");
                                         parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", ObsLegal.NumeroOficio != null ? "#" + ObsLegal.NumeroOficio + "#" : "ERROR_Opcional");
                                         parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", ObsLegal.FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}#", ObsLegal.FechaOficio.Value) + "#" : "ERROR_Opcional");
                                         if (parrafo2[0].Contains("ERROR_Opcional"))
@@ -1913,7 +2047,7 @@ namespace DAES.BLL
 
                                     if (IndReforma == cantiReforma && organizacion.ReformaPosteriors.Any() == false)
                                     {
-                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y ultima");
+                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y última");
                                     }
                                     else
                                     {
@@ -1985,7 +2119,7 @@ namespace DAES.BLL
                                     var ObsReformaPost = organizacion.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Re.IdReformaPost);
                                     if (IndReforma == cantiReforma)
                                     {
-                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y ultima");
+                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y última");
                                     }
                                     else
                                     {
@@ -2155,6 +2289,7 @@ namespace DAES.BLL
                                 comb2.Add(PhraseDOS);
                                 index++;
                             }
+                            doc.Add(subtitulo2);
                             doc.Add(comb2);
                             doc.Add(SaltoLinea);
                             //PARRAFO 2 - FIN
@@ -2266,7 +2401,7 @@ namespace DAES.BLL
                                     {
                                         if (index % 2 == 0)
                                         {
-                                            PhraseCUATROSuperior = new Phrase(item, _fontStandard);
+                                            parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y última");
                                         }
                                         else
                                         {
@@ -2485,7 +2620,7 @@ namespace DAES.BLL
                                 var ObsReforma = organizacion.ObservacionReformas.FirstOrDefault(q => q.IdReformaAGAC == Re.IdReformaAGAC);
                                 if (IndReforma == cantiReforma)
                                 {
-                                    parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y ultima");
+                                    parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y última");
                                 }
                                 else
                                 {
@@ -2597,16 +2732,16 @@ namespace DAES.BLL
 
 
                 //CertificadoDisolucionTest = 106 | CertificadoDisolucion = 4
+
                 if (TipoDocumentoId == (int)Infrastructure.Enum.TipoDocumento.CertificadoDisolución)
                 {
+                    var aux = context.Disolucions.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
                     if (aux != null)
                     {
                         string parrafo = aux.Anterior == true ? configuracioncertificado.Parrafo1DisAnt : configuracioncertificado.Parrafo1DisPos;
                         string parrafo2 = aux.Anterior == true ? configuracioncertificado.Parrafo2ExAnterior : configuracioncertificado.Parrafo2ExPosterior;
                         parrafo = aux.Anterior == null ? configuracioncertificado.Parrafo1 : parrafo;
                         parrafo2 = aux.Anterior == null ? configuracioncertificado.Parrafo2 : parrafo2;
-                        //if (aux != null)
-                        //{
                         Phrase PhraseDiso;
                         Phrase PhraseDiso2;
                         Paragraph combDiso = new Paragraph();
@@ -2723,15 +2858,15 @@ namespace DAES.BLL
                         else if (aux.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.AsociacionConsumidores ||
                                  aux.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.AsociacionGremial)
                         {
-
                             parrafo = parrafo.Replace("[RAZONSOCIAL]", organizacion.RazonSocial != null ? "#" + organizacion.RazonSocial.ToString() + "#" : "[ERROR_Disolucion]");
-                            parrafo = parrafo.Replace("[FECHAASAMBLEASOCIOS]", aux.FechaJuntaSocios != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaJuntaSocios.Value) + "#" : "[ERROR_Disolucion]");
-                            parrafo = parrafo.Replace("[FECHAESCRITURA]", aux.FechaEscrituraPublica != null ? "# la reducción a escritura pública se realizó con fecha " + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaEscrituraPublica.Value) + ", #" : "[ERROR_Disolucion]");
+                            parrafo = parrafo.Replace("[FECHAASAMBLEASOCIOS]", aux.FechaAsambleaSocios != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaJuntaSocios.Value) + "#" : "[ERROR_Disolucion]");
+                            parrafo = parrafo.Replace("[FECHAESCRITURA]", aux.FechaEscrituraPublica != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaEscrituraPublica.Value) + "#" : "[ERROR_Disolucion]");
                             parrafo = parrafo.Replace("[LUGARNOTARIO]", aux.NombreNotaria != null ? "#" + aux.NombreNotaria + "#" : "[ERROR_Disolucion]");
-                            parrafo = parrafo.Replace("[NOMBRENOTARIO]", aux.DatosNotario != null ? "#" + aux.DatosNotario + "#" : "[ERROR_Disolucion]");
-                            parrafo = parrafo.Replace("[FECHAPUBLICACION]", aux.FechaPubliccionDiarioOficial != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaPubliccionDiarioOficial.Value) + "#" : "[ERROR_Disolucion]");
+                            parrafo = parrafo.Replace("[DATOGENERALNOTARIO]", aux.DatosNotario != null ? "#" + aux.DatosNotario + "#" : "[ERROR_Disolucion]");
+                            parrafo = parrafo.Replace("[FECHAPUBLICACION]", aux.FechaPubliccionDiarioOficial.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaPubliccionDiarioOficial.Value) + "#" : "[ERROR_Disolucion]");
                             parrafo = parrafo.Replace("[NUMEROOFICIO]", aux.NumeroOficio != null ? "Dicha disolución se encuentra aprobada por oficio ordinario N° #" + aux.NumeroOficio + "#" : aux.FechaOficio != null ? "" : ".");
                             parrafo = parrafo.Replace("[FECHAOFICIO]", aux.NumeroOficio != null && aux.FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaOficio.Value) + "#." : "");
+                          
                             if (parrafo.Contains("ERROR_Disolucion"))
                             {
                                 throw new Exception(string.Format("Error al emitir, el apartado de Disolucion no tiene todos los campos requeridos"));
@@ -3484,8 +3619,8 @@ namespace DAES.BLL
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Desde", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Hasta", _fontStandardBold)));
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
                             foreach (var item in directorio.ToList())
                             {
@@ -3532,10 +3667,10 @@ namespace DAES.BLL
                             table.HorizontalAlignment = Element.ALIGN_CENTER;
                             table.WidthPercentage = 100f;
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
-                            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Desde", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Hasta", _fontStandardBold)));
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
 
                             foreach (var item in directorio.ToList())
@@ -3581,10 +3716,10 @@ namespace DAES.BLL
                             table.WidthPercentage = 100.0f;
                             table.HorizontalAlignment = Element.ALIGN_CENTER;
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
-                            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Desde", _fontStandardBold)));
+                            table.AddCell(new PdfPCell(new Phrase("Hasta", _fontStandardBold)));
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
 
                             foreach (var item in directorio.ToList())

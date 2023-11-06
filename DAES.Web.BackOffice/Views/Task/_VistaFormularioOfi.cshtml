@@ -1,0 +1,476 @@
+﻿<!--INI-->
+@model DAES.Web.BackOffice.Controllers.TaskModel
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<title> Editor </title>
+
+<style type="text/css">
+    .editable {
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 500px;
+        height: auto;
+        display: inline-block;
+        word-wrap: break-word;
+        margin-bottom: 20px;
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        z-index: 10;
+        box-shadow: 3px 2px 10px 1px #b0b0b0;
+    }
+</style>
+
+<div class="panel panel-default">
+
+    <div class="panel-heading">Formulario Innova</div>
+    <div class="panel-body">
+
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Workflow.WorkflowId)
+        @Html.HiddenFor(model => model.Workflow.ProcesoId)
+        @Html.HiddenFor(model => model.Workflow.Proceso.OrganizacionId)
+
+        <div class="col-md-6">
+            <button id="boldButton" class="btn btn-danger">Negrita</button>
+            <button id="italicButton" class="btn btn-danger">Italic</button>
+            <button id="subButton" class="btn btn-danger">Subrayar</button>
+
+            <table>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo1, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {
+                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo1)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo2, htmlAttributes: new { @class = "control-label col-md-6" })
+                        <div class="col-md-12">
+                            <div id="Parrafo2" class="form-control col-md-12 editable" contenteditable="true">
+
+                                @if (Model.Workflow.DocOficio.Any())
+                                {
+                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo2)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Tabla, htmlAttributes: new { @class = "control-label col-md-6" })
+                        <div class="col-md-12">
+                            <div id="Tabla" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {
+                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id="btnCrearTabla" onclick="crearTabla()" class="btn btn-danger">Agregar Tabla</button>
+                        <button id="btnEliminarTabla" onclick="EliminarTabla()" class="btn btn-danger" style="display:none;">Eliminar Tabla</button>
+                        <div id="dimension">
+                            <input id="number" type="number" class="form-control" />X<input id="number2" type="number" class="form-control" />
+                        </div>
+ 
+</td>
+                </tr>
+            </table>
+
+            <div id="DataBase" class="form-control col-md-12 editable" contenteditable="true" style="display: none">
+                @if (Model.Workflow.DocOficio.Any())
+                {
+                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla);
+                }
+            </div>
+            </div>
+            <table id="miTabla" style="width:50%;">
+                <tr>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+
+            @{
+               /* if (Model.Workflow.DocOficio.Any())
+                {
+                    Console.WriteLine("workflowid" + Model.Workflow.WorkflowId);
+                    <embed src="@Url.Action("ShowDoc", "Task", new { id = Model.Workflow.WorkflowId })" width="96%" height="990px" type="application/pdf" />
+
+                }
+                <br />*/  
+            }
+
+        </div>
+
+
+        <div>
+            <button id="GuardarDocOf" type="submit" class="btn btn-danger">Vista Previa</button>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="elemento"></div>
+
+
+
+
+</div>
+<script language="JavaScript">
+
+
+    $(document).ready(function () {
+        console.log($('#prueba').val());
+        if ($(".editor-for-input").val() != null) {
+            console.log("entre en el if ");
+            var texto = $(".editor-for-input").val();
+            $("#divEditable").html(texto);
+        }
+
+
+
+        var $Parrafo1 = $('#Parrafo1');
+        var $Parrafo2 = $('#Parrafo2');
+        var $Tabla = $('#Tabla');
+        var $boldButton = $('#boldButton');
+        var $italicButton = $('#italicButton');
+        var $subButton = $('#subButton');
+        //var ediDiv = $('#ediDiv');
+        var $ediDiv = $('#ediDiv');
+
+
+
+
+
+
+
+
+
+        var $guardar = $('#guardar');
+
+        $Parrafo1.on('mouseup', function (e) {
+            palabras(e);
+
+        });
+        $Parrafo2.on('mouseup', function (e) {
+            palabras(e);
+
+        });
+        $Tabla.on('mouseup', function (e) {
+            palabras(e);
+
+        });
+
+        $ediDiv.on('mouseup', function (e) {
+            palabras(e);
+
+        });
+
+        function palabras(e) {
+
+            var selectedText = window.getSelection().toString();
+
+            if (selectedText.length > 0) {
+                console.log("soy los botones");
+                $boldButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX,
+
+                }).show();
+
+                $italicButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX + 60,
+                }).show();
+
+                $subButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX + 100,
+                }).show();
+
+            } else {
+
+                $boldButton.show();
+                $italicButton.show();
+                $subButton.show();
+            }
+        };
+
+        $guardar.on('click', function () {
+            var div3 = document.getElementById("Parrafo1").innerHTML;
+            var div = document.getElementById("Parrafo2").innerHTML;
+            var div2 = document.getElementById("Tabla").innerHTML;
+            alert(div + "   " + div2 + " " + div3);
+
+        });
+        $boldButton.on('click', function () {
+            document.execCommand('bold', false, null); // negrita
+            $boldButton.show();
+        });
+        $italicButton.on('click', function () {
+            document.execCommand('italic', false, null); // italica
+            $italicButton.show();
+        });
+        $subButton.on('click', function () {
+            document.execCommand('underline', false, null);//Subrayada
+            $subButton.show();
+        });
+
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('#ediDiv').length === 0 && $(e.target).closest('#Parrafo1').length === 0 && $(e.target).closest('#Parrafo2').length === 0 && $(e.target).closest('#Tabla').length === 0 && $(e.target).closest('#boldButton').length === 0 && $(e.target).closest('#italicButton').length === 0 && $(e.target).closest('#subButton').length === 0) {
+                $boldButton.show();
+                $italicButton.show();
+                $subButton.show();
+
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        // Maneja el evento de cambio en el EditorFor para actualizar el div Parrafo1
+        $("#editorForParrafo1").on("change", function () {
+            var nuevoTexto = $(this).val();
+            $("#Parrafo1").html(nuevoTexto);
+        });
+
+        // Cuando la página se carga, copia el contenido inicial del EditorFor al div Parrafo1
+        var textoInicial = $("#editorForParrafo1").val();
+        $("#Parrafo1").html(textoInicial);
+    });
+
+
+    $(document).ready(function () {
+        //var parrafo1 = document.getElementById("Parrafo1").innerHTML;
+        //var parrafo2 = document.getElementById("Parrafo2").innerHTML;
+        //var tabla = document.getElementById("Tabla").innerHTML;
+        //console.log("estoy arriba del ajax" + parrafo1 + " " + parrafo2 + "" + tabla);
+        //Model.Workflow.Parrafo1 = parrafo1;
+        //Model.Workflow.WorkflowId = workflowId;
+        var editorValue = document.getElementById("DataBase").innerHTML;
+        filas =""
+        matriz = []
+        if (editorValue != null)
+        {
+            $('#number').val(3)
+            $('#number2').val(3)
+            filas = editorValue.split(';');
+            matriz = []
+            ArmarDataTabla()
+            crearTabla()
+            
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            if (editorValue != null) {
+                for (var i = 0; i < 3; i++) {
+                    for (var j = 0; j < 3; j++) {
+                        console.log("Asignando valor a fila" + i + j);
+                        document.getElementById("#fila" + i + j).innerHTML = "hola";
+                    }
+                }
+
+            }
+        });
+        // Obtén la URL actual
+        var url = window.location.href;
+
+        // Divide la URL en partes usando el carácter '?' como separador
+        var parts = url.split('?');
+
+        if (parts.length > 1) {
+            // Obtiene la parte después del '?' que contiene los parámetros
+            var params = parts[1];
+
+            // Divide los parámetros usando '&' como separador
+            var paramArray = params.split('&');
+
+            // Inicializa una variable para almacenar el valor de WorkflowId
+            var workflowId = null;
+
+            // Recorre los parámetros para encontrar WorkflowId
+            for (var i = 0; i < paramArray.length; i++) {
+                var param = paramArray[i].split('=');
+                if (param[0] === 'WorkflowId') {
+                    // El valor de WorkflowId se encuentra en param[1]
+                    workflowId = param[1];
+                    break; // Sal del bucle una vez que lo encuentres
+                }
+            }
+
+            if (workflowId !== null) {
+                // Realiza tu lógica con el valor de WorkflowId
+                console.log("Valor de WorkflowId: " + workflowId);
+            } else {
+                console.log("WorkflowId no encontrado en la URL.");
+            }
+        } else {
+            console.log("URL no contiene parámetros.");
+        }
+
+        $("#GuardarDocOf").click(function () {
+            console.log("estoy arriba del data ");
+            datoFinal =""
+            for (var i = 0; i < 3; i++)
+            {
+                for (var j = 0; j < 3; j++)
+                {
+                    if (i = 3 - 1) {
+                        if (j = 3 - 1) {
+                            datoFinal = datoFinal + matriz[i][j] + ""
+                        } else {
+                            datoFinal = datoFinal + matriz[i][j] + ";"
+                        }                        
+                    } else {
+                        datoFinal = datoFinal + matriz[i][j]+","
+                    }
+                    
+                }
+            }
+            console.log("dato final: " + datoFinal)
+            var data = {
+                //var valorDiv = $("#miDiv").text();
+
+                Parrafo1: document.getElementById("Parrafo1").innerHTML,
+                WorkflowId: workflowId,
+                Parrafo2: document.getElementById("Parrafo2").innerHTML,
+                DocOficioId: null,
+                Tabla: datoFinal,
+                Content: null,
+                FileName: null,
+                FechaCreacion: null
+
+
+                //tabla: document.getElementById("Tabla").innerHTML
+
+            };
+            console.log("estoy arriba del ajax" + data.parrafo1 + " " + data.parrafo2 + "" + data.tabla);
+            $.ajax({
+                type: "POST",
+                url: "/Task/GuardarDocOfi",
+                data: data,
+                success: function (result) {
+                    $("#elemento").html(result);
+                }
+            });
+
+
+        });
+    });
+
+    function agregarFila(fila) {
+        fila++
+        var table = document.getElementById("miTabla");
+        var row = table.insertRow(-1); // Inserta una fila al final de la tabla
+        for (var i = 0; i < table.rows[0].cells.length; i++) {
+            var cell = row.insertCell(i); // Inserta una celda en la nueva fila
+            //var cellId = "celda" + (i + 1); // Genera un ID único para cada celda
+            var cellId = document.createElement("div");
+            cellId.classList.add("form-control", "col-md-12", "editable");
+            cellId.setAttribute("contenteditable", "true");
+            cellId.setAttribute("id", "fila" + fila + i); // Asigna un ID único a la celda
+            cellId.innerHTML = matriz[fila][i]
+            cell.appendChild(cellId); // Agrega el nodo de texto a la celda
+            row.appendChild(cell); // Agrega la celda a la fila
+        }
+    }
+
+    function ArmarDataTabla()
+    {
+        for (var i = 0; i < filas.length; i++) {
+            var elementos = filas[i].split(',');
+            matriz.push(elementos);
+        }
+        console.log(matriz);
+    }
+    //
+    function agregarColumna(columna) {
+        var table = document.getElementById("miTabla");
+        var row = table.rows[0]; // Obtén la primera fila de la tabla (puedes ajustar esto según tus necesidades)
+
+        var cell = document.createElement("td"); // Crea una nueva celda
+        //var cellText = document.createTextNode("Nuevo Contenido"); // Crea un nodo de texto para el contenido de la celda
+        var cellText = document.createElement("div");
+        cellText.classList.add("form-control", "col-md-12", "editable");
+        cellText.setAttribute("contenteditable", "true");
+        cellText.setAttribute("id", "fila0" + columna); // Asigna un ID único a la celda
+        cellText.innerHTML = matriz[0][columna]
+        cell.appendChild(cellText); // Agrega el nodo de texto a la celda
+        row.appendChild(cell); // Agrega la celda a la fila
+    }
+
+    function crearTabla() {
+
+            var x = $('#number').val();
+        var y = $('#number2').val();
+        if (x > 0 && y > 0) {
+            var table = document.getElementById("miTabla");
+            table.insertRow(0);
+            for (var i = 0; i < x; i++) {
+                agregarColumna(i)
+            }
+            for (var i = 0; i < y - 1; i++) {
+                agregarFila(i)
+            }
+            $("#btnCrearTabla").hide();
+            $("#btnEliminarTabla").show();
+            $("#dimension").hide();
+        } else {
+            alert("fila y columna debe ser mayor a 0.");
+        }
+
+    }
+
+    function EliminarTabla() {
+        var respuesta = confirm("¿Quieres continuar?");
+
+        if (respuesta == true) {
+            var table = document.getElementById("miTabla");
+            var rows = table.getElementsByTagName("tr");
+            for (var i = rows.length - 1; i >= 0; i--) {
+                var row = rows[i];
+                row.parentNode.removeChild(row);
+            }
+            $("#btnEliminarTabla").hide();
+            $("#btnCrearTabla").show();
+            $("#dimension").show();
+        }
+
+    }
+</script>
+
+
+
+
