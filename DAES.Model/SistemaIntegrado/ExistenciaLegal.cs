@@ -10,8 +10,8 @@ namespace DAES.Model.SistemaIntegrado
   {
     public ExistenciaLegal()
     {
-
-    }
+            ObservacionLegals = new List<ObservacionLegal>();
+        }
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -96,6 +96,7 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Tipo Junta")]
         public int? TipoGeneralId { get; set; }
         public virtual TipoGeneral TipoGeneral { get; set; }
+        public virtual List<ObservacionLegal> ObservacionLegals { get; set; }
         //[Display(Name = "Fecha asamblea constitutiva")]
         //[DataType(DataType.Date)]
         //public DateTime? FechaAsambleaConstitutiva { get; set; }

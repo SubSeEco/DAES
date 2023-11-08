@@ -11,7 +11,10 @@ namespace DAES.Model.SistemaIntegrado
     [Table("ExistenciaPosterior")]
     public class ExistenciaPosterior
     {
-
+        public ExistenciaPosterior()
+        {
+            ObservacionLegals = new List<ObservacionLegal>();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Display(Name = "Id")]
@@ -54,5 +57,6 @@ namespace DAES.Model.SistemaIntegrado
 
         [Display(Name = "Lugar notario")]
         public string LugarNotario { get; set; }
+        public virtual List<ObservacionLegal> ObservacionLegals { get; set; }
     }
 }

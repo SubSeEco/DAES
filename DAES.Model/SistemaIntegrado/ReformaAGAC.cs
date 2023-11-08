@@ -12,7 +12,10 @@ namespace DAES.Model.SistemaIntegrado
     public class ReformaAGAC
     {
 
-
+        public ReformaAGAC()
+        {
+            ObservacionReformas = new List<ObservacionReforma>();
+        }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -52,6 +55,6 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Tipo Junta")]
         public int? TipoGeneralId { get; set; }
         public virtual TipoGeneral TipoGeneral { get; set; }
-
+        public virtual List<ObservacionReforma> ObservacionReformas { get; set; }
     }
 }

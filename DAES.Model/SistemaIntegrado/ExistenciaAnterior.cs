@@ -11,6 +11,10 @@ namespace DAES.Model.SistemaIntegrado
     [Table("ExistenciaLegalAnterior")]
     public class ExistenciaAnterior
     {
+        public ExistenciaAnterior()
+        {
+            ObservacionLegals = new List<ObservacionLegal>();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Display(Name = "Id")]
@@ -58,5 +62,6 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? FechaEscritura { get; set; }
+        public virtual List<ObservacionLegal> ObservacionLegals { get; set; }
     }
 }

@@ -682,6 +682,7 @@ namespace DAES.BLL
                         reforma.LugarNotario = item.LugarNotario;
                         reforma.TipoGeneralId = item.TipoGeneralId;
                         reforma.FechaEscritura = item.FechaEscritura;
+                        reforma.FechaJuntaGeneral = item.FechaJuntaGeneral;
                     }
                 }
 
@@ -954,6 +955,8 @@ namespace DAES.BLL
                         disolucion.DatosNotario = item.DatosNotario;
 
                         disolucion.DatosCBR = item.DatosCBR;
+
+                        disolucion.FechaComiLiquiJuntaSocios = item.FechaComiLiquiJuntaSocios;
 
                         disolucion.FechaInicio = item.FechaInicio;
 
@@ -1411,8 +1414,12 @@ namespace DAES.BLL
                     table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
                     table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandard)));
                     table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandard)));
-                    table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
-                    table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
+                    PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
+                    cellDesde.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellDesde);
+                    PdfPCell cellHasta = new PdfPCell(new Phrase("Hasta", _fontStandardBold));
+                    cellHasta.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellHasta);
 
                     doc.Add(table);
                     doc.Add(SaltoLinea);
@@ -1581,14 +1588,15 @@ namespace DAES.BLL
                 {
 
                     // PARRAFO 1 INI
+                    var legalAnt = context.ExistenciaLegalAnterior.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
                     var transitorio = context.Transitorio.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
                     if (transitorio != null)
                     {
                         parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial != null ? "#" + organizacion.RazonSocial.ToString() + "#" : "[RAZONSOCIAL]");
-                        parrafo_uno = parrafo_uno.Replace("[FECHAJUNTAGENERALSOCIOS]", transitorio.FechaJuntaSocios != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", transitorio.FechaJuntaSocios.Value) + "#" : "[ERROR_Transitorio]");
-                        parrafo_uno = parrafo_uno.Replace("[FECHAESCRITURA]", transitorio.FechaEscrituraPublica != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", transitorio.FechaEscrituraPublica.Value) + "#" : "[ERROR_Transitorio]");
-                        parrafo_uno = parrafo_uno.Replace("[LUGARNOTARIO]", transitorio.NombreNotaria != null ? "#" + transitorio.NombreNotaria + "#" : "[ERROR_Transitorio]");
-                        parrafo_uno = parrafo_uno.Replace("[DATOSGENERALESNOTARIO]", transitorio.DatosNotario != null ? "#" + transitorio.DatosNotario + "#" : "[ERROR_Transitorio]");
+                        parrafo_uno = parrafo_uno.Replace("[FECHAJUNTAGENERALSOCIOS]", legalAnt.FechaJuntaGeneral != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalAnt.FechaJuntaGeneral.Value) + "#" : "[ERROR_Legal]");
+                        parrafo_uno = parrafo_uno.Replace("[FECHAESCRITURA]", legalAnt.FechaEscritura != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalAnt.FechaEscritura.Value) + "#" : "[ERROR_Legal]");
+                        parrafo_uno = parrafo_uno.Replace("[LUGARNOTARIO]", legalAnt.LugarNotario != null ? "#" + legalAnt.LugarNotario + "#" : "[ERROR_Legal]");
+                        parrafo_uno = parrafo_uno.Replace("[DATOSGENERALESNOTARIO]", legalAnt.DatosGeneralNotario != null ? "#" + legalAnt.DatosGeneralNotario + "#" : "[ERROR_Legal]");
 
                         parrafo_uno = parrafo_uno.Replace("[OBJETO]", transitorio.Objeto != null ? "#" + transitorio.Objeto.ToString() + "#" : "[ERROR_Transitorio]");
                     }
@@ -1600,6 +1608,9 @@ namespace DAES.BLL
 
                     string[] parafo1 = parrafo_uno.Split('#');
                     if (parrafo_uno.Contains("ERROR_Transitorio"))
+                    {
+                        throw new Exception(string.Format("Error al emitir, el apartado Transitorio no tiene todos los campos requeridos"));
+                    }else if(parrafo_uno.Contains("ERROR_Legal"))
                     {
                         throw new Exception(string.Format("Error al emitir, el apartado Transitorio no tiene todos los campos requeridos"));
                     }
@@ -1626,7 +1637,7 @@ namespace DAES.BLL
                     doc.Add(SaltoLinea);
                     // PARRAFO 1 - FIN
                     // PARRAFO 2 - INI
-                    var legalAnt = context.ExistenciaLegalAnterior.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
+  
                     if (legalAnt != null)
                     {
                         parrafo_dos = parrafo_dos.Replace("[TIPONORMA]", legalAnt.tipoNorma != null ? "#" + legalAnt.tipoNorma.Nombre + "#" : "[ERROR_Legal]");
@@ -1738,9 +1749,9 @@ namespace DAES.BLL
                     {
                         var legalAnt = organizacion.ExistenciaAnteriors.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
                         var legarPost = organizacion.ExistenciaPosteriors.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
-                        if (organizacion.ExistenciaAnteriors.Any())
+                        if (organizacion.ExistenciaAnteriors.Any()) // estatuto anterior 2003
                         {
-                            // PARRAFO 1 - INI                         
+                            // PARRAFO 1 - INI  estatuto anterior 2003                        
                             parrafo_uno = parrafo_uno.Replace("[TIPONORMA]", legalAnt.TipoNormaId != null ? "#" + legalAnt.tipoNorma.Nombre + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[NUMERONORMA]", legalAnt.NNorma != null ? "#" + legalAnt.NNorma + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[FECHANORMA]", legalAnt.FNorma != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalAnt.FNorma.Value) + "#" : "[ERROR_legalAnt]");
@@ -1778,31 +1789,45 @@ namespace DAES.BLL
                             doc.Add(comb);
                             doc.Add(SaltoLinea);
                             //PARRAFO 1 - FIN
-                            //PARRAFO 2 - INI
+                            //PARRAFO 2 - INI estatuto anterior 2003
+                            var ReformaVigente = true;
                             if (organizacion.ReformaPosteriors.Any())
                             {
-                                var aprobadoObsReforma = false;
-                                var ReformaUlti = organizacion.ReformaPosteriors.ToList().OrderByDescending(q => q.FechaPubliDiario).FirstOrDefault();
-                                var ObsReforma = organizacion.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == ReformaUlti.IdReformaPost);
-                                string[] parrafo2;
-                                parrafo2 = parrafo_dos.Split('#');
-                                subtitulo2 = new Paragraph(parrafo2[0], _fontStandardBoldSubRayado);
-                                parrafo2 = parrafo2.Where(n => n != parrafo2[0]).ToArray();
-                                parrafo2[0] = parrafo2[0].Replace("[TIPOGENERAL]", ReformaUlti.TipoGeneralId != null ? "#" + ReformaUlti.TipoGeneral.Nombre + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[EXISTEREFORMA]", "#reformado#");
-                                parrafo2[0] = parrafo2[0].Replace("[FECHAJUNTAGENERALSOCIOS]", ReformaUlti.FechaJuntGeneralSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaJuntGeneralSocios.Value) + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[FECHAESCRITURA]", ReformaUlti.FechaEscrituraPublica.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaEscrituraPublica.Value) + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[LUGARNOTARIO]", ReformaUlti.LugarNotario != null ? "#" + ReformaUlti.LugarNotario + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[DATOGENERALNOTARIO]", ReformaUlti.DatosGeneralNotario != null ? "#" + ReformaUlti.DatosGeneralNotario + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[FECHAPUBLICACION]", ReformaUlti.FechaPubliDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaPubliDiario.Value) + "#" : "ERROR_Reforma");
-                                if (parrafo2[0].Contains("ERROR_Reforma"))
+                                var Reforma = organizacion.ReformaPosteriors.ToList().OrderByDescending(q => q.FechaPubliDiario);
+                                var ReformaUlti = new ReformaPosterior();
+                                foreach (var item in Reforma)
                                 {
-                                    throw new Exception(string.Format("Error al emitir, el apartado de Reforma no tiene todos los campos requeridos"));
+                                    if ((item.ObservacionReformas.Any() &&
+                                        item.ObservacionReformas.FirstOrDefault().AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada) ||
+                                        !item.ObservacionReformas.Any() || item.ObservacionReformas.FirstOrDefault().AprobacionId == null
+                                        )
+                                    {
+                                        ReformaUlti = item;
+                                        break;
+                                    }
                                 }
-
-                                if (ObsReforma != null)
+                                if (ReformaUlti.IdReformaPost != 0) // cuenta con al menos una reforma sin obs o con obs aprobada
                                 {
-                                    if (ObsReforma.AprobacionId == 1)
+                                    string[] parrafo2;
+                                    parrafo2 = parrafo_dos.Split('#');
+                                    subtitulo2 = new Paragraph(parrafo2[0], _fontStandardBoldSubRayado);
+                                    parrafo2 = parrafo2.Where(n => n != parrafo2[0]).ToArray();
+                                    parrafo2[0] = parrafo2[0].Replace("[TIPOGENERAL]", ReformaUlti.TipoGeneralId != null ? "#" + ReformaUlti.TipoGeneral.Nombre + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[EXISTEREFORMA]", "#reformado#");
+                                    parrafo2[0] = parrafo2[0].Replace("[FECHAJUNTAGENERALSOCIOS]", ReformaUlti.FechaJuntGeneralSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaJuntGeneralSocios.Value) + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[FECHAESCRITURA]", ReformaUlti.FechaEscrituraPublica.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaEscrituraPublica.Value) + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[LUGARNOTARIO]", ReformaUlti.LugarNotario != null ? "#" + ReformaUlti.LugarNotario + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[DATOGENERALNOTARIO]", ReformaUlti.DatosGeneralNotario != null ? "#" + ReformaUlti.DatosGeneralNotario + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[FECHAPUBLICACION]", ReformaUlti.FechaPubliDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaPubliDiario.Value) + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[FOJASNUMERO]", ReformaUlti.FojasNumero != null ? "#" + ReformaUlti.FojasNumero + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[COMUNACBR]", ReformaUlti.DatosCBR != null ? "#" + ReformaUlti.DatosCBR + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[AÑOINSCRIPCION]", ReformaUlti.AnoInscripcion != null ? "#" + ReformaUlti.AnoInscripcion + "#" : "ERROR_Reforma");
+                                    if (parrafo2[0].Contains("ERROR_Reforma"))
+                                    {
+                                        throw new Exception(string.Format("Error al emitir, el apartado de Reforma no tiene todos los campos requeridos"));
+                                    }
+                                    var aprobadoObsReforma = false;
+                                    if (ReformaUlti.ObservacionReformas != null)
                                     {
                                         parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
                                         parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
@@ -1813,109 +1838,135 @@ namespace DAES.BLL
                                         aprobadoObsReforma = true;
                                     }
 
-                                }
-
-                                if (aprobadoObsReforma == false)
-                                {
-                                    parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
-                                }
-
-
-                                parrafo2 = parrafo2[0].Split('#');
-
-                                index = 0;
-                                foreach (string element in parrafo2)
-                                {
-                                    if (index % 2 == 0)
+                                    if (aprobadoObsReforma == false)
                                     {
-                                        PhraseDOS = new Phrase(element, _fontStandard);
+                                        parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
                                     }
-                                    else
+
+
+                                    parrafo2 = parrafo2[0].Split('#');
+
+                                    index = 0;
+                                    foreach (string element in parrafo2)
                                     {
-                                        PhraseDOS = new Phrase(element, _fontNegrita);
-                                    }
-                                    comb2.Add(PhraseDOS);
-                                    index++;
-                                }
-                            }
-                            else if (organizacion.ReformaAnteriors.Any())
-                            {
-                                var ReformaUlti = organizacion.ReformaAnteriors.ToList().OrderByDescending(q => q.FechaPublicDiario).FirstOrDefault();
-                                var ObsReforma = organizacion.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == ReformaUlti.IdReformaAnterior);
-                                string[] parrafo2;
-                                parrafo2 = parrafo_dos.Split('#');
-                                subtitulo2 = new Paragraph(parrafo2[0], _fontStandardBoldSubRayado);
-                                parrafo2 = parrafo2.Where(n => n != parrafo2[0]).ToArray();
-                                parrafo2[0] = parrafo2[0].Replace("[TIPOGENERAL]", ReformaUlti.TipoGeneralId != null ? "#" + ReformaUlti.TipoGeneral.Nombre + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[EXISTEREFORMA]", "#reformado#");
-                                parrafo2[0] = parrafo2[0].Replace("[FECHAJUNTAGENERALSOCIOS]", ReformaUlti.FechaJuntaGeneral.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaJuntaGeneral.Value) + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[FECHAESCRITURA]", ReformaUlti.FechaEscritura.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaEscritura.Value) + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[LUGARNOTARIO]", ReformaUlti.LugarNotario != null ? "#" + ReformaUlti.LugarNotario + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[DATOGENERALNOTARIO]", ReformaUlti.DatosNotario != null ? "#" + ReformaUlti.DatosNotario + "#" : "ERROR_Reforma");
-                                parrafo2[0] = parrafo2[0].Replace("[FECHAPUBLICACION]", ReformaUlti.FechaPublicDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaPublicDiario.Value) + "#" : "ERROR_Reforma");
-                                if (parrafo2[0].Contains("ERROR_Reforma"))
-                                {
-                                    throw new Exception(string.Format("Error al emitir, el apartado de Reforma no tiene todos los campos requeridos"));
-                                }
-                                if (ObsReforma != null)
-                                {
-                                    if (ObsReforma.AprobacionId == 1)
-                                    {
-                                        parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", ReformaUlti.TipoNormaId != null ? "#" + ReformaUlti.TipoNorma.Nombre + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", ReformaUlti.NNorma != null ? "#" + ReformaUlti.NNorma + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", ReformaUlti.FechaNorma.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaNorma.Value) + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", ReformaUlti.AutorizadoPor != null ? "#" + ReformaUlti.AutorizadoPor + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", ObsReforma.NumeroOficio != null ? "Dicha disolución se encuentra aprobada por oficio ordinario N° #" + organizacion.ObservacionReformas.FirstOrDefault().NumeroOficio + "#" : organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null ? "" : ".");
-                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", ObsReforma.FechaOficio != null && ObsReforma.FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", organizacion.ObservacionReformas.FirstOrDefault().FechaOficio.Value) + "#." : "");
-                                        if (parrafo2[0].Contains("ERROR_Opcional"))
+                                        if (index % 2 == 0)
                                         {
-                                            parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
-                                            parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
-                                            parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
-                                            parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
-                                            parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
-                                            parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
-                                            parrafo2[0] = parrafo2[0].Replace("ERROR_Opcional", "");
+                                            PhraseDOS = new Phrase(element, _fontStandard);
                                         }
+                                        else
+                                        {
+                                            PhraseDOS = new Phrase(element, _fontNegrita);
+                                        }
+                                        comb2.Add(PhraseDOS);
+                                        index++;
                                     }
-
                                 }
                                 else
                                 {
-                                    parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
+                                    ReformaVigente = false;
+                                }
+                            }
+                            if (organizacion.ReformaAnteriors.Any() && ReformaVigente == false)
+                            {
+                                
+                                var Reforma = organizacion.ReformaAnteriors.ToList().OrderByDescending(q => q.FechaPublicDiario);
+                                var ReformaUlti = new ReformaAnterior();
+                                foreach (var item in Reforma)
+                                {
+                                    if ((item.ObservacionReformas.Any() &&
+                                        item.ObservacionReformas.FirstOrDefault().AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada) ||
+                                        !item.ObservacionReformas.Any() || item.ObservacionReformas.FirstOrDefault().AprobacionId == null
+                                        )
+                                    {
+                                        ReformaUlti = item;
+                                        break;
+                                    }
                                 }
 
-
-                                parrafo2 = parrafo2[0].Split('#');
-
-                                index = 0;
-                                foreach (string element in parrafo2)
+                                if (ReformaUlti.IdReformaAnterior != 0) //cuenta con al menos una reforma sin obs o con obs aprobada
                                 {
-                                    if (index % 2 == 0)
+                                    ReformaVigente = true;
+                                    var ObsReforma = ReformaUlti.ObservacionReformas.FirstOrDefault();
+                                    string[] parrafo2;
+                                    parrafo2 = parrafo_dos.Split('#');
+                                    subtitulo2 = new Paragraph(parrafo2[0], _fontStandardBoldSubRayado);
+                                    parrafo2 = parrafo2.Where(n => n != parrafo2[0]).ToArray();
+                                    parrafo2[0] = parrafo2[0].Replace("[TIPOGENERAL]", ReformaUlti.TipoGeneralId != null ? "#" + ReformaUlti.TipoGeneral.Nombre + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[EXISTEREFORMA]", "#reformado#");
+                                    parrafo2[0] = parrafo2[0].Replace("[FECHAJUNTAGENERALSOCIOS]", ReformaUlti.FechaJuntaGeneral.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaJuntaGeneral.Value) + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[FECHAESCRITURA]", ReformaUlti.FechaEscritura.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaEscritura.Value) + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[LUGARNOTARIO]", ReformaUlti.LugarNotario != null ? "#" + ReformaUlti.LugarNotario + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[DATOGENERALNOTARIO]", ReformaUlti.DatosNotario != null ? "#" + ReformaUlti.DatosNotario + "#" : "ERROR_Reforma");
+                                    parrafo2[0] = parrafo2[0].Replace("[FECHAPUBLICACION]", ReformaUlti.FechaPublicDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaPublicDiario.Value) + "#" : "ERROR_Reforma");
+                                    if (parrafo2[0].Contains("ERROR_Reforma"))
                                     {
-                                        PhraseDOS = new Phrase(element, _fontStandard);
+                                        throw new Exception(string.Format("Error al emitir, el apartado de Reforma no tiene todos los campos requeridos"));
+                                    }
+                                    if (ObsReforma != null)
+                                    {
+                                        if (ObsReforma.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada)
+                                        {
+                                            parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", ReformaUlti.TipoNormaId != null ? "#" + ReformaUlti.TipoNorma.Nombre + "#" : "ERROR_Opcional");
+                                            parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", ReformaUlti.NNorma != null ? "#" + ReformaUlti.NNorma + "#" : "ERROR_Opcional");
+                                            parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", ReformaUlti.FechaNorma.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaNorma.Value) + "#" : "ERROR_Opcional");
+                                            parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", ReformaUlti.AutorizadoPor != null ? "#" + ReformaUlti.AutorizadoPor + "#" : "ERROR_Opcional");
+                                            parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", ObsReforma.NumeroOficio != null ? "Dicha acta estatutaria se encuentra aprobada por oficio ordinario N° #" + organizacion.ObservacionReformas.FirstOrDefault().NumeroOficio + "#" : organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null ? "" : ".");
+                                            parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", ObsReforma.FechaOficio != null && ObsReforma.FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", organizacion.ObservacionReformas.FirstOrDefault().FechaOficio.Value) + "#." : "");
+                                            if (parrafo2[0].Contains("ERROR_Opcional"))
+                                            {
+                                                parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
+                                                parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
+                                                parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
+                                                parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
+                                                parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
+                                                parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
+                                                parrafo2[0] = parrafo2[0].Replace("ERROR_Opcional", "");
+                                            }
+                                        }
+
                                     }
                                     else
                                     {
-                                        PhraseDOS = new Phrase(element, _fontNegrita);
+                                        parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
                                     }
-                                    comb2.Add(PhraseDOS);
-                                    index++;
+
+
+                                    parrafo2 = parrafo2[0].Split('#');
+
+                                    index = 0;
+                                    foreach (string element in parrafo2)
+                                    {
+                                        if (index % 2 == 0)
+                                        {
+                                            PhraseDOS = new Phrase(element, _fontStandard);
+                                        }
+                                        else
+                                        {
+                                            PhraseDOS = new Phrase(element, _fontNegrita);
+                                        }
+                                        comb2.Add(PhraseDOS);
+                                        index++;
+                                    }
                                 }
+                                else
+                                {
+                                    ReformaVigente = false;
+                                }
+
                             }
-                            else  // NO TIENE REFORMAS
+                            if(ReformaVigente == false) // NO TIENE REFORMAS
                             {
-                                var ObsLegal = organizacion.ObservacionLegals.FirstOrDefault();
+                                var ObsLegal = organizacion.ExistenciaAnteriors.FirstOrDefault().ObservacionLegals.FirstOrDefault();
                                 string[] parrafo2;
                                 parrafo2 = parrafo_tres.Split('#');
                                 subtitulo2 = new Paragraph(parrafo2[0], _fontStandardBoldSubRayado);
@@ -1934,7 +1985,7 @@ namespace DAES.BLL
 
                                 if (ObsLegal != null)
                                 {
-                                    if (ObsLegal.AprobacionId == 1)
+                                    if (ObsLegal.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada)
                                     {
                                         parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", legalAnt.TipoNormaId != null ? "#" + legalAnt.tipoNorma.Nombre + "#" : "ERROR_Opcional");
                                         parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", legalAnt.NNorma != null ? "#" + legalAnt.NNorma + "#" : "ERROR_Opcional");
@@ -1985,10 +2036,11 @@ namespace DAES.BLL
                             }
 
                             doc.Add(subtitulo2);
+                            doc.Add(SaltoLinea);
                             doc.Add(comb2);
                             doc.Add(SaltoLinea);
                             //PARRAFO 2 - FIN
-                            //PARRAFO 3 - INI
+                            //PARRAFO 3 - INI estatuto anterior 2003
                             if (organizacion.Saneamientos.Count() == 0 && organizacion.ReformaAnteriors.Count() == 0 && organizacion.ReformaPosteriors.Count() == 0)
                             {
                                 PhraseTRES = new Phrase("No se registran actas complementarias, rectificatorias o modificatorias", _fontStandard);
@@ -2033,13 +2085,18 @@ namespace DAES.BLL
                                 }
                                 comb3.Alignment = Element.ALIGN_JUSTIFIED;
                                 doc.Add(subtitulo3);
-                                doc.Add(comb3);
                                 doc.Add(SaltoLinea);
+                                if(organizacion.Saneamientos.Any())
+                                {
+                                    doc.Add(comb3);
+                                    doc.Add(SaltoLinea);
+                                }
+
                             }
                             //PARRAFO 3 - FIN
-                            //PARRAFO 4 - INI
+                            //PARRAFO 4 - INI estatuto anterior 2003
 
-                            if (organizacion.ReformaAnteriors.Any())
+                            if (organizacion.ReformaAnteriors.Any()) // estatuto anterior 2003 reforma ante 
                             {
                                 var ReformaParrafo = configuracioncertificado.Parrafo2ExAnterior;
                                 var Reforma = organizacion.ReformaAnteriors.OrderBy(q => q.FechaPublicDiario);
@@ -2101,7 +2158,7 @@ namespace DAES.BLL
 
                                 }
                             }
-                            else if (organizacion.ReformaPosteriors.Any())
+                            if(organizacion.ReformaPosteriors.Any()) // estatuto anterior 2003 reforma post
                             {
                                 var ReformaParrafo = configuracioncertificado.Parrafo2ExPosterior;
                                 var Reforma = organizacion.ReformaPosteriors.OrderBy(q => q.FechaPubliDiario);
@@ -2124,14 +2181,15 @@ namespace DAES.BLL
                                     var parrafoActualInf = conjuntoInferior.ElementAt(IndReforma);
                                     //PARRAFO 4 Reforma - INI
                                     IndReforma++;
+                                    var suma = IndReforma + organizacion.ReformaAnteriors.Count();
                                     var ObsReformaPost = organizacion.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Re.IdReformaPost);
                                     if (IndReforma == cantiReforma)
                                     {
-                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y última");
+                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + suma + "° #y última");
                                     }
                                     else
                                     {
-                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "°" + "#");
+                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + suma + "°" + "#");
                                     }
 
                                     parrafoActual = parrafoActual.Replace("[TIPOGENERAL]", Re.TipoGeneralId != null ? "#" + Re.TipoGeneral.Nombre + "#" : "ERROR_Reforma");
@@ -2169,24 +2227,24 @@ namespace DAES.BLL
                                         parrafoActualInf = parrafoActualInf.Replace("[FECHAOFICIO]", ObsReformaPost.FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ObsReformaPost.FechaOficio.Value) + "#" : "ERROR_ObsReforma");
                                         parrafoActualInf = parrafoActualInf.Replace("[APROBACION]", ObsReformaPost.AprobacionId != null ? "#" + ObsReformaPost.Aprobacion.Nombre + "#" : "ERROR_ObsReforma");
                                         parrafo4Inferior = parrafoActualInf.Split('#');
-                                        if (parrafo_cinco.Contains("ERROR_ObsReforma"))
+                                        if (!parrafoActualInf.Contains("ERROR_ObsReforma"))
                                         {
-                                            throw new Exception(string.Format("Error al emitir, el apartado de Observacion Reforma no tiene todos los campos requeridos"));
-                                        }
-                                        index = 0;
-                                        foreach (var item in parrafo4Inferior)
-                                        {
-                                            if (index % 2 == 0)
+                                            index = 0;
+                                            foreach (var item in parrafo4Inferior)
                                             {
-                                                PhraseCUATROInferior = new Phrase(item, _fontStandard);
+                                                if (index % 2 == 0)
+                                                {
+                                                    PhraseCUATROInferior = new Phrase(item, _fontStandard);
+                                                }
+                                                else
+                                                {
+                                                    PhraseCUATROInferior = new Phrase(item, _fontNegrita);
+                                                }
+                                                comb4InferiorR.Add(PhraseCUATROInferior);
+                                                index++;
                                             }
-                                            else
-                                            {
-                                                PhraseCUATROInferior = new Phrase(item, _fontNegrita);
-                                            }
-                                            comb4InferiorR.Add(PhraseCUATROInferior);
-                                            index++;
                                         }
+
                                     }
                                     comb4SuperiorR.AddRange(comb4InferiorR);
                                     comb4SuperiorR.Add(SaltoLinea);
@@ -2200,9 +2258,10 @@ namespace DAES.BLL
 
                             //PARRAFO 4 - FIN
                         }
+                        // estatuto posterior 2003
                         else if (organizacion.ExistenciaPosteriors.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId) != null)
                         {
-                            // PARRAFO 1 - INI
+                            // PARRAFO 1 - INI estatuto posterior 2003
                             var legalPost = organizacion.ExistenciaPosteriors.FirstOrDefault();
                             parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial != null ? "#" + organizacion.RazonSocial + "#" : "");
                             parrafo_uno = parrafo_uno.Replace("[SIGLA]", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#," : "");//Opcional
@@ -2232,78 +2291,157 @@ namespace DAES.BLL
                             doc.Add(comb);
                             doc.Add(SaltoLinea);
                             //PARRAFO 1 - FIN
-                            //PARRAFO 2 - INI
-                            var ReformaUlti = organizacion.ReformaPosteriors.ToList().OrderByDescending(q => q.FechaPubliDiario).FirstOrDefault();
-                            var ObsReforma = organizacion.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == ReformaUlti.IdReformaPost);
-                            string[] parrafo2;
-                            parrafo2 = parrafo_dos.Split('#');
-                            subtitulo2 = new Paragraph(parrafo2[0], _fontStandardBoldSubRayado);
-                            parrafo2 = parrafo2.Where(n => n != parrafo2[0]).ToArray();
-                            parrafo2[0] = parrafo2[0].Replace("[TIPOGENERAL]", ReformaUlti.TipoGeneralId != null ? "#" + ReformaUlti.TipoGeneral.Nombre + "#" : "ERROR_Reforma");
-                            parrafo2[0] = parrafo2[0].Replace("[EXISTEREFORMA]", "#reformado#");
-                            parrafo2[0] = parrafo2[0].Replace("[FECHAJUNTAGENERALSOCIOS]", ReformaUlti.FechaJuntGeneralSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaJuntGeneralSocios.Value) + "#" : "ERROR_Reforma");
-                            parrafo2[0] = parrafo2[0].Replace("[FECHAESCRITURA]", ReformaUlti.FechaEscrituraPublica.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaEscrituraPublica.Value) + "#" : "ERROR_Reforma");
-                            parrafo2[0] = parrafo2[0].Replace("[LUGARNOTARIO]", ReformaUlti.LugarNotario != null ? "#" + ReformaUlti.LugarNotario + "#" : "ERROR_Reforma");
-                            parrafo2[0] = parrafo2[0].Replace("[DATOGENERALNOTARIO]", ReformaUlti.DatosGeneralNotario != null ? "#" + ReformaUlti.DatosGeneralNotario + "#" : "ERROR_Reforma");
-                            parrafo2[0] = parrafo2[0].Replace("[FECHAPUBLICACION]", ReformaUlti.FechaPubliDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaPubliDiario.Value) + "#" : "ERROR_Reforma");
-                            parrafo2[0] = parrafo2[0].Replace("[FOJASNUMERO]", ReformaUlti.FojasNumero != null ? "#" + ReformaUlti.FojasNumero + "#" : "ERROR_Reforma");
-                            parrafo2[0] = parrafo2[0].Replace("[COMUNACBR]", ReformaUlti.DatosCBR != null ? "#" + ReformaUlti.DatosCBR + "#" : "ERROR_Reforma");
-                            parrafo2[0] = parrafo2[0].Replace("[AÑOINSCRIPCION]", ReformaUlti.AnoInscripcion != null ? "#" + ReformaUlti.AnoInscripcion + "#" : "ERROR_Reforma");
-                            if (parrafo2[0].Contains("ERROR_Reforma"))
+                            //PARRAFO 2 - INI estatuto posterior 2003
+                            var Reforma = organizacion.ReformaPosteriors.ToList().OrderByDescending(q => q.FechaPubliDiario);
+                            var ReformaUlti = new ReformaPosterior();
+                            foreach (var item in Reforma)
                             {
-                                throw new Exception(string.Format("Error al emitir, el apartado de Reforma no tiene todos los campos requeridos"));
+                                if((item.ObservacionReformas.Any() && 
+                                    item.ObservacionReformas.FirstOrDefault().AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada) ||
+                                    !item.ObservacionReformas.Any() || item.ObservacionReformas.FirstOrDefault().AprobacionId == null
+                                    )
+                                {
+                                    ReformaUlti = item;
+                                    break;
+                                }
                             }
-                            var aprobadoObsReforma = false;
-                            if (ObsReforma != null)
+                            if(ReformaUlti.IdReformaPost != 0) //cuenta con al menos una reforma sin obs o con obs aprobada
                             {
+                                string[] parrafo2;
+                                parrafo2 = parrafo_dos.Split('#');
+                                subtitulo2 = new Paragraph(parrafo2[0], _fontStandardBoldSubRayado);
+                                parrafo2 = parrafo2.Where(n => n != parrafo2[0]).ToArray();
+                                parrafo2[0] = parrafo2[0].Replace("[TIPOGENERAL]", ReformaUlti.TipoGeneralId != null ? "#" + ReformaUlti.TipoGeneral.Nombre + "#" : "ERROR_Reforma");
+                                parrafo2[0] = parrafo2[0].Replace("[EXISTEREFORMA]", "#reformado#");
+                                parrafo2[0] = parrafo2[0].Replace("[FECHAJUNTAGENERALSOCIOS]", ReformaUlti.FechaJuntGeneralSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaJuntGeneralSocios.Value) + "#" : "ERROR_Reforma");
+                                parrafo2[0] = parrafo2[0].Replace("[FECHAESCRITURA]", ReformaUlti.FechaEscrituraPublica.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaEscrituraPublica.Value) + "#" : "ERROR_Reforma");
+                                parrafo2[0] = parrafo2[0].Replace("[LUGARNOTARIO]", ReformaUlti.LugarNotario != null ? "#" + ReformaUlti.LugarNotario + "#" : "ERROR_Reforma");
+                                parrafo2[0] = parrafo2[0].Replace("[DATOGENERALNOTARIO]", ReformaUlti.DatosGeneralNotario != null ? "#" + ReformaUlti.DatosGeneralNotario + "#" : "ERROR_Reforma");
+                                parrafo2[0] = parrafo2[0].Replace("[FECHAPUBLICACION]", ReformaUlti.FechaPubliDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaPubliDiario.Value) + "#" : "ERROR_Reforma");
+                                parrafo2[0] = parrafo2[0].Replace("[FOJASNUMERO]", ReformaUlti.FojasNumero != null ? "#" + ReformaUlti.FojasNumero + "#" : "ERROR_Reforma");
+                                parrafo2[0] = parrafo2[0].Replace("[COMUNACBR]", ReformaUlti.DatosCBR != null ? "#" + ReformaUlti.DatosCBR + "#" : "ERROR_Reforma");
+                                parrafo2[0] = parrafo2[0].Replace("[AÑOINSCRIPCION]", ReformaUlti.AnoInscripcion != null ? "#" + ReformaUlti.AnoInscripcion + "#" : "ERROR_Reforma");
+                                if (parrafo2[0].Contains("ERROR_Reforma"))
+                                {
+                                    throw new Exception(string.Format("Error al emitir, el apartado de Reforma no tiene todos los campos requeridos"));
+                                }
+                                var aprobadoObsReforma = false;
+                                if (ReformaUlti.ObservacionReformas != null)
+                                {
+                                        parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", organizacion.ObservacionReformas.FirstOrDefault().NumeroOficio != null ? "Dicha acta estatutaria se encuentra aprobada por oficio ordinario N° #" + organizacion.ObservacionReformas.FirstOrDefault().NumeroOficio + "#" : organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null ? "" : ".");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null && organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", organizacion.ObservacionReformas.FirstOrDefault().FechaOficio.Value) + "#." : "");
+                                        aprobadoObsReforma = true;
+                                }
 
-                                if (ObsReforma.AprobacionId == 1)
+                                if (aprobadoObsReforma == false)
                                 {
                                     parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
                                     parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
                                     parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
                                     parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
-                                    parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", organizacion.ObservacionReformas.FirstOrDefault().NumeroOficio != null ? "Dicha acta estatutaria se encuentra aprobada por oficio ordinario N° #" + organizacion.ObservacionReformas.FirstOrDefault().NumeroOficio + "#" : organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null ? "" : ".");
-                                    parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null && organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", organizacion.ObservacionReformas.FirstOrDefault().FechaOficio.Value) + "#." : "");
-                                    aprobadoObsReforma = true;
+                                    parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
+                                    parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
                                 }
 
-                            }
 
-                            if (aprobadoObsReforma == false)
-                            {
-                                parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
-                                parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
-                                parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
-                                parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
-                                parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
-                                parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
-                            }
+                                parrafo2 = parrafo2[0].Split('#');
 
-
-                            parrafo2 = parrafo2[0].Split('#');
-
-                            index = 0;
-                            foreach (string element in parrafo2)
-                            {
-                                if (index % 2 == 0)
+                                index = 0;
+                                foreach (string element in parrafo2)
                                 {
-                                    PhraseDOS = new Phrase(element, _fontStandard);
+                                    if (index % 2 == 0)
+                                    {
+                                        PhraseDOS = new Phrase(element, _fontStandard);
+                                    }
+                                    else
+                                    {
+                                        PhraseDOS = new Phrase(element, _fontNegrita);
+                                    }
+                                    comb2.Add(PhraseDOS);
+                                    index++;
+                                }
+                            }
+                            else // NO TIENE REFORMA
+                            {
+                                var ObsLegal = organizacion.ExistenciaPosteriors.FirstOrDefault().ObservacionLegals.FirstOrDefault();
+                                var LegalPost = organizacion.ExistenciaPosteriors.FirstOrDefault();
+                                string[] parrafo2;
+                                parrafo2 = parrafo_dos.Split('#');
+                                subtitulo2 = new Paragraph(parrafo2[0], _fontStandardBoldSubRayado);
+                                parrafo2 = parrafo2.Where(n => n != parrafo2[0]).ToArray();
+                                parrafo2[0] = parrafo2[0].Replace("[EXISTEREFORMA]", "#acordado#");
+                                parrafo2[0] = parrafo2[0].Replace("[TIPOGENERAL]", LegalPost.TipoGeneralId != null ? "#" + LegalPost.TipoGeneral.Nombre + "#" : "ERROR_Legal");
+                                parrafo2[0] = parrafo2[0].Replace("[FECHAJUNTAGENERALSOCIOS]", LegalPost.FechaConstitutivaSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", LegalPost.FechaConstitutivaSocios.Value) + "#" : "ERROR_Legal");
+                                parrafo2[0] = parrafo2[0].Replace("[FECHAESCRITURA]", LegalPost.FechaEscrituraPublica.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", LegalPost.FechaEscrituraPublica.Value) + "#" : "ERROR_Legal");
+                                parrafo2[0] = parrafo2[0].Replace("[LUGARNOTARIO]", LegalPost.LugarNotario != null ? "#" + LegalPost.LugarNotario + "#" : "ERROR_Legal");
+                                parrafo2[0] = parrafo2[0].Replace("[DATOGENERALNOTARIO]", LegalPost.DatosGeneralesNotario != null ? "#" + LegalPost.DatosGeneralesNotario + "#" : "ERROR_Legal");
+                                parrafo2[0] = parrafo2[0].Replace("[FECHAPUBLICACION]", LegalPost.FechaPublicacionn.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", LegalPost.FechaPublicacionn.Value) + "#" : "ERROR_Legal");
+                                parrafo2[0] = parrafo2[0].Replace("[FOJASNUMERO]", LegalPost.Fojas != null ? "#" + LegalPost.Fojas + "#" : "ERROR_Legal");
+                                parrafo2[0] = parrafo2[0].Replace("[COMUNACBR]", LegalPost.DatosCBR != null ? "#" + LegalPost.DatosCBR + "#" : "ERROR_Legal");
+                                parrafo2[0] = parrafo2[0].Replace("[AÑOINSCRIPCION]", LegalPost.AnoInscripcion != null ? "#" + LegalPost.AnoInscripcion + "#" : "ERROR_Legal");
+                                if (parrafo2[0].Contains("ERROR_Legal"))
+                                {
+                                    throw new Exception(string.Format("Error al emitir, el apartado de Legal no tiene todos los campos requeridos"));
+                                }
+
+                                if (ObsLegal != null)
+                                {
+                                    if (ObsLegal.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada)
+                                    {
+                                        //parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", LegalPost.TipoNormaId != null ? "Dicha acta estatutaria se encuentra aprobada por #" + LegalPost.tipoNorma.Nombre + "#" : "ERROR_Opcional");
+                                        //parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", LegalPost.NNorma != null ? "#N°" + LegalPost.NNorma + "#" : "ERROR_Opcional");
+                                        //parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", LegalPost.FNorma != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}#", LegalPost.FNorma) : "ERROR_Opcional");
+                                        //parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", LegalPost.Autorizado != null ? "del #" + LegalPost.Autorizado + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", ObsLegal != null ? ObsLegal.NumeroOficio != null ? "por oficio ordinario N° #" + ObsLegal.NumeroOficio + "#" : "" : "");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", ObsLegal != null ? ObsLegal.FechaOficio.HasValue ? " de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}#", ObsLegal.FechaOficio.Value) + "#" : "" : "");
+
+                                    }
+                                    else
+                                    {
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
+                                    }
+
                                 }
                                 else
                                 {
-                                    PhraseDOS = new Phrase(element, _fontNegrita);
+                                    //parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
+                                    //parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
+                                    //parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", "");
+                                    //parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", "");
+                                    parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
+                                    parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
                                 }
-                                comb2.Add(PhraseDOS);
-                                index++;
+
+
+                                parrafo2 = parrafo2[0].Split('#');
+
+                                index = 0;
+                                foreach (string element in parrafo2)
+                                {
+                                    if (index % 2 == 0)
+                                    {
+                                        PhraseDOS = new Phrase(element, _fontStandard);
+                                    }
+                                    else
+                                    {
+                                        PhraseDOS = new Phrase(element, _fontNegrita);
+                                    }
+                                    comb2.Add(PhraseDOS);
+                                    index++;
+                                }
                             }
+
                             doc.Add(subtitulo2);
+                            doc.Add(SaltoLinea);
                             doc.Add(comb2);
                             doc.Add(SaltoLinea);
                             //PARRAFO 2 - FIN
-
-                            //PARRAFO 3 - INI
-                            //PARRAFO 3 - INI
+                            //PARRAFO 3 - INI estatuto posterior 2003
                             if (organizacion.Saneamientos.Count() == 0 && organizacion.ReformaPosteriors.Count() == 0)
                             {
                                 PhraseTRES = new Phrase("No se registran actas complementarias, rectificatorias o modificatorias", _fontStandard);
@@ -2313,22 +2451,22 @@ namespace DAES.BLL
                             }
                             if (organizacion.Saneamientos.Any() || organizacion.ReformaPosteriors.Any())
                             {
-                                var sanamientoParrafo = configuracioncertificado.Parrafo1DisPos;
-                                var saniamientoAnt = organizacion.Saneamientos.FirstOrDefault();
+                                var saneamientoParrafo = configuracioncertificado.Parrafo1DisPos;
+                                var saneamientoAnt = organizacion.Saneamientos.FirstOrDefault();
                                 string[] parrafo3;
-                                parrafo3 = sanamientoParrafo.Split('#');
+                                parrafo3 = saneamientoParrafo.Split('#');
                                 subtitulo3 = new Paragraph(parrafo3[0], _fontStandardBoldSubRayado);
                                 parrafo3 = parrafo3.Where(n => n != parrafo3[0]).ToArray();
                                 if (organizacion.Saneamientos.Any())
                                 {
                                     parrafo3[0] = parrafo3[0].Replace("[EXISTEREFORMA]", organizacion.ReformaPosteriors.Any() ? "El acta contitutiva" : "La reforma estatutaria");
-                                    parrafo3[0] = parrafo3[0].Replace("[FECHAESCRITURA]", saniamientoAnt.FechaEscrituraPublicaa.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", saniamientoAnt.FechaEscrituraPublicaa.Value) + "#" : "ERROR_Saneamiento");
-                                    parrafo3[0] = parrafo3[0].Replace("[LUGARNOTARIO]", saniamientoAnt.LugarNotario != null ? "#" + saniamientoAnt.LugarNotario + "#" : "ERROR_Saneamiento");
-                                    parrafo3[0] = parrafo3[0].Replace("[DATOGENERALNOTARIO]", saniamientoAnt.DatoGeneralesNotario != null ? "#" + saniamientoAnt.DatoGeneralesNotario + "#" : "ERROR_Saneamiento");
-                                    parrafo3[0] = parrafo3[0].Replace("[FECHAPUBLICACION]", saniamientoAnt.FechaaPublicacionDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", saniamientoAnt.FechaaPublicacionDiario.Value) + "#" : "ERROR_Saneamiento");
-                                    parrafo3[0] = parrafo3[0].Replace("[FOJASNUMERO]", saniamientoAnt.Fojass != null ? "#" + saniamientoAnt.Fojass + "#" : "ERROR_Saneamiento");
-                                    parrafo3[0] = parrafo3[0].Replace("[COMUNACBR]", saniamientoAnt.DatossCBR != null ? "#" + saniamientoAnt.DatossCBR + "#" : "ERROR_Saneamiento");
-                                    parrafo3[0] = parrafo3[0].Replace("[AÑOINSCRIPCION]", saniamientoAnt.FechaaInscripcion != null ? "#" + saniamientoAnt.FechaaInscripcion + "#" : "ERROR_Saneamiento");
+                                    parrafo3[0] = parrafo3[0].Replace("[FECHAESCRITURA]", saneamientoAnt.FechaEscrituraPublicaa.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", saneamientoAnt.FechaEscrituraPublicaa.Value) + "#" : "ERROR_Saneamiento");
+                                    parrafo3[0] = parrafo3[0].Replace("[LUGARNOTARIO]", saneamientoAnt.LugarNotario != null ? "#" + saneamientoAnt.LugarNotario + "#" : "ERROR_Saneamiento");
+                                    parrafo3[0] = parrafo3[0].Replace("[DATOGENERALNOTARIO]", saneamientoAnt.DatoGeneralesNotario != null ? "#" + saneamientoAnt.DatoGeneralesNotario + "#" : "ERROR_Saneamiento");
+                                    parrafo3[0] = parrafo3[0].Replace("[FECHAPUBLICACION]", saneamientoAnt.FechaaPublicacionDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", saneamientoAnt.FechaaPublicacionDiario.Value) + "#" : "ERROR_Saneamiento");
+                                    parrafo3[0] = parrafo3[0].Replace("[FOJASNUMERO]", saneamientoAnt.Fojass != null ? "#" + saneamientoAnt.Fojass + "#" : "ERROR_Saneamiento");
+                                    parrafo3[0] = parrafo3[0].Replace("[COMUNACBR]", saneamientoAnt.DatossCBR != null ? "#" + saneamientoAnt.DatossCBR + "#" : "ERROR_Saneamiento");
+                                    parrafo3[0] = parrafo3[0].Replace("[AÑOINSCRIPCION]", saneamientoAnt.FechaaInscripcion != null ? "#" + saneamientoAnt.FechaaInscripcion + "#" : "ERROR_Saneamiento");
                                     if (parrafo3[0].Contains("ERROR_Saneamiento"))
                                     {
                                         throw new Exception(string.Format("Error al emitir, el apartado de Saneamiento no tiene todos los campos requeridos"));
@@ -2351,16 +2489,17 @@ namespace DAES.BLL
                                 }
                                 comb3.Alignment = Element.ALIGN_JUSTIFIED;
                                 doc.Add(subtitulo3);
+                                doc.Add(SaltoLinea);
                                 doc.Add(comb3);
                                 doc.Add(SaltoLinea);
                             }
                             //PARRAFO 3 - FIN
-                            //PARRAFO 4 - INI
+                            //PARRAFO 4 - INI estatuto posterior 2003
 
                             if (organizacion.ReformaPosteriors.Any())
                             {
                                 var ReformaParrafo = configuracioncertificado.Parrafo2ExPosterior;
-                                var Reforma = organizacion.ReformaPosteriors.OrderBy(q => q.FechaPubliDiario);
+                                var ReformaPost = organizacion.ReformaPosteriors.OrderBy(q => q.FechaPubliDiario);
                                     string[] parrafo4;
                                     parrafo4 = ReformaParrafo.Split('#');
                                     subtitulo3 = new Paragraph(parrafo4[0], _fontStandardBoldSubRayado);
@@ -2370,7 +2509,7 @@ namespace DAES.BLL
                                     List<string> conjuntoInferior = new List<string> { };
                                     var IndReforma = 0;
                                     var cantiReforma = organizacion.ReformaPosteriors.Count();
-                                    foreach (var Re in Reforma)
+                                    foreach (var Re in ReformaPost)
                                     {
                                         Paragraph comb4SuperiorR = new Paragraph();
                                         Paragraph comb4InferiorR = new Paragraph();
@@ -2378,9 +2517,8 @@ namespace DAES.BLL
                                         var parrafoActual = conjuntoSuperior.ElementAt(IndReforma);
                                         conjuntoInferior.Add(parrafo4[1]);
                                         var parrafoActualInf = conjuntoInferior.ElementAt(IndReforma);
-                                        //PARRAFO 4 Reforma - INI
                                         IndReforma++;
-                                        var ObsReformaPost = organizacion.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Re.IdReformaPost);
+                                        var ObsReformaPost = organizacion.ReformaPosteriors.FirstOrDefault().ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Re.IdReformaPost);
                                         if (IndReforma == cantiReforma)
                                         {
                                             parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y última");
@@ -2425,10 +2563,8 @@ namespace DAES.BLL
                                             parrafoActualInf = parrafoActualInf.Replace("[FECHAOFICIO]", ObsReformaPost.FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ObsReformaPost.FechaOficio.Value) + "#" : "ERROR_ObsReforma");
                                             parrafoActualInf = parrafoActualInf.Replace("[APROBACION]", ObsReformaPost.AprobacionId != null ? "#" + ObsReformaPost.Aprobacion.Nombre + "#" : "ERROR_ObsReforma");
                                             parrafo4Inferior = parrafoActualInf.Split('#');
-                                            if (parrafo_cinco.Contains("ERROR_ObsReforma"))
+                                            if (!parrafo_cinco.Contains("ERROR_ObsReforma"))
                                             {
-                                                throw new Exception(string.Format("Error al emitir, el apartado de Observacion Reforma no tiene todos los campos requeridos"));
-                                            }
                                             index = 0;
                                             foreach (var item in parrafo4Inferior)
                                             {
@@ -2443,6 +2579,8 @@ namespace DAES.BLL
                                                 comb4InferiorR.Add(PhraseCUATROInferior);
                                                 index++;
                                             }
+                                        }
+
                                         }
                                         comb4SuperiorR.AddRange(comb4InferiorR);
                                         comb4SuperiorR.Add(SaltoLinea);
@@ -2461,9 +2599,9 @@ namespace DAES.BLL
                             throw new Exception(string.Format("Error al emitir, el apartado de legal no tiene todos los campos requeridos"));
                         }
                     }
-                    else
+                    else //estatuto gremial
                     {
-                        // PARRAFO 1 - INI
+                        // PARRAFO 1 - INI estatuto gremial
                         parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial != null ? "#" + organizacion.RazonSocial.ToString() + "#" : "[RAZONSOCIAL]");
                         parrafo_uno = parrafo_uno.Replace("[SIGLA]", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#," : "");
                         parrafo_uno = parrafo_uno.Replace("[NUMEROREGISTRO]", organizacion.NumeroRegistro != null ? "#" + organizacion.NumeroRegistro.ToString() + "#" : "[NUMEROREGISTRO]");
@@ -2493,11 +2631,12 @@ namespace DAES.BLL
                         doc.Add(SaltoLinea);
                         //PARRAFO 1 - FIN
 
-                        //PARRAFO 2 - INI
-                        parrafo_dos = parrafo_dos.Replace("[APROBACION]", organizacion.ExistenciaLegals.FirstOrDefault().AprobacionId != null ? "#" + organizacion.ExistenciaLegals.FirstOrDefault().Aprobacion.Nombre + "#" : "ERROR_Legal");
-                        parrafo_dos = parrafo_dos.Replace("[FECHAASAMBLEASOCIOS]", organizacion.ExistenciaLegals.FirstOrDefault().FechaConstitutivaSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", organizacion.ExistenciaLegals.FirstOrDefault().FechaConstitutivaSocios.Value) + "#" : "ERROR_Legal");
-                        parrafo_dos = parrafo_dos.Replace("[NUMEROOFICIO]", organizacion.ObservacionLegals.FirstOrDefault().NumeroOficio != null ? "Dicha acta estatutaria se encuentra aprobada por oficio ordinario N° #" + organizacion.ObservacionLegals.FirstOrDefault().NumeroOficio + "#" : organizacion.ObservacionLegals.FirstOrDefault().FechaOficio != null ? "" : ".");
-                        parrafo_dos = parrafo_dos.Replace("[FECHAOFICIO]", organizacion.ObservacionLegals.FirstOrDefault().FechaOficio != null && organizacion.ObservacionLegals.FirstOrDefault().FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", organizacion.ObservacionLegals.FirstOrDefault().FechaOficio.Value) + "#." : "");
+                        //PARRAFO 2 - INI estatuto gremial
+                        var legalGremial = organizacion.ExistenciaLegals.FirstOrDefault();
+                        parrafo_dos = parrafo_dos.Replace("[APROBACION]", legalGremial.AprobacionId != null ? "#" + legalGremial.Aprobacion.Nombre + "#" : "ERROR_Legal");
+                        parrafo_dos = parrafo_dos.Replace("[FECHAASAMBLEASOCIOS]", legalGremial.FechaConstitutivaSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalGremial.FechaConstitutivaSocios.Value) + "#" : "ERROR_Legal");
+                        parrafo_dos = parrafo_dos.Replace("[NUMEROOFICIO]", legalGremial.ObservacionLegals.FirstOrDefault().NumeroOficio != null ? "Dicha acta estatutaria se encuentra aprobada por oficio ordinario N° #" + legalGremial.ObservacionLegals.FirstOrDefault().NumeroOficio + "#" : organizacion.ObservacionLegals.FirstOrDefault().FechaOficio != null ? "" : ".");
+                        parrafo_dos = parrafo_dos.Replace("[FECHAOFICIO]", legalGremial.ObservacionLegals.FirstOrDefault().FechaOficio != null && legalGremial.ObservacionLegals.FirstOrDefault().FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalGremial.ObservacionLegals.FirstOrDefault().FechaOficio.Value) + "#." : "");
                         if (parrafo_dos.Contains("ERROR_Legal"))
                         {
                             throw new Exception(string.Format("Error al emitir, el apartado legal no tiene todos los campos requeridos"));
@@ -2525,10 +2664,23 @@ namespace DAES.BLL
                         doc.Add(SaltoLinea);
                         //PARRAFO 2 - FIN
 
-                        //PARRAFO 3 - INI
-                        if (organizacion.ReformaAGACs.Any())
+                        //PARRAFO 3 - INI estatuto gremial
+                        var Reforma = organizacion.ReformaAGACs.ToList().OrderByDescending(q => q.FechaAsambleaDep);
+                        var ReformaUlti = new ReformaAGAC();
+                        foreach (var item in Reforma)
                         {
-                            var ReformaUlti = organizacion.ReformaAGACs.ToList().OrderByDescending(q => q.FechaAsambleaDep).FirstOrDefault();
+                            if ((item.ObservacionReformas.Any() &&
+                                item.ObservacionReformas.FirstOrDefault().AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada) ||
+                                !item.ObservacionReformas.Any() || item.ObservacionReformas.FirstOrDefault().AprobacionId == null
+                                )
+                            {
+                                ReformaUlti = item;
+                                break;
+                            }
+                        }
+                        if(ReformaUlti.IdReformaAGAC != 0)
+                        {
+                            var obsLegalGremial = ReformaUlti.ObservacionReformas.FirstOrDefault();
                             string[] parrafo3;
                             parrafo3 = parrafo_tres.Split('#');
                             subtitulo2 = new Paragraph(parrafo3[0], _fontStandardBoldSubRayado);
@@ -2537,8 +2689,17 @@ namespace DAES.BLL
                             parrafo3[0] = parrafo3[0].Replace("[EXISTEREFORMA]", "#reformado#");
                             parrafo3[0] = parrafo3[0].Replace("[FECHAASAMBLEASOCIOS]", ReformaUlti.FechaAsambleaDep.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaAsambleaDep.Value) + "#" : "ERROR_Reforma");
                             parrafo3[0] = parrafo3[0].Replace("[ESTADO]", ReformaUlti.AprobacionId != null ? "#" + ReformaUlti.Aprobacion.Nombre + "#" : "ERROR_Reforma");
-                            parrafo3[0] = parrafo3[0].Replace("[NUMEROOFICIO]", organizacion.ObservacionReformas.FirstOrDefault().NumeroOficio != null ? "Dicha disolución se encuentra aprobada por oficio ordinario N° #" + organizacion.ObservacionReformas.FirstOrDefault().NumeroOficio + "#" : organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null ? "" : ".");
-                            parrafo3[0] = parrafo3[0].Replace("[FECHAOFICIO]", organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null && organizacion.ObservacionReformas.FirstOrDefault().FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", organizacion.ObservacionReformas.FirstOrDefault().FechaOficio.Value) + "#." : "");
+                            if(ReformaUlti.ObservacionReformas.FirstOrDefault().AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada)
+                            {
+                                parrafo3[0] = parrafo3[0].Replace("[NUMEROOFICIO]", obsLegalGremial.NumeroOficio != null ? "Dicha acta estatutaria se encuentra aprobada por oficio ordinario N° #" + obsLegalGremial.NumeroOficio + "#" : obsLegalGremial.FechaOficio != null ? "" : ".");
+                                parrafo3[0] = parrafo3[0].Replace("[FECHAOFICIO]", obsLegalGremial.FechaOficio != null && obsLegalGremial.FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", obsLegalGremial.FechaOficio.Value) + "#." : "");
+                            }
+                            else
+                            {
+                                parrafo3[0] = parrafo3[0].Replace("[NUMEROOFICIO]", "");
+                                parrafo3[0] = parrafo3[0].Replace("[FECHAOFICIO]", "");
+                            }
+
                             parrafo3 = parrafo3[0].Split('#');
                             if (parrafo3[0].Contains("ERROR_Reforma"))
                             {
@@ -2559,16 +2720,16 @@ namespace DAES.BLL
                                 index++;
                             }
                         }
-                        else
+                        else // NO TIENE REFORMA estatuto gremial
                         {
                             string[] parrafo3;
                             parrafo3 = parrafo_tres.Split('#');
                             subtitulo2 = new Paragraph(parrafo3[0], _fontStandardBoldSubRayado);
                             parrafo3 = parrafo3.Where(n => n != parrafo3[0]).ToArray();
                             parrafo3[0] = parrafo3[0].Replace("[EXISTEREFORMA]", "#acordado#");
-                            parrafo3[0] = parrafo3[0].Replace("[FECHAASAMBLEASOCIOS]", organizacion.ExistenciaLegals.FirstOrDefault().FechaConstitutivaSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", organizacion.ExistenciaLegals.FirstOrDefault().FechaConstitutivaSocios.Value) + "#" : "ERROR_Legal");
-                            parrafo3[0] = parrafo3[0].Replace("[NUMEROOFICIO]", organizacion.ExistenciaLegals.FirstOrDefault().NumeroOficio != null ? "#" + organizacion.ExistenciaLegals.FirstOrDefault().NumeroOficio + "#" : "ERROR_Legal");
-                            parrafo3[0] = parrafo3[0].Replace("[FECHAOFICIO]", organizacion.ExistenciaLegals.FirstOrDefault().FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}#", organizacion.ExistenciaLegals.FirstOrDefault().FechaOficio.Value) + "#" : "ERROR_Legal");
+                            parrafo3[0] = parrafo3[0].Replace("[FECHAASAMBLEASOCIOS]", legalGremial.FechaConstitutivaSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalGremial.FechaConstitutivaSocios.Value) + "#" : "ERROR_Legal");
+                            parrafo3[0] = parrafo3[0].Replace("[NUMEROOFICIO]", legalGremial.NumeroOficio != null ? "#" + legalGremial.NumeroOficio + "#" : "ERROR_Legal");
+                            parrafo3[0] = parrafo3[0].Replace("[FECHAOFICIO]", legalGremial.FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}#", legalGremial.FechaOficio.Value) + "#" : "ERROR_Legal");
                             parrafo3 = parrafo3[0].Split('#');
                             if (parrafo3[0].Contains("ERROR_Legal"))
                             {
@@ -2593,29 +2754,29 @@ namespace DAES.BLL
                         if (subtitulo2 != null)
                         {
                             doc.Add(subtitulo2);
+                            doc.Add(SaltoLinea);
                             doc.Add(comb3);
                             doc.Add(SaltoLinea);
                         }
                         //PARRAFO 3 - FIN
-                        //PARRAFO 4 - INI
+                        //PARRAFO 4 - INI estatuto gremial
 
                         if (organizacion.ReformaAGACs.Any())
                         {
-                            var Reforma = organizacion.ReformaAGACs.OrderBy(q => q.FechaAsambleaDep);
-                            //var ReformaSinUlti = Reforma.Skip(1);
+                            var ReformaGremial = organizacion.ReformaAGACs.OrderBy(q => q.FechaAsambleaDep);
                             string[] parrafo4;
                             parrafo4 = parrafo_cuatro.Split('#');
                             subtitulo3 = new Paragraph(parrafo4[0], _fontStandardBoldSubRayado);
                             parrafo4 = parrafo4.Where(n => n != parrafo4[0]).ToArray();
                             string[] parrafo4Superior;
                             string[] parrafo4Inferior;
-                            string[] parrafo5;
                             List<string> conjuntoSuperior = new List<string> { };
                             List<string> conjuntoInferior = new List<string> { };
                             doc.Add(subtitulo3);
+                            doc.Add(SaltoLinea);
                             var IndReforma = 0;
                             var cantiReforma = organizacion.ReformaAGACs.Count();
-                            foreach (var Re in Reforma)
+                            foreach (var Re in ReformaGremial)
                             {
                                 Paragraph comb4SuperiorR = new Paragraph();
                                 Paragraph comb4InferiorR = new Paragraph();
@@ -2634,7 +2795,7 @@ namespace DAES.BLL
                                 {
                                     parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "°" + "#");
                                 }
-                                //parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "°" + "#");
+                                parrafoActual = parrafoActual.Replace("[TIPOGENERAL]", Re.TipoGeneralId != null ? "#" + Re.TipoGeneral.Nombre + "#" : "ERROR_Reforma");
                                 parrafoActual = parrafoActual.Replace("[FECHAASAMBLEASOCIOS]", Re.FechaAsambleaDep.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", Re.FechaAsambleaDep.Value) + "#" : "ERROR_Reforma");
                                 parrafoActual = parrafoActual.Replace("[NUMEROOFICIO]", Re.NumeroOficio != null ? "#" + Re.NumeroOficio + "#" : "ERROR_Reforma");
                                 parrafoActual = parrafoActual.Replace("[FECHAOFICIO]", Re.FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", Re.FechaOficio.Value) + "#" : "ERROR_Reforma");
@@ -2666,24 +2827,24 @@ namespace DAES.BLL
                                     parrafoActualInf = parrafoActualInf.Replace("[FECHAOFICIO]", ObsReforma.FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ObsReforma.FechaOficio.Value) + "#" : "ERROR_ObsReforma");
                                     parrafoActualInf = parrafoActualInf.Replace("[APROBACION]", ObsReforma.AprobacionId != null ? "#" + ObsReforma.Aprobacion.Nombre + "#" : "ERROR_ObsReforma");
                                     parrafo4Inferior = parrafoActualInf.Split('#');
-                                    if (parrafo_cinco.Contains("ERROR_ObsReforma"))
+                                    if (!parrafoActualInf.Contains("ERROR_ObsReforma"))
                                     {
-                                        throw new Exception(string.Format("Error al emitir, el apartado de Observacion Reforma no tiene todos los campos requeridos"));
-                                    }
-                                    index = 0;
-                                    foreach (var item in parrafo4Inferior)
-                                    {
-                                        if (index % 2 == 0)
+                                        index = 0;
+                                        foreach (var item in parrafo4Inferior)
                                         {
-                                            PhraseCUATROInferior = new Phrase(item, _fontStandard);
+                                            if (index % 2 == 0)
+                                            {
+                                                PhraseCUATROInferior = new Phrase(item, _fontStandard);
+                                            }
+                                            else
+                                            {
+                                                PhraseCUATROInferior = new Phrase(item, _fontNegrita);
+                                            }
+                                            comb4InferiorR.Add(PhraseCUATROInferior);
+                                            index++;
                                         }
-                                        else
-                                        {
-                                            PhraseCUATROInferior = new Phrase(item, _fontNegrita);
-                                        }
-                                        comb4InferiorR.Add(PhraseCUATROInferior);
-                                        index++;
                                     }
+
                                 }
                                 comb4SuperiorR.AddRange(comb4InferiorR);
                                 comb4SuperiorR.Add(SaltoLinea);
@@ -2921,8 +3082,12 @@ namespace DAES.BLL
                                 table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
                                     table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                                 table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
-                                table.AddCell(new PdfPCell(new Phrase("Vigencia Desde", _fontStandardBold)));
-                                table.AddCell(new PdfPCell(new Phrase("Vigencia Hasta", _fontStandardBold)));
+                                PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
+                                cellDesde.HorizontalAlignment = Element.ALIGN_CENTER;
+                                table.AddCell(cellDesde);
+                                PdfPCell cellHasta = new PdfPCell(new Phrase("Hasta", _fontStandardBold));
+                                cellHasta.HorizontalAlignment = Element.ALIGN_CENTER;
+                                table.AddCell(cellHasta);
                                 table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
                                 foreach (var item in comision.ToList())
                                 {
@@ -3626,8 +3791,12 @@ namespace DAES.BLL
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Desde", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Hasta", _fontStandardBold)));
+                            PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
+                            cellDesde.HorizontalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cellDesde);
+                            PdfPCell cellHasta = new PdfPCell(new Phrase("Hasta", _fontStandardBold));
+                            cellHasta.HorizontalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cellHasta);
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
                             foreach (var item in directorio.ToList())
                             {
@@ -3676,8 +3845,12 @@ namespace DAES.BLL
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Desde", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Hasta", _fontStandardBold)));
+                            PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
+                            cellDesde.HorizontalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cellDesde);
+                            PdfPCell cellHasta = new PdfPCell(new Phrase("Hasta", _fontStandardBold));
+                            cellHasta.HorizontalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cellHasta);
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
 
                             foreach (var item in directorio.ToList())
@@ -3725,8 +3898,12 @@ namespace DAES.BLL
                             table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Desde", _fontStandardBold)));
-                            table.AddCell(new PdfPCell(new Phrase("Hasta", _fontStandardBold)));
+                            PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
+                            cellDesde.HorizontalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cellDesde);
+                            PdfPCell cellHasta = new PdfPCell(new Phrase("Hasta", _fontStandardBold));
+                            cellHasta.HorizontalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cellHasta);
                             table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
 
                             foreach (var item in directorio.ToList())

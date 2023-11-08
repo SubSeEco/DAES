@@ -242,7 +242,12 @@
             //ActualizacionConsejoAdmninistracion = 118,
             //AsambleaOrdinaria = 117,
         }
-
+        public enum Aprobacion
+        {
+            aprobada = 1,
+            objetada = 2,
+            observada = 3,
+        }
         public enum TipoAprobacion
         {
             SinAprobacion = 1,

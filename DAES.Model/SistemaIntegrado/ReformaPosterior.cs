@@ -11,7 +11,10 @@ namespace DAES.Model.SistemaIntegrado
     [Table("ReformaPosterior")]
     public class ReformaPosterior
     {
-
+        public ReformaPosterior()
+        {
+            ObservacionReformas = new List<ObservacionReforma>();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Display(Name = "Id")]
@@ -76,5 +79,6 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Tipo Junta")]
         public int? TipoGeneralId { get; set; }
         public virtual TipoGeneral TipoGeneral { get; set; }
+        public virtual List<ObservacionReforma> ObservacionReformas { get; set; }
     }
 }

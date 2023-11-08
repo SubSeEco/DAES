@@ -720,43 +720,41 @@ namespace DAES.Web.BackOffice.Controllers
             return PartialView("_ObservacionEdit", model);
         }
 
-        public ActionResult ObservacionReformaAdd(int ReformaActual, int OrganizacionId, int posicion)
+        public ActionResult ObservacionReformaAdd(int ReformaActual, int OrganizacionId, int posicion, string tipoReforma)
         {
             var model = db.Organizacion.Find(OrganizacionId);
             ViewBag.AprobacionId = new SelectList(db.Aprobacion.OrderBy(q => q.Nombre), "AprobacionId", "Nombre");
             ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion).ToList(), "AsambleaDepId", "Descripcion");
-            if (model.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa)
+            switch (tipoReforma)
             {
-                if (model.ReformaAnteriors.Any())
-                {
-                    var observacion = new ObservacionReforma()
-                    {
-                        OrganizacionId = OrganizacionId,
-                        IdReformaAnterior = ReformaActual
-                    };
-                    db.ObservacionReforma.Add(observacion);
-                }
-                else if (model.ReformaPosteriors.Any())
-                {
-                    var observacion = new ObservacionReforma()
+                case "observacionReformaPost":
+                    var observacionPost = new ObservacionReforma()
                     {
                         OrganizacionId = OrganizacionId,
                         IdReformaPost = ReformaActual
                     };
-                    db.ObservacionReforma.Add(observacion);
-                }
-
-            }
-            else
-            {
+                    db.ObservacionReforma.Add(observacionPost);
+                    break;
+                case "observacionReformaAnt":
+                    var observacionAnt = new ObservacionReforma()
+                    {
+                        OrganizacionId = OrganizacionId,
+                        IdReformaAnterior = ReformaActual
+                    };
+                    db.ObservacionReforma.Add(observacionAnt);
+                    break;
+                default:
                     var observacion = new ObservacionReforma()
                     {
                         OrganizacionId = OrganizacionId,
                         IdReformaAGAC = ReformaActual
 
                     };
-                db.ObservacionReforma.Add(observacion);
+                    db.ObservacionReforma.Add(observacion);
+                    break;
             }
+
+
             db.SaveChanges();
             model = db.Organizacion.Find(OrganizacionId);
             model.ReformaActual = ReformaActual;

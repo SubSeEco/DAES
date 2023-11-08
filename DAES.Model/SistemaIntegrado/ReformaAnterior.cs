@@ -11,8 +11,11 @@ namespace DAES.Model.SistemaIntegrado
     [Table("ReformaAnterior")]
     public class ReformaAnterior
     {
-    
 
+        public ReformaAnterior()
+        {
+            ObservacionReformas = new List<ObservacionReforma>();
+        }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -72,7 +75,7 @@ namespace DAES.Model.SistemaIntegrado
         public int? TipoGeneralId { get; set; }
         public virtual TipoGeneral TipoGeneral { get; set; }
 
-
+        public virtual List<ObservacionReforma> ObservacionReformas { get; set; }
 
     }
 
