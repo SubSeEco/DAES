@@ -730,12 +730,12 @@ else
         }
         if (aprobacionId == 1 && gremial == true)
         {
-            $("#DivObser").show();
-            $("#observacionDiv").show();
-        }else
-        {
             $("#DivObser").hide();
             $("#observacionDiv").hide();
+        }else
+        {
+            $("#DivObser").show(); 
+            $("#observacionDiv").show();
         }
 
     }
@@ -746,20 +746,31 @@ else
         {
             @:gremial = true;
         }
+            //if ((aprobacionId == 1 || aprobacionId == "" || aprobacionId == null) && gremial == true)
         if (aprobacionId == 1 && gremial == true)
+        {
+            $("#DivObserR" + posicion).hide();
+            $("#observacionReformaAGAC" + posicion).hide(); 
+        }else
         {
             $("#DivObserR" + posicion).show();
             $("#observacionReformaAGAC" + posicion).show();
-        }else
-        {
-            $("#DivObserR" + posicion).hide();
-            $("#observacionReformaAGAC" + posicion).hide();
         }
 
     }
     $(document).ready(function () {
+        var aprobacionLegal = document.getElementById("ExistenciaLegals_0__AprobacionId").value;
+        PresentarViewObservacionLegal(aprobacionLegal);
 
+        @if(Model.ReformaAGACs.Any())
+        {
 
+            for (int i = 0; i < Model.ReformaAGACs.Count(); i++)
+            {
+                @:PresentarViewObservacionReforma(@Model.ReformaAGACs[i].AprobacionId, @i);
+            }
+        }
+        PresentarViewObservacionReforma(2, 1);
         $("#observacionDiv").show();
         $("#limpiar").on("click", function () {
             LimpiarCamposAnt()
@@ -838,9 +849,6 @@ else
 
     });
 
-    function miFuncion() {
-            alert("La función se ha activado desde el evento onload.");
-        }
 
         // El evento onload se dispara cuando la página se carga completamente.
         window.onload = function() {
