@@ -27,7 +27,6 @@
                 <th>
                     @Html.DisplayNameFor(model => Model.ExistenciaLegals.FirstOrDefault().AprobacionId)
                     @Html.DropDownListFor(model => model.ExistenciaLegals.FirstOrDefault().AprobacionId, null, "Selecione..", htmlAttributes: new { @class = "form-control", @style = "width: 190px;" })
-                    @*@Html.DropDownListFor(model => Model.ExistenciaLegals.FirstOrDefault().AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ExistenciaLegals.FirstOrDefault().AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 180px;" })*@
                 </th>
             </tr>
             <tr>
@@ -61,7 +60,7 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => Model.ExistenciaLegals[i].AprobacionId)
-                    @Html.DropDownListFor(model => Model.ExistenciaLegals[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ExistenciaLegals[i].AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 190px;" })
+                    @Html.DropDownListFor(model => Model.ExistenciaLegals[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ExistenciaLegals[i].AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 190px;", onchange = "PresentarViewObservacionLegal(this.value);" })
                 </th>
 
             </tr>

@@ -618,7 +618,6 @@ else
         $("#Observaciony").prop("checked", false);
     }
 
-
     function LimpiarCamposAnt() {
 
         document.getElementById("ExistenciaAnteriors_0__Autorizado").value = "";
@@ -626,15 +625,11 @@ else
         document.getElementById("ExistenciaAnteriors_0__FNorma").value = "";
         document.getElementById("ExistenciaAnteriors_0__NNorma").value = "";
         document.getElementById("ExistenciaAnteriors_0__TipoNormaId").value = "";
-    }
-
-    function LimpiarCamposAnt() {
-
-        document.getElementById("ExistenciaAnteriors_0__Autorizado").value = "";
-        document.getElementById("ExistenciaAnteriors_0__FechaPublicacion").value = "";
-        document.getElementById("ExistenciaAnteriors_0__FNorma").value = "";
-        document.getElementById("ExistenciaAnteriors_0__NNorma").value = "";
-        document.getElementById("ExistenciaAnteriors_0__TipoNormaId").value = "";
+        document.getElementById("ExistenciaAnteriors_0__DatosGeneralNotario").value = "";
+        document.getElementById("ExistenciaAnteriors_0__LugarNotario").value = "";
+        document.getElementById("ExistenciaAnteriors_0__FechaJuntaGeneral").value = "";
+        document.getElementById("ExistenciaAnteriors_0__FechaEscritura").value = "";
+        document.getElementById("ExistenciaAnteriors_0__TipoGeneralId").value = "";
     }
 
     function LimpiarCampos() {
@@ -644,7 +639,11 @@ else
         document.getElementById("ExistenciaLegals_0__FechaNorma").value = "";
         document.getElementById("ExistenciaLegals_0__NumeroNorma").value = "";
         document.getElementById("ExistenciaLegals_0__TipoNormaId").value = "";
+        document.getElementById("ExistenciaLegals_0__TipoGeneralId").value = "";
+        document.getElementById("ExistenciaLegals_0__FechaConstitutivaSocios").value = "";
+        document.getElementById("ExistenciaLegals_0__AprobacionId").value = "";
     }
+
 
 
     function LimpiarCampoExisPosterior() {
@@ -653,9 +652,11 @@ else
         document.getElementById("ExistenciaPosteriors_0__FechaPublicacionn").value = "";
         document.getElementById("ExistenciaPosteriors_0__FechaEscrituraPublica").value = "";
         document.getElementById("ExistenciaPosteriors_0__DatosGeneralesNotario").value = "";
+        document.getElementById("ExistenciaPosteriors_0__LugarNotario").value = "";
         document.getElementById("ExistenciaPosteriors_0__Fojas").value = "";
         document.getElementById("ExistenciaPosteriors_0__AnoInscripcion").value = "";
         document.getElementById("ExistenciaPosteriors_0__DatosCBR").value = "";
+        document.getElementById("ExistenciaPosteriors_0__TipoGeneralId").value = "";
     }
 
     function LimpiarCamposSanemiento() {
@@ -666,6 +667,7 @@ else
         document.getElementById("Saneamientos_0__Fojass").value = "";
         document.getElementById("Saneamientos_0__FechaaInscripcion").value = "";
         document.getElementById("Saneamientos_0__DatossCBR").value = "";
+        document.getElementById("Saneamientos_0__LugarNotario").value = "";
     }
 
     function LimpiarCamposAGAC() {
@@ -674,6 +676,7 @@ else
         document.getElementById("ExistenciaLegals_0__NumeroOficio").value = "";
         document.getElementById("ExistenciaLegals_0__FechaOficio").value = "";
         document.getElementById("ExistenciaLegals_0__AprobacionId").value = "";
+        document.getElementById("ExistenciaLegals_0__TipoGeneralId").value = "";
     }
 
     function LimpiarCamposObservacion() {
@@ -719,9 +722,45 @@ else
 
     }
 
+    function PresentarViewObservacionLegal(aprobacionId) {
+        var gremial = false
+        @if (Model.TipoOrganizacionId == 2 || Model.TipoOrganizacionId == 3)
+        {
+            @:gremial = true;
+        }
+        if (aprobacionId == 1 && gremial == true)
+        {
+            $("#DivObser").show();
+            $("#observacionDiv").show();
+        }else
+        {
+            $("#DivObser").hide();
+            $("#observacionDiv").hide();
+        }
+
+    }
+
+        function PresentarViewObservacionReforma(aprobacionId,posicion) {
+            var gremial = false
+        @if (Model.TipoOrganizacionId == 2 || Model.TipoOrganizacionId == 3)
+        {
+            @:gremial = true;
+        }
+        if (aprobacionId == 1 && gremial == true)
+        {
+            $("#DivObserR" + posicion).show();
+            $("#observacionReformaAGAC" + posicion).show();
+        }else
+        {
+            $("#DivObserR" + posicion).hide();
+            $("#observacionReformaAGAC" + posicion).hide();
+        }
+
+    }
     $(document).ready(function () {
 
 
+        $("#observacionDiv").show();
         $("#limpiar").on("click", function () {
             LimpiarCamposAnt()
         });

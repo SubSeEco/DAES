@@ -33,7 +33,7 @@
 
                     @Html.DisplayNameFor(model => Model.ReformaAGACs[i].AprobacionId)
                     @*@Html.DropDownListFor(model => Model.Reformas[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.Reformas[i].AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 180px;" })*@
-                    @Html.DropDownListFor(model => Model.ReformaAGACs[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ReformaAGACs[i].AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 190px;" })
+                    @Html.DropDownListFor(model => Model.ReformaAGACs[i].AprobacionId, new SelectList(ViewBag.AprobacionId, "Value", "Text", Model.ReformaAGACs[i].AprobacionId), "Seleccione...", new { @class = "form-control", @style = "width: 190px;", onchange = "PresentarViewObservacionReforma(this.value, "+ i +");" })
 
                 </th>
                 <th>
@@ -56,7 +56,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="DivObserR">
+                    <div id="DivObserR@(i)">
                         <label>¿Observaciones?</label><br />
                         <input id="Observacions@(i)" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAGAC(true,@(i))" /> si
                         <input id="Observacions@(i)Segundario" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAGAC(false,@(i))" /> no

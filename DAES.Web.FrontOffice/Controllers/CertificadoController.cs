@@ -35,7 +35,7 @@ namespace DAES.Web.FrontOffice.Controllers
             //en el caso de 8 transitorio, solo cooperativas vigentes
             if (TipoDocumentoId == (int)Infrastructure.Enum.TipoDocumento.Articulo8voTransitorio)
             {
-                query = query.Where(q => q.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa && q.EstadoId == (int)Infrastructure.Enum.Estado.Vigente);
+                query = query.Where(q => q.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa && q.EstadoId == (int)Infrastructure.Enum.Estado.Vigente && q.ExistenciaAnteriors.Any());
             }
 
             //Testing PDF Disoluciones, solo para mostrar datos a modo de prueba
