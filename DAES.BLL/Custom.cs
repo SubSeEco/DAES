@@ -1990,12 +1990,12 @@ namespace DAES.BLL
                                 {
                                     if (ObsLegal.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada)
                                     {
-                                        parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", legalAnt.TipoNormaId != null ? "#" + legalAnt.tipoNorma.Nombre + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", legalAnt.NNorma != null ? "#" + legalAnt.NNorma + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", legalAnt.FNorma != null ? "#" + legalAnt.FNorma + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", legalAnt.Autorizado != null ? "#" + legalAnt.Autorizado + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", ObsLegal.NumeroOficio != null ? "#" + ObsLegal.NumeroOficio + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", ObsLegal.FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}#", ObsLegal.FechaOficio.Value) + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]",  legalAnt.TipoNormaId != null ? "Dicha acta estatutaria se encuentra #" + ObsLegal.Aprobacion.Nombre + "# por #"  + legalAnt.tipoNorma.Nombre + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", legalAnt.NNorma != null ? "N° #" + legalAnt.NNorma + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", legalAnt.FNorma != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalAnt.FNorma.Value) + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", legalAnt.Autorizado != null ? "del #" + legalAnt.Autorizado + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", ObsLegal.NumeroOficio != null ? "por oficio ordinario N° #" + ObsLegal.NumeroOficio + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", ObsLegal.FechaOficio.HasValue ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ObsLegal.FechaOficio.Value) + "#" : "ERROR_Opcional");
                                         if (parrafo2[0].Contains("ERROR_Opcional"))
                                         {
                                             parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");

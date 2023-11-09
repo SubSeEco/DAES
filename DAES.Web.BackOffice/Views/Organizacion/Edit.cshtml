@@ -389,7 +389,7 @@
     </div>
 
 
-    <div id="DivObser">
+    <div id="DivObserL">
         <label>¿Observaciones?</label><br />
         <input id="Observacionx" name="obser" type="radio" onclick="PresentarViewObservacion(true)" /> si
         <input id="Observaciony" name="obser" type="radio" onclick="PresentarViewObservacion(false)" /> no
@@ -402,8 +402,6 @@
             <div id="observacion">
                 @Html.Partial("_ObservacionEdit", Model)
             </div>
-            <br />
-            <input type="button" value="Limpiar campos" id="limpiarObservacion" class="btn btn-primary" />
         </div>
     </div>
 
@@ -679,13 +677,7 @@ else
         document.getElementById("ExistenciaLegals_0__TipoGeneralId").value = "";
     }
 
-    function LimpiarCamposObservacion() {
 
-        document.getElementById("Observacions_0__NumeroOficio").value = "";
-        document.getElementById("Observacions_0__TipoOficioId").value = "";
-        document.getElementById("Observacions_0__FechaOficio").value = "";
-        document.getElementById("Observacions_0__FechaDeposito").value = "";
-    }
 
     function LimpiarCamposTransitorio() {
 
@@ -730,11 +722,11 @@ else
         }
         if (aprobacionId == 1 && gremial == true)
         {
-            $("#DivObser").hide();
+            $("#DivObserL").hide();
             $("#observacionDiv").hide();
         }else
         {
-            $("#DivObser").show(); 
+            $("#DivObserL").show();
             $("#observacionDiv").show();
         }
 
@@ -750,7 +742,7 @@ else
         if (aprobacionId == 1 && gremial == true)
         {
             $("#DivObserR" + posicion).hide();
-            $("#observacionReformaAGAC" + posicion).hide(); 
+            $("#observacionReformaAGAC" + posicion).hide();
         }else
         {
             $("#DivObserR" + posicion).show();
@@ -759,18 +751,8 @@ else
 
     }
     $(document).ready(function () {
-        var aprobacionLegal = document.getElementById("ExistenciaLegals_0__AprobacionId").value;
-        PresentarViewObservacionLegal(aprobacionLegal);
 
-        @if(Model.ReformaAGACs.Any())
-        {
 
-            for (int i = 0; i < Model.ReformaAGACs.Count(); i++)
-            {
-                @:PresentarViewObservacionReforma(@Model.ReformaAGACs[i].AprobacionId, @i);
-            }
-        }
-        PresentarViewObservacionReforma(2, 1);
         $("#observacionDiv").show();
         $("#limpiar").on("click", function () {
             LimpiarCamposAnt()
@@ -786,10 +768,6 @@ else
 
         $("#limpiarAGAC").on("click", function () {
             LimpiarCamposAGAC()
-        });
-
-        $("#limpiarObservacion").on("click", function () {
-            LimpiarCamposObservacion()
         });
 
         $("#limpiarTransitorio").on("click", function () {
@@ -847,12 +825,18 @@ else
             actualizarObs();
         }
 
+                var aprobacionLegal = document.getElementById("ExistenciaLegals_0__AprobacionId").value;
+        PresentarViewObservacionLegal(aprobacionLegal);
+
+        @if(Model.ReformaAGACs.Any())
+        {
+
+            for (int i = 0; i < Model.ReformaAGACs.Count(); i++)
+            {
+                @:PresentarViewObservacionReforma(@Model.ReformaAGACs[i].AprobacionId, @i);
+            }
+        }
     });
 
-
-        // El evento onload se dispara cuando la página se carga completamente.
-        window.onload = function() {
-            miFunción();
-        };
 </script>
 
