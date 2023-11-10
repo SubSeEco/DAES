@@ -1671,7 +1671,7 @@ namespace DAES.BLL
                         comb2.Add(PhraseDOS);
                         index++;
                     }
-                    comb.Alignment = Element.ALIGN_JUSTIFIED;
+                    comb2.Alignment = Element.ALIGN_JUSTIFIED;
 
                     doc.Add(comb2);
                     doc.Add(SaltoLinea);
@@ -1720,7 +1720,7 @@ namespace DAES.BLL
                                     PhraseTRES = new Phrase(element, _fontNegrita);
                                 }
                                 comb3.Add(PhraseTRES);
-                                
+                                comb3.Add(SaltoLinea);
                                 index++;
                             }
                             comb3.Add(SaltoLinea);
@@ -1744,8 +1744,6 @@ namespace DAES.BLL
 
                 if (TipoDocumentoId == (int)Infrastructure.Enum.TipoDocumento.Estatutos)
                 {
-
-
                     if (organizacion.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa)
                     {
                         var legalAnt = organizacion.ExistenciaAnteriors.FirstOrDefault(q => q.OrganizacionId == organizacion.OrganizacionId);
@@ -1795,9 +1793,9 @@ namespace DAES.BLL
                             if (organizacion.ReformaPosteriors.Any())
                             {
                                 ReformaVigente = true;
-                                var Reforma = organizacion.ReformaPosteriors.ToList().OrderByDescending(q => q.FechaPubliDiario);
+                                var ReformaP = organizacion.ReformaPosteriors.ToList().OrderByDescending(q => q.FechaPubliDiario);
                                 var ReformaUlti = new ReformaPosterior();
-                                foreach (var item in Reforma)
+                                foreach (var item in ReformaP)
                                 {
                                     if ((item.ObservacionReformas.Any() &&
                                         item.ObservacionReformas.FirstOrDefault().AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada) ||
@@ -1876,9 +1874,9 @@ namespace DAES.BLL
                             if (organizacion.ReformaAnteriors.Any() && ReformaVigente == false) // estatuto anterior 2003  reforma anterior
                             {
                                 ReformaVigente = true;
-                                var Reforma = organizacion.ReformaAnteriors.ToList().OrderByDescending(q => q.FechaPublicDiario);
+                                var ReformaA = organizacion.ReformaAnteriors.ToList().OrderByDescending(q => q.FechaPublicDiario);
                                 var ReformaUlti = new ReformaAnterior();
-                                foreach (var item in Reforma)
+                                foreach (var item in ReformaA)
                                 {
                                     if ((item.ObservacionReformas.Any() &&
                                         item.ObservacionReformas.FirstOrDefault().AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada) ||
@@ -1966,7 +1964,7 @@ namespace DAES.BLL
                                 }
 
                             }
-                            if(ReformaVigente == false) // NO TIENE REFORMAS
+                            if(ReformaVigente == false) // NO TIENE REFORMAS anterior 2003
                             {
                                 var ObsLegal = organizacion.ExistenciaAnteriors.FirstOrDefault().ObservacionLegals.FirstOrDefault();
                                 string[] parrafo2;
@@ -1987,14 +1985,16 @@ namespace DAES.BLL
 
                                 if (ObsLegal != null)
                                 {
-                                    if (ObsLegal.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada)
+                                    if (ObsLegal.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada || (!organizacion.ReformaPosteriors.Any() && !organizacion.ReformaAnteriors.Any()))
                                     {
                                         parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]",  legalAnt.TipoNormaId != null ? "Dicha acta estatutaria se encuentra #" + ObsLegal.Aprobacion.Nombre + "# por #"  + legalAnt.tipoNorma.Nombre + "#" : "ERROR_Opcional");
                                         parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", legalAnt.NNorma != null ? "N° #" + legalAnt.NNorma + "#" : "ERROR_Opcional");
                                         parrafo2[0] = parrafo2[0].Replace("[FECHANORMA]", legalAnt.FNorma != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalAnt.FNorma.Value) + "#" : "ERROR_Opcional");
                                         parrafo2[0] = parrafo2[0].Replace("[AUTORIZADOPOR]", legalAnt.Autorizado != null ? "del #" + legalAnt.Autorizado + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", ObsLegal.NumeroOficio != null ? "por oficio ordinario N° #" + ObsLegal.NumeroOficio + "#" : "ERROR_Opcional");
-                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", ObsLegal.FechaOficio.HasValue ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ObsLegal.FechaOficio.Value) + "#" : "ERROR_Opcional");
+                                        //parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", ObsLegal.NumeroOficio != null ? "por oficio ordinario N° #" + ObsLegal.NumeroOficio + "#" : "ERROR_Opcional");
+                                        //parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", ObsLegal.FechaOficio.HasValue ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ObsLegal.FechaOficio.Value) + "#" : "ERROR_Opcional");
+                                        parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", "");
+                                        parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", "");
                                         if (parrafo2[0].Contains("ERROR_Opcional"))
                                         {
                                             parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
@@ -2060,7 +2060,7 @@ namespace DAES.BLL
                                 parrafo3 = parrafo3.Where(n => n != parrafo3[0]).ToArray();
                                 if (organizacion.Saneamientos.Any())
                                 {
-                                    parrafo3[0] = parrafo3[0].Replace("[EXISTEREFORMA]", organizacion.ReformaAnteriors.Any() || organizacion.ReformaPosteriors.Any() ? "El acta contitutiva" : "La reforma estatutaria");
+                                    parrafo3[0] = parrafo3[0].Replace("[EXISTEREFORMA]", organizacion.ReformaAnteriors.Any() || organizacion.ReformaPosteriors.Any() ? "El acta constitutiva" : "La reforma estatutaria");
                                     parrafo3[0] = parrafo3[0].Replace("[FECHAESCRITURA]", saniamientoAnt.FechaEscrituraPublicaa.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", saniamientoAnt.FechaEscrituraPublicaa.Value) + "#" : "ERROR_Saneamiento");
                                     parrafo3[0] = parrafo3[0].Replace("[LUGARNOTARIO]", saniamientoAnt.LugarNotario != null ? "#" + saniamientoAnt.LugarNotario + "#" : "ERROR_Saneamiento");
                                     parrafo3[0] = parrafo3[0].Replace("[DATOGENERALNOTARIO]", saniamientoAnt.DatoGeneralesNotario != null ? "#" + saniamientoAnt.DatoGeneralesNotario + "#" : "ERROR_Saneamiento");
@@ -2367,7 +2367,7 @@ namespace DAES.BLL
                                     index++;
                                 }
                             }
-                            else // NO TIENE REFORMA
+                            else // NO TIENE REFORMA posterior 2003
                             {
                                 var ObsLegal = organizacion.ExistenciaPosteriors.FirstOrDefault().ObservacionLegals.FirstOrDefault();
                                 var LegalPost = organizacion.ExistenciaPosteriors.FirstOrDefault();
@@ -2392,7 +2392,7 @@ namespace DAES.BLL
 
                                 if (ObsLegal != null)
                                 {
-                                    if (ObsLegal.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada)
+                                    if (ObsLegal.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada || !organizacion.ReformaPosteriors.Any())
                                     {
                                         parrafo2[0] = parrafo2[0].Replace("[NUMEROOFICIO]", ObsLegal != null ? ObsLegal.NumeroOficio != null ? "por oficio ordinario N° #" + ObsLegal.NumeroOficio + "#" : "" : "");
                                         parrafo2[0] = parrafo2[0].Replace("[FECHAOFICIO]", ObsLegal != null ? ObsLegal.FechaOficio.HasValue ? " de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}#", ObsLegal.FechaOficio.Value) + "#" : "" : "");
@@ -2921,7 +2921,7 @@ namespace DAES.BLL
                                     {
                                         throw new Exception(string.Format("Error al emitir, el apartado de Disolucion no tiene todos los campos requeridos"));
                                     }
-
+                                index = 0;
                                     foreach (string element in diso)
                                     {
                                         if (index % 2 == 0)
@@ -2936,23 +2936,32 @@ namespace DAES.BLL
                                         index++;
                                     }
                                 var comision = context.ComisionLiquidadora.Where(q => q.OrganizacionId == organizacion.OrganizacionId);
-                                    if(comision.Any())
+                                if ((aux.ComisionAnterior == true || aux.ComisionPosterior == true))
                                 {
-                                    foreach (string element in diso2)
+                                    if (aux.FechaComiLiquiJuntaSocios != null)
                                     {
-                                        if (index % 2 == 0)
+                                        index = 0;
+                                        foreach (string element in diso2)
                                         {
-                                            PhraseDiso2 = new Phrase(element, _fontStandard);
+                                            if (index % 2 == 0)
+                                            {
+                                                PhraseDiso2 = new Phrase(element, _fontStandard); 
+                                            }
+                                            else
+                                            {
+                                                PhraseDiso2 = new Phrase(element, _fontNegrita);
+                                            }
+                                            combDiso2.Add(PhraseDiso2);
+                                            index++;
                                         }
-                                        else
-                                        {
-                                            PhraseDiso2 = new Phrase(element, _fontNegrita);
-                                        }
-                                        combDiso2.Add(PhraseDiso2);
-                                        index++;
+                                    }
+                                    else
+                                    {
+                                        throw new Exception(string.Format("Error al emitir, el apartado de Disolucion no tiene todos los campos requeridos"));
                                     }
                                 }
-                                index = 0;
+               
+                                
 
                                     combDiso.Alignment = Element.ALIGN_JUSTIFIED;
                                     combDiso2.Alignment = Element.ALIGN_JUSTIFIED;
@@ -2981,42 +2990,46 @@ namespace DAES.BLL
                                     {
                                         throw new Exception(string.Format("Error al emitir, el apartado de Disolucion no tiene todos los campos requeridos"));
                                     }
-                                    foreach (string element in diso)
-                                    {
-                                        if (index % 2 == 0)
-                                        {
-                                            PhraseDiso = new Phrase(element, _fontStandard);
-                                        }
-                                        else
-                                        {
-                                            PhraseDiso = new Phrase(element, _fontNegrita);
-                                        }
-                                        combDiso.Add(PhraseDiso);
-                                        index++;
-                                    }
-                                var comision = context.ComisionLiquidadora.Where(q => q.OrganizacionId == organizacion.OrganizacionId);
-                                    if (comision.Any())
+                                index = 0;
+                                foreach (string element in diso)
                                 {
-                                    index = 0;
-                                    foreach (string element in diso2)
+                                    if (index % 2 == 0)
                                     {
-                                        if (index % 2 == 0)
+                                        PhraseDiso = new Phrase(element, _fontStandard);
+                                    }
+                                    else
+                                    {
+                                        PhraseDiso = new Phrase(element, _fontNegrita);
+                                    }
+                                    combDiso.Add(PhraseDiso);
+                                    index++;
+                                }
+                                if ((aux.ComisionAnterior == true || aux.ComisionPosterior == true))
+                                {
+                                    if (aux.FechaComiLiquiJuntaSocios != null)
+                                    {
+                                        index = 0;
+                                        foreach (string element in diso2)
                                         {
-                                            PhraseDiso2 = new Phrase(element, _fontStandard);
+                                            if (index % 2 == 0)
+                                            {
+                                                PhraseDiso2 = new Phrase(element, _fontStandard);
+                                            }
+                                            else
+                                            {
+                                                PhraseDiso2 = new Phrase(element, _fontNegrita);
+                                            }
+                                            combDiso2.Add(PhraseDiso2);
+                                            index++;
                                         }
-                                        else
-                                        {
-                                            PhraseDiso2 = new Phrase(element, _fontNegrita);
-                                        }
-                                        combDiso2.Add(PhraseDiso2);
-                                        index++;
+                                    }
+                                    else
+                                    {
+                                        throw new Exception(string.Format("Error al emitir, el apartado de Disolucion no tiene todos los campos requeridos"));
                                     }
                                 }
-
-                                    combDiso.Alignment = Element.ALIGN_JUSTIFIED;
-                                    combDiso2.Alignment = Element.ALIGN_JUSTIFIED;
-
-
+                                combDiso.Alignment = Element.ALIGN_JUSTIFIED;
+                                combDiso2.Alignment = Element.ALIGN_JUSTIFIED;
                             }
                        }
                         else if (aux.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.AsociacionConsumidores ||
@@ -3065,7 +3078,7 @@ namespace DAES.BLL
                         doc.Add(SaltoLinea);
                         doc.Add(combDiso2);
                         doc.Add(SaltoLinea);
-                        if (aux.ComisionAnterior = true || aux.ComisionPosterior == true)
+                        if (aux.ComisionAnterior == true || aux.ComisionPosterior == true)
                         {
                             var comision = context.ComisionLiquidadora.Where(q => q.OrganizacionId == organizacion.OrganizacionId).OrderBy(q => q.Cargo.Secuencia);
                             if (comision.Any())
@@ -3084,18 +3097,21 @@ namespace DAES.BLL
                                 cellHasta.HorizontalAlignment = Element.ALIGN_CENTER;
                                 table.AddCell(cellHasta);
                                 table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
-                                foreach (var item in comision.ToList())
+                                if (aux.FechaComiLiquiJuntaSocios != null)
                                 {
-                                    if (item.EsMiembro)
+                                    foreach (var item in comision.ToList())
                                     {
-                                        var cargo = context.Cargo.FirstOrDefault(q => q.CargoId == item.CargoId);
-                                        if (item.NombreCompleto != null && cargo.Nombre != null && aux.FechaInicio.HasValue == true && aux.FechaTermino.HasValue == true)
+                                        if (item.EsMiembro)
                                         {
-                                            filaCompleta = true;
-                                            break;
+                                            var cargo = context.Cargo.FirstOrDefault(q => q.CargoId == item.CargoId);
+                                            if (item.NombreCompleto != null && cargo.Nombre != null && aux.FechaInicio.HasValue == true && aux.FechaTermino.HasValue == true)
+                                            {
+                                                filaCompleta = true;
+                                                break;
+                                            }
                                         }
                                     }
-                                }
+                                }  
                                 if (filaCompleta == true)
                                 {
                                     foreach (var item in comision.ToList())
@@ -3125,10 +3141,6 @@ namespace DAES.BLL
                                 table.SpacingBefore = 15f;
                                 doc.Add(table);
                             }
-                        }
-                        else
-                        {
-                            throw new Exception(string.Format("Error al emitir, no tiene comisiones"));
                         }
                         
 
@@ -3774,6 +3786,7 @@ namespace DAES.BLL
                             comb2.Add(PhraseDOS);
                             index++;
                         }
+                        comb2.Alignment = Element.ALIGN_JUSTIFIED;
                         doc.Add(comb2);
                         doc.Add(SaltoLinea);
                     }
