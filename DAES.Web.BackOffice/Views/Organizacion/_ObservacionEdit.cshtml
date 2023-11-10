@@ -20,7 +20,7 @@
             @Ajax.ActionLink("Agregar Observacion", "ObservacionLegalAdd", null, new { Model.OrganizacionId }, new AjaxOptions { UpdateTargetId = "observacion" }, htmlAttributes: new { @class = "btn btn-success" })
         }
     }
-        @if (Model.ExistenciaLegals.Any())
+        @if (Model.ExistenciaLegals.Any() && Model.ExistenciaLegals.FirstOrDefault().ObservacionLegals.Any())
         {
             for (var i = 0; i < Model.ObservacionLegals.Count; i++)
             {
@@ -66,7 +66,7 @@
 
             }
         }
-        else if (Model.ExistenciaAnteriors.Any())
+        else if (Model.ExistenciaAnteriors.Any() && Model.ExistenciaAnteriors.FirstOrDefault().ObservacionLegals.Any())
         {
             for (var i = 0; i < Model.ObservacionLegals.Count; i++)
             {
@@ -108,7 +108,7 @@
 
             }
         }
-        else if (Model.ExistenciaPosteriors.Any())
+        else if (Model.ExistenciaPosteriors.Any() && Model.ExistenciaPosteriors.FirstOrDefault().ObservacionLegals.Any())
         {
             for (var i = 0; i < Model.ObservacionLegals.Count; i++)
             {
