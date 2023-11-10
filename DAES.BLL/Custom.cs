@@ -23,6 +23,7 @@ using DAES.Infrastructure.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
 using static iTextSharp.text.pdf.AcroFields;
 using System.Web.Services.Description;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -46,7 +47,7 @@ namespace DAES.BLL
             }
         }
 
-        public void LogAdd(Log log)
+        public void LogAdd(Model.SistemaIntegrado.Log log)
         {
             using (SistemaIntegradoContext context = new SistemaIntegradoContext())
             {
@@ -433,7 +434,6 @@ namespace DAES.BLL
                     //var exis = context.ExistenciaLegal.Any(q => q.OrganizacionId == item.OrganizacionId);
                     if (exi != null)
                     {
-
                         exi.NumeroNorma = item.NumeroNorma;
                         exi.TipoNormaId = item.TipoNormaId;
                         exi.FechaNorma = item.FechaNorma;
@@ -678,7 +678,6 @@ namespace DAES.BLL
                         reforma.FechaPublicDiario = item.FechaPublicDiario;
                         reforma.DatosNotario = item.DatosNotario;
                         reforma.EspaciosDocAnterior = item.EspaciosDocAnterior;
-                        reforma.TipoGeneralId = item.TipoGeneralId;
                         reforma.AutorizadoPor = item.AutorizadoPor;
                         reforma.LugarNotario = item.LugarNotario;
                         reforma.TipoGeneralId = item.TipoGeneralId;
@@ -2329,7 +2328,7 @@ namespace DAES.BLL
                                     throw new Exception(string.Format("Error al emitir, el apartado de Reforma no tiene todos los campos requeridos"));
                                 }
                                 var aprobadoObsReforma = false;
-                                if (ReformaUlti.ObservacionReformas != null)
+                                if (ReformaUlti.ObservacionReformas.Any())
                                 {
                                         parrafo2[0] = parrafo2[0].Replace("[TIPONORMA]", "");
                                         parrafo2[0] = parrafo2[0].Replace("[NUMERONORMA]", "");
@@ -2684,7 +2683,7 @@ namespace DAES.BLL
                         }
                         if(ReformaUlti.IdReformaAGAC != 0)
                         {
-                            var obsLegalGremial = ReformaUlti.ObservacionReformas.FirstOrDefault();
+                            var obsReformaGremial = ReformaUlti.ObservacionReformas.FirstOrDefault();
                             string[] parrafo3;
                             parrafo3 = parrafo_tres.Split('#');
                             subtitulo2 = new Paragraph(parrafo3[0], _fontStandardBoldSubRayado);
@@ -2693,10 +2692,10 @@ namespace DAES.BLL
                             parrafo3[0] = parrafo3[0].Replace("[EXISTEREFORMA]", "#reformado#");
                             parrafo3[0] = parrafo3[0].Replace("[FECHAASAMBLEASOCIOS]", ReformaUlti.FechaAsambleaDep.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ReformaUlti.FechaAsambleaDep.Value) + "#" : "ERROR_Reforma");
                             parrafo3[0] = parrafo3[0].Replace("[ESTADO]", ReformaUlti.AprobacionId != null ? "#" + ReformaUlti.Aprobacion.Nombre + "#" : "ERROR_Reforma");
-                            if(obsLegalGremial != null && obsLegalGremial.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada)
+                            if(obsReformaGremial != null && obsReformaGremial.AprobacionId == (int)Infrastructure.Enum.Aprobacion.aprobada)
                             {
-                                parrafo3[0] = parrafo3[0].Replace("[NUMEROOFICIO]", obsLegalGremial.NumeroOficio != null ? "Dicha acta estatutaria se encuentra aprobada por oficio ordinario N° #" + obsLegalGremial.NumeroOficio + "#" : obsLegalGremial.FechaOficio != null ? "" : ".");
-                                parrafo3[0] = parrafo3[0].Replace("[FECHAOFICIO]", obsLegalGremial.FechaOficio != null && obsLegalGremial.FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", obsLegalGremial.FechaOficio.Value) + "#." : "");
+                                parrafo3[0] = parrafo3[0].Replace("[NUMEROOFICIO]", obsReformaGremial.NumeroOficio != null ? "Dicha acta estatutaria se encuentra aprobada por oficio ordinario N° #" + obsReformaGremial.NumeroOficio + "#" : obsReformaGremial.FechaOficio != null ? "" : ".");
+                                parrafo3[0] = parrafo3[0].Replace("[FECHAOFICIO]", obsReformaGremial.FechaOficio != null && obsReformaGremial.FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", obsReformaGremial.FechaOficio.Value) + "#." : "");
                             }
                             else
                             {
@@ -4128,8 +4127,8 @@ namespace DAES.BLL
                         FechaOficio = reforma.FechaOficio,
                         AprobacionId = reforma.AprobacionId,
                         //EspaciosDocAGAC = reforma.EspaciosDocAGAC
-
-                    });
+                        TipoGeneralId = reforma.TipoGeneralId
+                });
                     context.SaveChanges();
                 }
 
@@ -4149,18 +4148,17 @@ namespace DAES.BLL
                     {
                         //OrganizacionId = or.OrganizacionId,
                         FReforma = reforma.FReforma,
-
                         FechaJuntGeneralSocios = reforma.FechaJuntGeneralSocios,
                         FechaEscrituraPublica = reforma.FechaEscrituraPublica,
                         FojasNumero = reforma.FojasNumero,
                         AnoInscripcion = reforma.AnoInscripcion,
                         DatosCBR = reforma.DatosCBR,
                         FechaPubliDiario = reforma.FechaPubliDiario,
-                        EspaciosDoc = reforma.EspaciosDoc
-
-
-
-                    });
+                        EspaciosDoc = reforma.EspaciosDoc,
+                        DatosGeneralNotario = reforma.DatosGeneralNotario,
+                        LugarNotario = reforma.LugarNotario,
+                        TipoGeneralId = reforma.TipoGeneralId
+                });
                     context.SaveChanges();
                 }
 
@@ -4187,8 +4185,12 @@ namespace DAES.BLL
                         FechaPublicDiario = reforma.FechaPublicDiario,
                         DatosNotario = reforma.DatosNotario,
                         EspaciosDocAnterior = reforma.EspaciosDocAnterior,
-
-                    });
+                        TipoGeneralId = reforma.TipoGeneralId,
+                        AutorizadoPor = reforma.AutorizadoPor,
+                        LugarNotario = reforma.LugarNotario,
+                        FechaEscritura = reforma.FechaEscritura,
+                        FechaJuntaGeneral = reforma.FechaJuntaGeneral
+                });
                     context.SaveChanges();
                 }
 
@@ -4214,9 +4216,8 @@ namespace DAES.BLL
                         Fojass = saneamiento.Fojass,
                         FechaaInscripcion = saneamiento.FechaaInscripcion,
                         DatossCBR = saneamiento.DatossCBR,
-
-
-                    });
+                        LugarNotario = saneamiento.LugarNotario
+                });
                     context.SaveChanges();
                 }
 
@@ -4252,9 +4253,10 @@ namespace DAES.BLL
                         Fojas = existenciaLegals.Fojas,
                         FechaInscripcion = existenciaLegals.FechaInscripcion,
                         DatosCBR = existenciaLegals.DatosCBR,
-                        AprobacionId = existenciaLegals.AprobacionId
-
-                    });
+                        AprobacionId = existenciaLegals.AprobacionId,
+                        FechaPublic = existenciaLegals.FechaPublic,
+                        TipoGeneralId = existenciaLegals.TipoGeneralId
+                });
                     context.SaveChanges();
 
                 }
@@ -4284,10 +4286,13 @@ namespace DAES.BLL
                         NNorma = ExiAnt.NNorma,
                         FNorma = ExiAnt.FNorma,
                         FechaPublicacion = ExiAnt.FechaPublicacion,
-                        Autorizado = ExiAnt.Autorizado
-
-
-                    });
+                        Autorizado = ExiAnt.Autorizado,
+                        LugarNotario = ExiAnt.LugarNotario,
+                        DatosGeneralNotario = ExiAnt.DatosGeneralNotario,
+                        TipoGeneralId = ExiAnt.TipoGeneralId,
+                        FechaEscritura = ExiAnt.FechaEscritura,
+                        FechaJuntaGeneral = ExiAnt.FechaJuntaGeneral
+                });
                     context.SaveChanges();
 
                 }
@@ -4317,11 +4322,10 @@ namespace DAES.BLL
                         DatosGeneralesNotario = ExiPost.DatosGeneralesNotario,
                         Fojas = ExiPost.Fojas,
                         AnoInscripcion = ExiPost.AnoInscripcion,
-                        DatosCBR = ExiPost.DatosCBR
-
-
-
-                    });
+                        DatosCBR = ExiPost.DatosCBR,
+                        LugarNotario = ExiPost.LugarNotario,
+                        TipoGeneralId = ExiPost.TipoGeneralId
+                });
                     context.SaveChanges();
 
                 }
@@ -4478,7 +4482,7 @@ namespace DAES.BLL
                 }
                 catch (Exception ex)
                 {
-                    LogAdd(new Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "FirmarPDF", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de firmar el documento", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
+                    LogAdd(new Model.SistemaIntegrado.Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "FirmarPDF", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de firmar el documento", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
                     throw new Exception("Error de firma de documento.");
                 }
             }
@@ -5779,11 +5783,11 @@ namespace DAES.BLL
                 try
                 {
                     Send();
-                    LogAdd(new Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarProceso", LogTimeUtc = DateTime.UtcNow, LogDetails = "Correo de notificación de proceso enviado a " + emailMsg.To.ToString() + " correctamente.", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = emailMsg.Body });
+                    LogAdd(new Model.SistemaIntegrado.Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarProceso", LogTimeUtc = DateTime.UtcNow, LogDetails = "Correo de notificación de proceso enviado a " + emailMsg.To.ToString() + " correctamente.", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = emailMsg.Body });
                 }
                 catch (Exception ex)
                 {
-                    LogAdd(new Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarProceso", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de notificar proceso a " + emailMsg.To.ToString(), LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
+                    LogAdd(new Model.SistemaIntegrado.Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarProceso", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de notificar proceso a " + emailMsg.To.ToString(), LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
                 }
 
                 return true;
@@ -5844,11 +5848,11 @@ namespace DAES.BLL
                     try
                     {
                         Send();
-                        LogAdd(new Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarTarea", LogTimeUtc = DateTime.UtcNow, LogDetails = "Correo de notificación de tarea enviado a " + emailMsg.To.ToString() + " correctamente.", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = emailMsg.Body });
+                        LogAdd(new Model.SistemaIntegrado.Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarTarea", LogTimeUtc = DateTime.UtcNow, LogDetails = "Correo de notificación de tarea enviado a " + emailMsg.To.ToString() + " correctamente.", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = emailMsg.Body });
                     }
                     catch (Exception ex)
                     {
-                        LogAdd(new Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarTarea", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de notificar tarea a " + emailMsg.To.ToString(), LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
+                        LogAdd(new Model.SistemaIntegrado.Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarTarea", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de notificar tarea a " + emailMsg.To.ToString(), LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
                     }
                 }
 
@@ -5912,11 +5916,11 @@ namespace DAES.BLL
                 try
                 {
                     Send();
-                    LogAdd(new Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarTareaArchivada", LogTimeUtc = DateTime.UtcNow, LogDetails = "Correo de notificación de tarea archivada enviado a " + emailMsg.To.ToString() + " correctamente.", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = emailMsg.Body });
+                    LogAdd(new Model.SistemaIntegrado.Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarTareaArchivada", LogTimeUtc = DateTime.UtcNow, LogDetails = "Correo de notificación de tarea archivada enviado a " + emailMsg.To.ToString() + " correctamente.", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = emailMsg.Body });
                 }
                 catch (Exception ex)
                 {
-                    LogAdd(new Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarTareaArchivada", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de notificar tarea archivada a " + emailMsg.To.ToString(), LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
+                    LogAdd(new Model.SistemaIntegrado.Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarTareaArchivada", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de notificar tarea archivada a " + emailMsg.To.ToString(), LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
                 }
 
                 return true;
@@ -6009,11 +6013,11 @@ namespace DAES.BLL
                 try
                 {
                     Send();
-                    LogAdd(new Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarProcesosPendientes", LogTimeUtc = DateTime.UtcNow, LogDetails = "Correo de reporte de procesos pendientes enviado a " + emailMsg.To.ToString() + " correctamente.", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = emailMsg.Body });
+                    LogAdd(new Model.SistemaIntegrado.Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarProcesosPendientes", LogTimeUtc = DateTime.UtcNow, LogDetails = "Correo de reporte de procesos pendientes enviado a " + emailMsg.To.ToString() + " correctamente.", LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = emailMsg.Body });
                 }
                 catch (Exception ex)
                 {
-                    LogAdd(new Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarProcesosPendientes", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de notificar procesos pendientes a " + emailMsg.To.ToString(), LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
+                    LogAdd(new Model.SistemaIntegrado.Log() { LogId = Guid.NewGuid(), LogTimeLocal = DateTime.Now, LogAreaAccessed = "NotificarProcesosPendientes", LogTimeUtc = DateTime.UtcNow, LogDetails = "Se detectó un problema al momento de notificar procesos pendientes a " + emailMsg.To.ToString(), LogIpAddress = Dns.GetHostName(), LogUserName = Environment.UserName, LogContent = ex.Message });
                 }
 
                 return plantillainforme.Valor;
