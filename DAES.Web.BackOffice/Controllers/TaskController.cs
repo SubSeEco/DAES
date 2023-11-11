@@ -24,6 +24,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.HtmlControls;
 using static com.sun.tools.javah.Util;
+using static org.apache.commons.lang.ObjectUtils;
 
 namespace DAES.Web.BackOffice.Controllers
 {
@@ -1680,10 +1681,18 @@ namespace DAES.Web.BackOffice.Controllers
             Debug.WriteLine("estoy en el metodo "+ofi.Parrafo1+" "+ ofi.Parrafo2);
 
             if (model.Workflow.DocOficio.Any()) {
-                
-                
+
+                model.Workflow.DocOficio.FirstOrDefault().NUMERO_REGISTRO = ofi.NUMERO_REGISTRO;
+                model.Workflow.DocOficio.FirstOrDefault().ProcesoId = ofi.ProcesoId;
+                model.Workflow.DocOficio.FirstOrDefault().ANTECEDENTES = ofi.ANTECEDENTES;
+                model.Workflow.DocOficio.FirstOrDefault().MATERIA = ofi.MATERIA;
+                model.Workflow.DocOficio.FirstOrDefault().DE_DOC = ofi.DE_DOC;
+                model.Workflow.DocOficio.FirstOrDefault().A_DOC = ofi.A_DOC;
+                model.Workflow.DocOficio.FirstOrDefault().DIRECCION = ofi.DIRECCION;
+                model.Workflow.DocOficio.FirstOrDefault().CORREO = ofi.CORREO;
                 model.Workflow.DocOficio.FirstOrDefault().Parrafo1 = ofi.Parrafo1;
                 model.Workflow.DocOficio.FirstOrDefault().Parrafo2 = ofi.Parrafo2;
+                model.Workflow.DocOficio.FirstOrDefault().Parrafo3 = ofi.Parrafo3;
                 model.Workflow.DocOficio.FirstOrDefault().Tabla = ofi.Tabla;
                 var mirar = model.Workflow.DocOficio;
                 model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId));
@@ -1695,8 +1704,17 @@ namespace DAES.Web.BackOffice.Controllers
                 var nuevoregistro = new DocOficio
                 {
                     WorkFlowId = WorkflowId,
+                    ProcesoId =model.ProcesoId,
+                    NUMERO_REGISTRO= ofi.NUMERO_REGISTRO,
+                    ANTECEDENTES= ofi.ANTECEDENTES  ,
+                    MATERIA=ofi.MATERIA,
+                    DE_DOC = ofi.DE_DOC,
+                    A_DOC = ofi.A_DOC,
+                    DIRECCION=ofi.DIRECCION,
+                    CORREO=ofi.CORREO,
                     Parrafo1 = ofi.Parrafo1,
                     Parrafo2 = ofi.Parrafo2,
+                    Parrafo3 = ofi.Parrafo3,
                     Tabla = ofi.Tabla,
                     FileName = "DocumentoCreado" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
                     
@@ -1741,8 +1759,25 @@ namespace DAES.Web.BackOffice.Controllers
     {
         public int DocOficioId { get; set; }
         public int WorkFlowId { get; set; }
+
+        public int ProcesoId {  get; set; }
+        
+        public string NUMERO_REGISTRO { get; set; }
+        public string ANTECEDENTES { get; set; }
+
+        public string MATERIA { get; set; }
+
+        public string DE_DOC { get; set; }
+        public string A_DOC { get; set; }
+
+        public string DIRECCION { get; set; }
+        public string CORREO { get; set; }
+
         public string Parrafo1 { get; set; }
         public string Parrafo2 { get; set; }
+
+        public string Parrafo3 { get; set; }
+
         public string Tabla { get; set; }
 
         public byte[] Content { get; set; }

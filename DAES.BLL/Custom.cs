@@ -518,6 +518,7 @@ namespace DAES.BLL
                         exi.Fojas = item.Fojas;
                         exi.AnoInscripcion = item.AnoInscripcion;
                         exi.DatosCBR = item.DatosCBR;
+                        exi.LUGARNOTARIO = item.LUGARNOTARIO;
                     }
 
                 }
@@ -1027,6 +1028,7 @@ namespace DAES.BLL
         }
 
         //TODO: Se crea nuevo metodo para documento configuracion
+        //ALEX
         public byte[] CrearDocumentoConfOficio(DocOficio docofi)
         {
             
@@ -1132,21 +1134,35 @@ namespace DAES.BLL
             //Registro 
             string ord = "ORD.: N°";
             var paragrafR = new Paragraph(ord, _fontNegrita);
-            var parrafo11 = new Paragraph(docofi.Parrafo1, _fontStandard);
-            paragrafR.AddRange(parrafo11);
+            var paraNumeroOrden = new Paragraph(docofi.NUMERO_REGISTRO, _fontStandard);
+            paragrafR.AddRange(paraNumeroOrden);
             paragrafR.Alignment = Element.ALIGN_RIGHT;
             //Antecedentes
             string ANT = "ANT.: ";
             var paragrafAnt = new Paragraph(ANT, _fontNegrita);
-            var paragrafAntP = new Paragraph(docofi.Parrafo2, _fontStandard);
+            var paragrafAntP = new Paragraph(docofi.ANTECEDENTES, _fontStandard);
             paragrafAnt.AddRange(paragrafAntP);
             paragrafAnt.Alignment = Element.ALIGN_RIGHT;
-            
+
+            string MAT = "MAT.: ";
+            var paragrafMat = new Paragraph(MAT, _fontNegrita);
+            var paragrafMATP = new Paragraph(docofi.MATERIA, _fontStandard);
+            paragrafMat.AddRange(paragrafMATP);
+            paragrafMat.Alignment = Element.ALIGN_RIGHT;
+
+
+
+
             string reg = paragrafR.Content;
             reg = EliminarDivYBr(reg);
 
             string ante = paragrafAnt.Content;
             ante = EliminarDivYBr(ante);
+
+            string  mat = paragrafMat.Content;
+            mat = EliminarDivYBr(mat);
+
+
             PdfPCell cell3 = new PdfPCell();
             List<IElement> htmlE = HTMLWorker.ParseToList(new StringReader(reg), styles);
             foreach (var element in htmlE)
@@ -1161,6 +1177,14 @@ namespace DAES.BLL
                 var mirarmirar = ante;
                 cell3.AddElement(element);
             }
+
+            List<IElement> htmlElem = HTMLWorker.ParseToList(new StringReader(mat), styles);
+            foreach (var element in htmlElem)
+            {
+                var mirarmirar = mat;
+                cell3.AddElement(element);
+            }
+
 
             cell3.HorizontalAlignment = Element.ALIGN_RIGHT;
             cell3.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1181,6 +1205,77 @@ namespace DAES.BLL
             doc.Add(tableEncabezadoUno);
             doc.Add(SaltoLinea);
 
+            //aqui esta DE - A - Direccion - Correo 
+            PdfPTable tablaDeA = new PdfPTable(1);
+            tablaDeA.WidthPercentage = 100f;
+            tablaDeA.DefaultCell.Border = Rectangle.NO_BORDER;
+            tablaDeA.DefaultCell.Border = 0;
+            //DE
+            string DE_DOC = "DE: ";
+            var paragrafDEDOC = new Paragraph(DE_DOC, _fontNegrita);
+            var paraDEDOC = new Paragraph(docofi.DE_DOC, _fontStandard);
+            paragrafDEDOC.AddRange(paraDEDOC);
+            paragrafDEDOC.Alignment = Element.ALIGN_RIGHT;
+            string DEDO = paragrafDEDOC.Content;
+            DEDO = EliminarDivYBr(DEDO);
+
+
+            //A
+            string A_DOC = "A: ";
+            var paragrafA_DOC = new Paragraph(A_DOC, _fontNegrita);
+            var paraA_DOC = new Paragraph(docofi.A_DOC, _fontStandard);
+            paragrafA_DOC.AddRange(paraA_DOC);
+            paragrafA_DOC.Alignment = Element.ALIGN_RIGHT;
+            string ADO = paragrafA_DOC.Content;
+            ADO = EliminarDivYBr(ADO);
+
+            //Direccion
+            var parrafoDireccion = new Paragraph(docofi.DIRECCION, _fontStandard);
+            parrafoDireccion.Alignment = Element.ALIGN_LEFT;
+            string parrafoDireccionFOR = parrafoDireccion.Content;
+            parrafoDireccionFOR = EliminarDivYBr(parrafoDireccionFOR);
+            //Correo
+            var parrafoCorreo = new Paragraph(docofi.CORREO, _fontStandard);
+            parrafoCorreo.Alignment = Element.ALIGN_LEFT;
+            string parrafoCorreoFor = parrafoCorreo.Content;
+            parrafoCorreoFor = EliminarDivYBr(parrafoCorreoFor);
+
+            PdfPCell cellDE = new PdfPCell();
+            List<IElement> htmlElementoDE = HTMLWorker.ParseToList(new StringReader(DEDO), styles);
+            foreach (var element in htmlElementoDE)
+            {
+                var mirarmirar = DEDO;
+                cellDE.AddElement(element);
+            }
+
+            PdfPCell cellA = new PdfPCell();
+            List<IElement> htmlElementoA = HTMLWorker.ParseToList(new StringReader(ADO), styles);
+            foreach (var element in htmlElementoA)
+            {
+                var mirarmirar = ADO;
+                cellA.AddElement(element);
+            }
+            List<IElement> htmlElementoD = HTMLWorker.ParseToList(new StringReader(parrafoDireccionFOR), styles);
+            foreach (var element in htmlElementoD)
+            {
+                var mirarmirar = parrafoDireccionFOR;
+                cellA.AddElement(element);
+            }
+            List<IElement> htmlElementoC = HTMLWorker.ParseToList(new StringReader(parrafoCorreoFor), styles);
+            foreach (var element in htmlElementoC)
+            {
+                var mirarmirar = parrafoCorreoFor;
+                cellA.AddElement(element);
+            }
+
+
+
+            tablaDeA.AddCell(cellDE); 
+            tablaDeA.AddCell(cellA);
+
+
+            doc.Add(tablaDeA);
+            doc.Add(SaltoLinea);
             var tablitaparrafo = new Paragraph(docofi.Tabla, _fontStandard);
             tablitaparrafo.Alignment = Element.ALIGN_LEFT;
             string tablitapar = tablitaparrafo.Content;
@@ -1202,9 +1297,9 @@ namespace DAES.BLL
             //cell2.Border = Rectangle.RECTANGLE;
             //tableEncabezadoUno.AddCell(cell2);
 
-            string contenidoHTML = "<b>Estoy en negrita</b> y <i>yo en cursiva</i> <br> <div> hola mundo </div>";
+            //string contenidoHTML = "<b>Estoy en negrita</b> y <i>yo en cursiva</i> <br> <div> hola mundo </div>";
             
-            contenidoHTML = EliminarDivYBr(contenidoHTML);
+            //contenidoHTML = EliminarDivYBr(contenidoHTML);
 
             // Parsear el HTML y convertirlo a PDF con formato enriquecido
             // Estilo del HTML
@@ -1219,12 +1314,12 @@ namespace DAES.BLL
             //doc.Add(SaltoLinea);
             //doc.Add(paragrafAnt);
             // Parsear el HTML y convertirlo a PDF con formato enriquecido
-            List<IElement> htmlElements = HTMLWorker.ParseToList(new StringReader(contenidoHTML), styles);
+            /*List<IElement> htmlElements = HTMLWorker.ParseToList(new StringReader(contenidoHTML), styles);
             foreach (var element in htmlElements)
             {
                 var mirarmirar = contenidoHTML;
                 doc.Add(element);
-            }
+            }*/
 
             doc.Close(); 
             return memStream.ToArray();
@@ -3537,7 +3632,8 @@ namespace DAES.BLL
                         DatosGeneralesNotario = ExiPost.DatosGeneralesNotario,
                         Fojas = ExiPost.Fojas,
                         AnoInscripcion = ExiPost.AnoInscripcion,
-                        DatosCBR = ExiPost.DatosCBR
+                        DatosCBR = ExiPost.DatosCBR,
+                        LUGARNOTARIO = ExiPost.LUGARNOTARIO
 
 
 

@@ -26,6 +26,7 @@
         z-index: 10;
         box-shadow: 3px 2px 10px 1px #b0b0b0;
     }
+
     .rich-text-content div {
         margin-bottom: 10px;
     }
@@ -51,15 +52,109 @@
             <button id="boldButton" class="btn btn-danger">Negrita</button>
             <button id="italicButton" class="btn btn-danger">Italic</button>
             <button id="subButton" class="btn btn-danger">Subrayar</button>
-            
-            <table >
+
+            <table>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().NUMERO_REGISTRO, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="NUMERO_REGISTRO" name="NUMERO_REGISTRO" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().NUMERO_REGISTRO)}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().ANTECEDENTES, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="ANTECEDENTES" name="ANTECEDENTES" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().ANTECEDENTES)}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().MATERIA, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="MATERIA" name="MATERIA" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().MATERIA)}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().DE_DOC, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="DE_DOC" name="DE_DOC" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().DE_DOC)}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().A_DOC, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="A_DOC" name="A_DOC" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().A_DOC)}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().DIRECCION, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="DIRECCION" name="DIRECCION" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().DIRECCION)}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().CORREO, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="CORREO" name="CORREO" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().CORREO)}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <td>
 
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo1, htmlAttributes: new { @class = "control-label col-md-6" })
-                        
-                       <div class="col-md-12">
-                           <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable" contenteditable="true" >@if (Model.Workflow.DocOficio.Any()){@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo1)}</div>
+
+                        <div class="col-md-12">
+                            <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo1)}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -67,29 +162,39 @@
                     <td>
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo2, htmlAttributes: new { @class = "control-label col-md-6" })
                         <div class="col-md-12">
-                            <div id="Parrafo2" class="form-control col-md-12 editable" contenteditable="true">@if (Model.Workflow.DocOficio.Any()){@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo2)}</div>
-                         </div>
+                            <div id="Parrafo2" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo2)}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo3, htmlAttributes: new { @class = "control-label col-md-6" })
+                        <div class="col-md-12">
+                            <div id="Parrafo3" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio.Any())
+                                {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo3)}
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Tabla, htmlAttributes: new { @class = "control-label col-md-6" })
                         <div class="col-md-12">
-                            <div id="Tabla" class="form-control col-md-12 editable" contenteditable="true">@if (Model.Workflow.DocOficio.Any()) {@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla)}</div>
+                            <div id="Tabla" class="form-control col-md-12 editable" contenteditable="true">@if (Model.Workflow.DocOficio.Any()){@Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla)}</div>
                         </div>
                     </td>
                 </tr>
             </table>
-
-
         </div>
-
         <div class="col-md-6">
-
             @{
                 if (Model.Workflow.DocOficio.Any())
                 {
-                    Console.WriteLine("workflowid"+Model.Workflow.WorkflowId);
+                    Console.WriteLine("workflowid" + Model.Workflow.WorkflowId);
                     <embed src="@Url.Action("ShowDoc", "Task", new { id = Model.Workflow.WorkflowId })" width="96%" height="990px" type="application/pdf" />
 
                 }
@@ -97,14 +202,9 @@
             }
 
         </div>
-
-
         <div>
             <button id="GuardarDocOf" type="submit" class="btn btn-danger">Vista Previa</button>
         </div>
-
-
-
 
     </div>
 
@@ -113,12 +213,12 @@
 
 
 
-    
-   
-   
 
 
-    
+
+
+
+
 
     <div id="elemento"></div>
 
@@ -240,7 +340,7 @@
 
 
     $(document).ready(function () {
-        
+
         var Parrafo1 = document.getElementById("Parrafo1");
         Parrafo1.focus();
 
@@ -281,8 +381,8 @@
         var contenido3 = Tabla.textContent;
         contenido3 = contenido3.replace(/^\n+/, "");
         Tabla.textContent = contenido3;
-       
-      
+
+
 
 
         // Obtén la URL actual
@@ -323,23 +423,60 @@
 
             $("#GuardarDocOf").click(function () {
                 console.log("estoy arriba del data ");
+                console.log("numero" + NUMERO_REGISTRO + " antecedentes " + ANTECEDENTES);
+                console.log("procesoId " + @Model.Workflow.ProcesoId);
+                var tablaElement = document.getElementById("Tabla");
+
+                console.log("tabla" + tablaElement);
+                var texto = tablaElement.innerHTML;
+                console.log("text /n:" + texto);
+                //texto = texto.replace(/<[^>]*>/g, '');
+                //texto = texto.replace(/style="[^"]*"/g, '');
+                //var cart_div = document.getElementById("Tabla").innerHTML();
+                var div = document.createElement("div");
+
+                div.innerHTML = texto;
+                console.log("soy el div \n:" + div);
+                var prueba = convertToHTML(tablaElement);
+                var x = tablaElement.innerText;
+                var y = x.innerHTML;
+
+
+               
+                var nuevoElemento = document.createElement("div");
+                nuevoElemento.innerText = tablaElement.innerText;
+                var contenidoHTML = nuevoElemento.innerHTML;
+
+                console.log("soy la prueba \n:" + contenidoHTML);
+                // var contenidoEnriquecido = div.textContent;
+                //console.log("texto enriquecido" + contenidoEnriquecido);
+                  var proce=@Model.Workflow.ProcesoId;
                  var data = {
                               //var valorDiv = $("#miDiv").text();
 
-                             Parrafo1: document.getElementById("Parrafo1").innerHTML.trim(),
-                             WorkflowId: workflowId,
-                             Parrafo2: document.getElementById("Parrafo2").innerHTML.trim(),
-                             DocOficioId :null,
-                             Tabla: document.getElementById("Tabla").innerHTML.trim(),
-                              Content :null,
-                              FileName :null,
-                              FechaCreacion :null
+
+                     ProcesoId: proce,
+                        NUMERO_REGISTRO: document.getElementById("NUMERO_REGISTRO").innerHTML.trim(),
+                     ANTECEDENTES: document.getElementById("ANTECEDENTES").innerHTML.trim(),
+                        MATERIA: document.getElementById("MATERIA").innerHTML.trim(),
+                        DE_DOC: document.getElementById("DE_DOC").innerHTML.trim(),
+                     A_DOC: document.getElementById("A_DOC").innerHTML.trim(),
+                     DIRECCION: document.getElementById("DIRECCION").innerHTML.trim(),
+                     CORREO: document.getElementById("CORREO").innerHTML.trim(),
+                        Parrafo1: document.getElementById("Parrafo1").innerHTML.trim(),
+                        WorkflowId: workflowId,
+                        Parrafo2: document.getElementById("Parrafo2").innerHTML.trim(),
+                        Parrafo3: document.getElementById("Parrafo3").innerHTML.trim(),
+                     DocOficioId: null,
+                     Tabla: contenidoHTML,//document.getElementById("Tabla").innerHTML,
+                        Content :null,
+                        FileName :null,
+                        FechaCreacion :null
 
 
                             //tabla: document.getElementById("Tabla").innerHTML
 
                 };
-                console.log("estoy arriba del ajax" + data.parrafo1 + " " + data.parrafo2 + "" + data.tabla);
             $.ajax({
                 type: "POST",
                 url: "/Task/GuardarDocOfi",
@@ -351,8 +488,15 @@
 
 
             });
-        });
+    });
 
+    function convertToHTML(element) {
+        var container = document.createElement('div');
+        container.appendChild(element.cloneNode(true));
+        return container.innerHTML;
+    }
+    
 </script>
+
 
 <!--FIN-->
