@@ -163,8 +163,8 @@
     }
 
     $(document).ready(function () {
-
-        for (var i = 0; i < Model.ReformaAnteriors.Count; i++) {
+        var reformasAnt = @Model.ReformaAnteriors.Count;
+        for (var i = 0; i < reformasAnt; i++) {
             var objetoObsR = document.getElementById("tieneObsRAnt" + i).value;
             if (objetoObsR > 0) {
                 actualizarObsR(i);
