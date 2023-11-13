@@ -497,41 +497,6 @@
         }
     }
 
-    <!--
-    <br>
-    <label>¿Disolución anterior al año 2003?</label>
-    <br>
-    <div>
-        if (Model.Disolucions.Any())
-        {
-            if (Model.Disolucions.FirstOrDefault().Anterior == true)
-            {
-                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "true", htmlAttributes: new { id = "anterior", checked = "checked", onclick = "PresentarViewDisolucion()" })<label>Si</label>
-                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "false", htmlAttributes: new { id = "posterior", onclick = "PresentarViewDisolucion()" })<label>No</label>
-            }
-            else if (Model.Disolucions.FirstOrDefault().Anterior == false)
-            {
-                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "true", htmlAttributes: new { id = "anterior", onclick = "PresentarViewDisolucion()" })<label>Si</label>
-                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "false", htmlAttributes: new { id = "posterior", checked = "checked", onclick = "PresentarViewDisolucion()" })<label>No</label>
-            }
-            else
-            {
-                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "true", htmlAttributes: new { id = "anterior", onclick = "PresentarViewDisolucion()" })<label>Si</label>
-                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "false", htmlAttributes: new { id = "posterior", onclick = "PresentarViewDisolucion()" })<label>No</label>
-            }
-
-
-
-        }
-        else
-        {
-            Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "true", htmlAttributes: new { id = "anterior", onclick = "PresentarViewDisolucion()" })<label>Si</label>
-            Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "false", htmlAttributes: new { id = "posterior", onclick = "PresentarViewDisolucion()" })<label>No</label>
-        }
-    </div>
-        -->
-
-
     <div class="panel panel-default" id="disolucionModulo">
         <div class="panel-heading">Disolución</div>
         <div class="panel-body">
@@ -750,17 +715,7 @@ else
         }
 
     }
-    /*
-    function PresentarViewDisolucion() {
-        var exiDiso = document.getElementById("Disolucions_0__Anterior")
-        if (exiDiso == true || exiDiso == false) {
-            $("#disolucionModulo").hide();
-        } else {
-            $("#disolucionModulo").show();
-        }
 
-
-    }*/
     function PresentarViewObservacionLegal(aprobacionId) {
         var gremial = false
         @if (Model.TipoOrganizacionId == 2 || Model.TipoOrganizacionId == 3)
@@ -785,7 +740,7 @@ else
         {
             @:gremial = true;
         }
-            //if ((aprobacionId == 1 || aprobacionId == "" || aprobacionId == null) && gremial == true)
+
         if (aprobacionId == 1 && gremial == true)
         {
             $("#DivObserR" + posicion).hide();
@@ -801,16 +756,6 @@ else
 
 
 
-            /* var exiDisos = Model.Disolucions.Count();
-        if (exiDisos != 0) {
-            $("#disolucionModulo").show();
-        } else
-        {
-            $("#disolucionModulo").hide();
-            } */
-
-        $("#divSane").show();
-        $("#observacionDiv").show();
         $("#limpiar").on("click", function () {
             LimpiarCamposAnt()
         });
@@ -838,11 +783,6 @@ else
             $("#divSane").hide();
         }
 
-        //if (document.getElementById('ExistenciaPosteriors_0__FechaPublicacion').value != null) {
-        //    alert("entro al posterior")
-        //} else {
-        //    alert()
-        //}
 
 
         var objeto = document.getElementById('a').value;
@@ -885,7 +825,7 @@ else
         var aprobacionLegal = document.getElementById("ExistenciaLegals_0__AprobacionId");
         PresentarViewObservacionLegal(aprobacionLegal);
 
-        @if(Model.ReformaAGACs.Any())
+        @if(Model.ReformaAGACs != null && Model.ReformaAGACs.Any())
         {
 
             for (int i = 0; i < Model.ReformaAGACs.Count(); i++)

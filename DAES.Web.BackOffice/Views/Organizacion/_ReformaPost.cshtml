@@ -78,15 +78,6 @@
                             Model.posicion = i;
                         }
 
-                        @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
-                        {
-                            <input type="hidden" id="tieneObsRPost@(i)" value="1" />
-                        }
-                        else
-                        {
-                            <input id="tieneObsRPost@(i)" value="0" type="hidden" />
-                        }
-
                         @Html.Partial("_ObservacionReformaPostEdit", Model)
                     </div>
                 </td>
@@ -137,21 +128,6 @@
 
     }
 
-    function actualizarObsR(index) {
-        $("#observacionReformaPost" + index).show();
-        $("#ObservacionsPost" + index).prop("checked", true);
-        $("#ObservacionsPost" + index + "Segundario").prop("checked", false);
-    }
-
-    $(document).ready(function () {
-        var reformasPost = @Model.ReformaPosteriors.Count;
-        for (var i = 0; i < reformasPost; i++) {
-            var objetoObsR = document.getElementById("tieneObsRPost" + i).value;
-            if (objetoObsR > 0) {
-                actualizarObsR(i);
-            }
-        }
-    });
 
 
 </script>

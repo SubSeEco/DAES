@@ -59,15 +59,6 @@
                             Model.posicion = i;
                         }
 
-                        @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAGAC == Model.ReformaActual) != null)
-                        {
-                            <input type="hidden" id="tieneObsR@(i)" value="1" />
-                        }
-                        else
-                        {
-                            <input id="tieneObsR@(i)" value="0" type="hidden" />
-                        }
-
                         @Html.Partial("_ObservacionReformaEdit", Model)
                     </div>
                 </td>
