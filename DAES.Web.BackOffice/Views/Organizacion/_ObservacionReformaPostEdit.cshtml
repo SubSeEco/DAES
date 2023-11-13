@@ -1,25 +1,25 @@
 ﻿@model DAES.Model.SistemaIntegrado.Organizacion
 @Html.HiddenFor(model => model.OrganizacionId)
-@if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
-{
-    @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaPostAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
-}
-else
-{
-    @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaPostAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
-}
-
-@if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
-{
-    for (var i = 0; i < Model.ObservacionReformas.Count; i++)
+<table class="table table-hover table-striped ">
+    @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
     {
-        Html.HiddenFor(model => model.ObservacionReformas[i].OrganizacionId);
-        Html.HiddenFor(model => model.ObservacionReformas[i].observacionRId);
-        Html.HiddenFor(model => model.ObservacionReformas[i].IdReformaPost);
+        @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaPostAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+    }
+    else
+    {
+        @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaPostAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
+    }
 
-        if (Model.ObservacionReformas[i].IdReformaPost == Model.ReformaActual)
+    @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
+    {
+        for (var i = 0; i < Model.ObservacionReformas.Count; i++)
         {
-            <table>
+            @Html.HiddenFor(model => model.ObservacionReformas[i].OrganizacionId);
+            @Html.HiddenFor(model => model.ObservacionReformas[i].observacionRId);
+            @Html.HiddenFor(model => model.ObservacionReformas[i].IdReformaPost);
+
+            if (Model.ObservacionReformas[i].IdReformaPost == Model.ReformaActual)
+            {
                 <thead>
                     <tr>
                         <th>
@@ -47,7 +47,8 @@ else
                     </tr>
 
                 </thead>
-            </table>
+
+            }
         }
     }
-}
+</table>
