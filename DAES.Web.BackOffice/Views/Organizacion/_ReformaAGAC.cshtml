@@ -52,18 +52,11 @@
             </tr>
             <tr>
                 <td>
-                    <div id="DivObserR@(i)">
-                        <label>¿Observaciones?</label><br />
-                        <input id="Observacions@(i)" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAGAC(true,@(i))" /> si
-                        <input id="Observacions@(i)Segundario" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAGAC(false,@(i))" /> no
-                        <br>
-                    </div>
                     <div id="observacionReformaAGAC@(i)">
                         @if (true)
                         {
                             Model.ReformaActual = Model.ReformaAGACs[i].IdReformaAGAC;
                             Model.posicion = i;
-                            Model.TipoReforma = "observacionReformaAGAC";
                         }
 
                         @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAGAC == Model.ReformaActual) != null)
@@ -111,35 +104,3 @@
         }
     </tbody>
 </table>
-
-
-<script type="text/javascript">
-
-    function PresentarViewObservacionReformaAGAC(show, index) {
-        if (show) {
-            $("#observacionReformaAGAC" + index).show();
-        } else {
-            $("#observacionReformaAGAC" + index).hide();
-        }
-
-    }
-
-            function actualizarObsR(index) {
-            $("#observacionReformaAGAC" + index).show();
-            $("#Observacions" + index).prop("checked", true);
-            $("#Observacions" + index + "Segundario").prop("checked", false);
-        }
-
-    $(document).ready(function () {
-
-                for (var i = 0; i < Model.ReformaAGACs.Count; i++)
-                {
-                    var objetoObsR = document.getElementById("tieneObsR" + i).value;
-                    if (objetoObsR > 0) {
-                        actualizarObsR(i);
-                    }
-                }
-    });
-
-
-</script>

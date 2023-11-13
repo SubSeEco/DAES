@@ -13,6 +13,8 @@ using System.Net;
 using System.Web.Mvc;
 using DAES.Model.DTO;
 using System.Dynamic;
+using System.Diagnostics;
+using java.awt;
 
 namespace DAES.Web.BackOffice.Controllers
 {
@@ -719,30 +721,32 @@ namespace DAES.Web.BackOffice.Controllers
             return PartialView("_ObservacionEdit", model);
         }
 
-        public ActionResult ObservacionReformaAdd(int ReformaActual, int OrganizacionId, int posicion, string tipoReforma)
+        public ActionResult ObservacionReformaPostAdd(int ReformaActual, int OrganizacionId, int posicion)
         {
             var model = db.Organizacion.Find(OrganizacionId);
             ViewBag.AprobacionId = new SelectList(db.Aprobacion.OrderBy(q => q.Nombre), "AprobacionId", "Nombre");
             ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion).ToList(), "AsambleaDepId", "Descripcion");
-            switch (tipoReforma)
-            {
-                case "observacionReformaPost":
+            Debug.WriteLine("reformaActuan tiene: " + ReformaActual);
+            Debug.WriteLine("posicion tiene: " + posicion);
                     var observacionPost = new ObservacionReforma()
                     {
                         OrganizacionId = OrganizacionId,
                         IdReformaPost = ReformaActual
                     };
                     db.ObservacionReforma.Add(observacionPost);
-                    break;
-                case "observacionReformaAnt":
-                    var observacionAnt = new ObservacionReforma()
-                    {
-                        OrganizacionId = OrganizacionId,
-                        IdReformaAnterior = ReformaActual
-                    };
-                    db.ObservacionReforma.Add(observacionAnt);
-                    break;
-                default:
+            db.SaveChanges();
+            model = db.Organizacion.Find(OrganizacionId);
+            model.ReformaActual = ReformaActual;
+            model.posicion = posicion;
+            return PartialView("_ObservacionReformaEdit", model);
+        }
+        public ActionResult ObservacionReformaAdd(int ReformaActual, int OrganizacionId, int posicion)
+        {
+            var model = db.Organizacion.Find(OrganizacionId);
+            ViewBag.AprobacionId = new SelectList(db.Aprobacion.OrderBy(q => q.Nombre), "AprobacionId", "Nombre");
+            ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion).ToList(), "AsambleaDepId", "Descripcion");
+            Debug.WriteLine("reformaActuan tiene: " + ReformaActual);
+            Debug.WriteLine("posicion tiene: " + posicion);
                     var observacion = new ObservacionReforma()
                     {
                         OrganizacionId = OrganizacionId,
@@ -750,8 +754,6 @@ namespace DAES.Web.BackOffice.Controllers
 
                     };
                     db.ObservacionReforma.Add(observacion);
-                    break;
-            }
 
 
             db.SaveChanges();
@@ -761,14 +763,38 @@ namespace DAES.Web.BackOffice.Controllers
             return PartialView("_ObservacionReformaEdit", model);
         }
 
-        
-            public ActionResult DisolucionAdd(int OrganizacionId)
+        public ActionResult ObservacionReformaAddAnt(int ReformaActual, int OrganizacionId, int posicion)
+        {
+            var model = db.Organizacion.Find(OrganizacionId);
+            ViewBag.AprobacionId = new SelectList(db.Aprobacion.OrderBy(q => q.Nombre), "AprobacionId", "Nombre");
+            ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion).ToList(), "AsambleaDepId", "Descripcion");
+                    var observacionAnt = new ObservacionReforma()
+                    {
+                        OrganizacionId = OrganizacionId,
+                        IdReformaAnterior = ReformaActual
+                    };
+                    db.ObservacionReforma.Add(observacionAnt);
+
+
+
+            db.SaveChanges();
+            model = db.Organizacion.Find(OrganizacionId);
+            model.ReformaActual = ReformaActual;
+            model.posicion = posicion;
+            return PartialView("_ObservacionReformaEdit", model);
+        }
+        public ActionResult DisolucionAdd(int OrganizacionId, bool Anterior)
         {
             var model = db.Organizacion.Find(OrganizacionId);
 
             if (model.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa)
             {
-                var disolucion = new Disolucion() { OrganizacionId = OrganizacionId, TipoOrganizacionId = model.TipoOrganizacionId };
+                var disolucion = new Disolucion() 
+                { 
+                    OrganizacionId = OrganizacionId, 
+                    TipoOrganizacionId = model.TipoOrganizacionId,
+                    Anterior = Anterior
+                };
                 ViewBag.CargoId = new SelectList(db.Cargo.OrderBy(q => q.Nombre).ToList(), "CargoId", "Nombre");
                 ViewBag.GeneroId = new SelectList(db.Genero.OrderBy(q => q.Nombre).ToList(), "GeneroId", "Nombre");
                 ViewBag.TipoNormaId = new SelectList(db.TipoNorma.OrderBy(q => q.Nombre).ToList(), "TipoNormaId", "Nombre");
@@ -1009,7 +1035,8 @@ namespace DAES.Web.BackOffice.Controllers
                 db.ObservacionReforma.Remove(observacion);
                 db.SaveChanges();
             }
-
+            Debug.WriteLine("reformaActuan tiene: "+ ReformaActual);
+            Debug.WriteLine("posicion tiene: "+ posicion);
             var model = db.Organizacion.Find(OrganizacionId);
             model.ReformaActual = ReformaActual;
             model.posicion = posicion;

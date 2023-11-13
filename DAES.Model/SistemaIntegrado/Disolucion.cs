@@ -111,7 +111,7 @@ namespace DAES.Model.SistemaIntegrado
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? FechaOficio { get; set; }
 
-        [Display(Name = "Fecha de Asamblea Extraordinario de Socios")]
+        [Display(Name = "Fecha de Asamblea")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? FechaAsambleaSocios { get; set; }

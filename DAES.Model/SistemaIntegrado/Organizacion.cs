@@ -248,7 +248,5 @@ namespace DAES.Model.SistemaIntegrado
         [NotMapped]
         public virtual int posicion { get; set; }
 
-        [NotMapped]
-        public virtual String TipoReforma { get; set; }
     }
 }
