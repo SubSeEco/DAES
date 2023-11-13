@@ -479,6 +479,9 @@
 
 
     }
+    <br>
+    <br>
+    <br>
     if (Model.ExistenciaAnteriors.Any())
     {
         if (Model.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.Cooperativa && Model.ExistenciaAnteriors.FirstOrDefault().FNorma != null)
@@ -494,8 +497,42 @@
         }
     }
 
+    <!--
+    <br>
+    <label>¿Disolución anterior al año 2003?</label>
+    <br>
+    <div>
+        if (Model.Disolucions.Any())
+        {
+            if (Model.Disolucions.FirstOrDefault().Anterior == true)
+            {
+                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "true", htmlAttributes: new { id = "anterior", checked = "checked", onclick = "PresentarViewDisolucion()" })<label>Si</label>
+                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "false", htmlAttributes: new { id = "posterior", onclick = "PresentarViewDisolucion()" })<label>No</label>
+            }
+            else if (Model.Disolucions.FirstOrDefault().Anterior == false)
+            {
+                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "true", htmlAttributes: new { id = "anterior", onclick = "PresentarViewDisolucion()" })<label>Si</label>
+                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "false", htmlAttributes: new { id = "posterior", checked = "checked", onclick = "PresentarViewDisolucion()" })<label>No</label>
+            }
+            else
+            {
+                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "true", htmlAttributes: new { id = "anterior", onclick = "PresentarViewDisolucion()" })<label>Si</label>
+                Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "false", htmlAttributes: new { id = "posterior", onclick = "PresentarViewDisolucion()" })<label>No</label>
+            }
 
-    <div class="panel panel-default">
+
+
+        }
+        else
+        {
+            Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "true", htmlAttributes: new { id = "anterior", onclick = "PresentarViewDisolucion()" })<label>Si</label>
+            Html.RadioButtonFor(model => model.Disolucions.FirstOrDefault().Anterior, "false", htmlAttributes: new { id = "posterior", onclick = "PresentarViewDisolucion()" })<label>No</label>
+        }
+    </div>
+        -->
+
+
+    <div class="panel panel-default" id="disolucionModulo">
         <div class="panel-heading">Disolución</div>
         <div class="panel-body">
             <div id="disolucion">
@@ -713,7 +750,17 @@ else
         }
 
     }
+    /*
+    function PresentarViewDisolucion() {
+        var exiDiso = document.getElementById("Disolucions_0__Anterior")
+        if (exiDiso == true || exiDiso == false) {
+            $("#disolucionModulo").hide();
+        } else {
+            $("#disolucionModulo").show();
+        }
 
+
+    }*/
     function PresentarViewObservacionLegal(aprobacionId) {
         var gremial = false
         @if (Model.TipoOrganizacionId == 2 || Model.TipoOrganizacionId == 3)
@@ -749,10 +796,20 @@ else
             $("#observacionReformaAGAC" + posicion).show();
         }
 
-    }
-    $(document).ready(function () {
+        }
+        $(document).ready(function () {
 
 
+
+            /* var exiDisos = Model.Disolucions.Count();
+        if (exiDisos != 0) {
+            $("#disolucionModulo").show();
+        } else
+        {
+            $("#disolucionModulo").hide();
+            } */
+
+        $("#divSane").show();
         $("#observacionDiv").show();
         $("#limpiar").on("click", function () {
             LimpiarCamposAnt()

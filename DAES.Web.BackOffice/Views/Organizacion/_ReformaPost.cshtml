@@ -71,18 +71,11 @@
             </tr>
             <tr>
                 <td>
-                    <div id="DivObserR">
-                        <label>¿Observaciones?</label><br />
-                        <input id="ObservacionsPost@(i)" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaPost(true,@(i))" /> si
-                        <input id="ObservacionsPost@(i)Segundario" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaPost(false,@(i))" /> no
-                        <br>
-                    </div>
                     <div id="observacionReformaPost@(i)">
                         @if (true)
                         {
                             Model.ReformaActual = Model.ReformaPosteriors[i].IdReformaPost;
                             Model.posicion = i;
-                            Model.TipoReforma = "observacionReformaPost";
                         }
 
                         @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
@@ -94,7 +87,7 @@
                             <input id="tieneObsRPost@(i)" value="0" type="hidden" />
                         }
 
-                        @Html.Partial("_ObservacionReformaEdit", Model)
+                        @Html.Partial("_ObservacionReformaPostEdit", Model)
                     </div>
                 </td>
 

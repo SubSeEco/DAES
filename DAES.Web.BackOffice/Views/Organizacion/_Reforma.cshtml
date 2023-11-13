@@ -80,36 +80,6 @@
 
             </td>
         </tr>
-        <tr>
-            <td>
-                <div id="DivObserR">
-                    <label>¿Observaciones?</label><br />
-                    <input id="ObservacionsAnt@(i)" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAnt(true,@(i))" /> si
-                    <input id="ObservacionsAnt@(i)Segundario" name="obsers@(i)" type="radio" onclick="PresentarViewObservacionReformaAnt(false,@(i))" /> no
-                    <br>
-                </div>
-                <div id="observacionReformaAnt@(i)">
-                    @if (true)
-                    {
-                        Model.ReformaActual = Model.ReformaAnteriors[i].IdReformaAnterior;
-                        Model.posicion = i;
-                        Model.TipoReforma = "observacionReformaAnt";
-                    }
-
-
-                    @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaAnterior == Model.ReformaActual) != null)
-                    {
-                        <input type="hidden" id="tieneObsRAnt@(i)" value="1" />
-                    }
-                    else
-                    {
-                        <input id="tieneObsRAnt@(i)" value="0" type="hidden" />
-                    }
-                    @Html.Partial("_ObservacionReformaEdit", Model)
-                </div>
-            </td>
-
-        </tr>
     </thead>
         
             }
@@ -144,33 +114,3 @@
             }
     </tbody>
 </table>
-
-<script type="text/javascript">
-
-    function PresentarViewObservacionReformaAnt(show, index) {
-        if (show) {
-            $("#observacionReformaAnt" + index).show();
-        } else {
-            $("#observacionReformaAnt" + index).hide();
-        }
-
-    }
-
-    function actualizarObsR(index) {
-        $("#observacionReformaAnt" + index).show();
-        $("#ObservacionsAnt" + index).prop("checked", true);
-        $("#ObservacionsAnt" + index + "Segundario").prop("checked", false);
-    }
-
-    $(document).ready(function () {
-        var reformasAnt = @Model.ReformaAnteriors.Count;
-        for (var i = 0; i < reformasAnt; i++) {
-            var objetoObsR = document.getElementById("tieneObsRAnt" + i).value;
-            if (objetoObsR > 0) {
-                actualizarObsR(i);
-            }
-        }
-    });
-
-
-</script>
