@@ -738,7 +738,7 @@ namespace DAES.Web.BackOffice.Controllers
             model = db.Organizacion.Find(OrganizacionId);
             model.ReformaActual = ReformaActual;
             model.posicion = posicion;
-            return PartialView("_ObservacionReformaEdit", model);
+            return PartialView("_ObservacionReformaPostEdit", model);
         }
         public ActionResult ObservacionReformaAdd(int ReformaActual, int OrganizacionId, int posicion)
         {
@@ -762,7 +762,7 @@ namespace DAES.Web.BackOffice.Controllers
             model.posicion = posicion;
             return PartialView("_ObservacionReformaEdit", model);
         }
-
+        /*
         public ActionResult ObservacionReformaAddAnt(int ReformaActual, int OrganizacionId, int posicion)
         {
             var model = db.Organizacion.Find(OrganizacionId);
@@ -782,7 +782,7 @@ namespace DAES.Web.BackOffice.Controllers
             model.ReformaActual = ReformaActual;
             model.posicion = posicion;
             return PartialView("_ObservacionReformaEdit", model);
-        }
+        }*/
         public ActionResult DisolucionAdd(int OrganizacionId, bool Anterior)
         {
             var model = db.Organizacion.Find(OrganizacionId);
@@ -1046,6 +1046,25 @@ namespace DAES.Web.BackOffice.Controllers
             return PartialView("_ObservacionReformaEdit", model);
         }
 
+        public ActionResult ObservacionReformaPostDelete(int observacionRId, int OrganizacionId, int ReformaActual, int posicion)
+        {
+            var observacion = db.ObservacionReforma.FirstOrDefault(q => q.observacionRId == observacionRId);
+
+            if (observacion != null)
+            {
+                db.ObservacionReforma.Remove(observacion);
+                db.SaveChanges();
+            }
+            Debug.WriteLine("reformaActuan tiene: " + ReformaActual);
+            Debug.WriteLine("posicion tiene: " + posicion);
+            var model = db.Organizacion.Find(OrganizacionId);
+            model.ReformaActual = ReformaActual;
+            model.posicion = posicion;
+            //ViewBag.TipoOficioId = new SelectList(db.TipoOficio.OrderBy(q => q.Descripcion).ToList(), "TipoOficioId", "Descripcion");
+            ViewBag.AprobacionId = new SelectList(db.Aprobacion.OrderBy(q => q.Nombre), "AprobacionId", "Nombre");
+            ViewBag.AsambleaDepId = new SelectList(db.AsambleaDeposito.OrderBy(q => q.Descripcion).ToList(), "AsambleaDepId", "Descripcion");
+            return PartialView("_ObservacionReformaPostEdit", model);
+        }
         public ActionResult DisolucionDelete(int DisolucionId, int OrganizacionId)
         {
             var disolucion = db.Disolucions.FirstOrDefault(q => q.DisolucionId == DisolucionId);

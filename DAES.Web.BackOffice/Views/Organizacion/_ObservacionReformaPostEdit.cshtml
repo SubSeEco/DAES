@@ -2,11 +2,11 @@
 @Html.HiddenFor(model => model.OrganizacionId)
 @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
 {
-    @Ajax.ActionLink("Agregar Observacion POST", "ObservacionReformaPostAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion}, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
+    @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaPostAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, new { @style = "display:none;", @class = "btn btn-success" })
 }
 else
 {
-    @Ajax.ActionLink("Agregar Observacion POST", "ObservacionReformaPostAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion}, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
+    @Ajax.ActionLink("Agregar Observacion", "ObservacionReformaPostAdd", null, new { Model.ReformaActual, Model.OrganizacionId, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, htmlAttributes: new { @class = "btn btn-success" })
 }
 
 @if (Model.ObservacionReformas.FirstOrDefault(q => q.IdReformaPost == Model.ReformaActual) != null)
@@ -41,7 +41,7 @@ else
                     </tr>
                     <tr>
                         <td>
-                            @Ajax.ActionLink("Eliminar", "ObservacionReformaDelete", null, new { Model.ObservacionReformas.ToArray()[i].observacionRId, Model.ObservacionReformas.ToArray()[i].OrganizacionId, Model.ReformaActual, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, new { @style = "Text-Decoration : none", @class = "btn btn-danger" })
+                            @Ajax.ActionLink("Eliminar", "ObservacionReformaPostDelete", null, new { Model.ObservacionReformas.ToArray()[i].observacionRId, Model.ObservacionReformas.ToArray()[i].OrganizacionId, Model.ReformaActual, Model.posicion }, new AjaxOptions { UpdateTargetId = "observacionReformaPost" + Model.posicion }, new { @style = "Text-Decoration : none", @class = "btn btn-danger" })
                         </td>
 
                     </tr>
