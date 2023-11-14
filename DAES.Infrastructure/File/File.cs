@@ -1,10 +1,10 @@
-﻿using System;
+﻿using DAES.BLL.Interfaces;
+using iTextSharp.text.pdf;
+using QRCoder;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using DAES.BLL.Interfaces;
-using iTextSharp.text.pdf;
-using QRCoder;
 using TikaOnDotNet.TextExtraction;
 
 
@@ -65,25 +65,37 @@ namespace DAES.Infrastructure.File
                 throw new Exception("Debe especificar el documento");
 
             using (MemoryStream ms = new MemoryStream())
-            using (var reader = new PdfReader(documento))
-            using (PdfStamper stamper = new PdfStamper(reader, ms, '\0', true))
             {
+                var reader = new PdfReader(documento);
                 try
                 {
-                    var pdfContent = stamper.GetOverContent(1);
-                    var pagesize = reader.GetPageSize(1);
-                    ColumnText.ShowTextAligned(pdfContent, iTextSharp.text.Element.ALIGN_MIDDLE, new iTextSharp.text.Phrase("ID " + text, new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 14, iTextSharp.text.Font.BOLD, iTextSharp.text.BaseColor.BLUE)), 10, pagesize.Height - 20, 0);
-                    stamper.Close();
+                    PdfStamper stamper = new PdfStamper(reader, ms, '\0', true);
+                    try
+                    {
+                        try
+                        {
+                            var pdfContent = stamper.GetOverContent(1);
+                            var pagesize = reader.GetPageSize(1);
+                            ColumnText.ShowTextAligned(pdfContent, iTextSharp.text.Element.ALIGN_MIDDLE, new iTextSharp.text.Phrase("ID " + text, new iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 14, iTextSharp.text.Font.BOLD, iTextSharp.text.Color.BLUE)), 10, pagesize.Height - 20, 0);
+                            stamper.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception("Error al insertar código en documento:" + ex.Message);
+                        }
+
+                        returnValue = ms.ToArray();
+                    }
+                    finally
+                    {
+                        stamper.Close();
+                    }
                 }
-                catch (Exception ex)
+                finally
                 {
-                    throw new Exception("Error al insertar código en documento:" + ex.Message);
+                    reader.Close();
                 }
-
-                stamper.Close();
-                returnValue = ms.ToArray();
             }
-
             return returnValue;
         }
     }
