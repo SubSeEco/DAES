@@ -1044,11 +1044,11 @@ namespace DAES.BLL
         {
             #region Configurar PreDocumento
             EventoTitulos ev = new EventoTitulos();
-            Font _fontTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.DARK_GRAY);
-            Font _fontNumero = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.DARK_GRAY);
-            Font _fontFirmante = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.DARK_GRAY);
-            Font _fontStandard = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
-            Font _fontStandardBold = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
+            Font _fontTitulo = new Font(Font.HELVETICA, 18, Font.BOLD, Color.DARK_GRAY);
+            Font _fontNumero = new Font(Font.HELVETICA, 20, Font.BOLD, Color.DARK_GRAY);
+            Font _fontFirmante = new Font(Font.HELVETICA, 12, Font.BOLD, Color.DARK_GRAY);
+            Font _fontStandard = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.DARK_GRAY);
+            Font _fontStandardBold = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
 
             MemoryStream memStream = new MemoryStream();
             Document doc = new Document(PageSize.LEGAL);
@@ -1163,11 +1163,11 @@ namespace DAES.BLL
         {
             #region Configurar PreDocumento
             EventoTitulos ev = new EventoTitulos();
-            Font _fontTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.DARK_GRAY);
-            Font _fontNumero = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.DARK_GRAY);
-            Font _fontFirmante = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.DARK_GRAY);
-            Font _fontStandard = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
-            Font _fontStandardBold = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
+            Font _fontTitulo = new Font(Font.HELVETICA, 18, Font.BOLD, Color.DARK_GRAY);
+            Font _fontNumero = new Font(Font.HELVETICA, 20, Font.BOLD, Color.DARK_GRAY);
+            Font _fontFirmante = new Font(Font.HELVETICA, 12, Font.BOLD, Color.DARK_GRAY);
+            Font _fontStandard = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.DARK_GRAY);
+            Font _fontStandardBold = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
 
             MemoryStream memStream = new MemoryStream();
             Document doc = new Document(PageSize.LEGAL);
@@ -1411,7 +1411,7 @@ namespace DAES.BLL
                     PdfPTable table = new PdfPTable(4);
                     table.WidthPercentage = 100.0f;
                     table.HorizontalAlignment = Element.ALIGN_CENTER;
-                    table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
+                    table.DefaultCell.BorderColor = Color.LIGHT_GRAY;
                     table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandard)));
                     table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandard)));
                     PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
@@ -1443,15 +1443,15 @@ namespace DAES.BLL
             using (SistemaIntegradoContext context = new SistemaIntegradoContext())
             {
                 EventoTitulos ev = new EventoTitulos();
-                Font _fontTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.DARK_GRAY);
-                Font _fontTituloSegundario = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
-                Font _fontNumero = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.DARK_GRAY);
-                Font _fontFirmante = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.DARK_GRAY);
-                Font _fontStandard = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
-                Font _fontVariables = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);//variables??
-                Font _fontStandardBold = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
-                Font _fontStandardBoldSubRayado = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD | Font.UNDERLINE, BaseColor.DARK_GRAY);
-                Font _fontNegrita = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+                Font _fontTitulo = new Font(Font.HELVETICA, 18, Font.BOLD, Color.DARK_GRAY);
+                Font _fontTituloSegundario = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
+                Font _fontNumero = new Font(Font.HELVETICA, 20, Font.BOLD, Color.DARK_GRAY);
+                Font _fontFirmante = new Font(Font.HELVETICA, 12, Font.BOLD, Color.DARK_GRAY);
+                Font _fontStandard = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.DARK_GRAY);
+                Font _fontVariables = new Font(Font.HELVETICA, 10, Font.BOLD);//variables??
+                Font _fontStandardBold = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
+                Font _fontStandardBoldSubRayado = new Font(Font.HELVETICA, 10, Font.BOLD | Font.UNDERLINE, Color.DARK_GRAY);
+                Font _fontNegrita = new Font(Font.HELVETICA, 10, Font.BOLD);
                 MemoryStream memStream = new MemoryStream();
                 Document doc = new Document(PageSize.LEGAL);
                 PdfWriter write = PdfWriter.GetInstance(doc, memStream);
@@ -3072,7 +3072,7 @@ namespace DAES.BLL
                                 PdfPTable table = new PdfPTable(4);
                                 table.WidthPercentage = 100.0f;
                                 table.HorizontalAlignment = Element.ALIGN_CENTER;
-                                table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
+                                table.DefaultCell.BorderColor = Color.LIGHT_GRAY;
                                     table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                                 table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                                 PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
@@ -3786,7 +3786,7 @@ namespace DAES.BLL
                             PdfPTable table = new PdfPTable(4);
                             table.WidthPercentage = 100.0f;
                             table.HorizontalAlignment = Element.ALIGN_CENTER;
-                            table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
+                            table.DefaultCell.BorderColor = Color.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                             PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
@@ -3843,7 +3843,7 @@ namespace DAES.BLL
                             PdfPTable table = new PdfPTable(4);
                             table.HorizontalAlignment = Element.ALIGN_CENTER;
                             table.WidthPercentage = 100f;
-                            table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
+                            table.DefaultCell.BorderColor = Color.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                             PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
@@ -3900,7 +3900,7 @@ namespace DAES.BLL
                             PdfPTable table = new PdfPTable(4);
                             table.WidthPercentage = 100.0f;
                             table.HorizontalAlignment = Element.ALIGN_CENTER;
-                            table.DefaultCell.BorderColor = BaseColor.LIGHT_GRAY;
+                            table.DefaultCell.BorderColor = Color.LIGHT_GRAY;
                             table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
                             table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                             PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
@@ -4396,9 +4396,9 @@ namespace DAES.BLL
                         throw new Exception("La configuración de mensaje de pié de firma de certificados es inválida");
                     }
 
-                    Font _fontStandard = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
-                    Font _fontStandardBold = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.DARK_GRAY);
-                    Font _fontBold = new Font(Font.FontFamily.HELVETICA, 24, Font.BOLD, BaseColor.DARK_GRAY);
+                    Font _fontStandard = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.DARK_GRAY);
+                    Font _fontStandardBold = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
+                    Font _fontBold = new Font(Font.HELVETICA, 24, Font.BOLD, Color.DARK_GRAY);
 
                     try
                     {
@@ -4409,7 +4409,8 @@ namespace DAES.BLL
                         {
                             var reader = new PdfReader(content);
 
-                            using (PdfStamper stamper = new PdfStamper(reader, ms, '\0', true))
+                            PdfStamper stamper = new PdfStamper(reader, ms, '\0', true);
+                            try
                             {
                                 var pdfContentFirstPage = stamper.GetOverContent(1);
 
@@ -4438,6 +4439,9 @@ namespace DAES.BLL
                                     ColumnText.ShowTextAligned(pdfContentByte, Element.ALIGN_CENTER, new Phrase(configmensajePie.Valor, _fontStandard), 300, delta + 10, 0);
                                     ColumnText.ShowTextAligned(pdfContentByte, Element.ALIGN_CENTER, new Phrase(configmensajeVerificacion.Valor + " usando el código " + id, _fontStandard), 300, delta + 0, 0);
                                 }
+                            }
+                            finally 
+                            { 
                                 stamper.Close();
                             }
                             content = ms.ToArray();
