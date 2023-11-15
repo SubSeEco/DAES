@@ -4,6 +4,12 @@ Este archivo esta basado en el formato Keep a Changelog(https://keepachangelog.c
 
 Cambios realizados en la solución, tanto adherencias, como modificaciones y eliminaciones hechas durante el proceso de desarrollo del tramite N°2 Certificado de Disolucion
 
+## [2.5.7.2 DAES Completo] - 15.11-2023
+
+### Changed
+
+- Modificaciones realizadas por InnovaGroup, todas documentadas en la carpeta compartida.
+
 ## [2.5.7 DAES Completo] - 06-11-2023
 
 ### Changed
