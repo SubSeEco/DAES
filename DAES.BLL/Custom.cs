@@ -3021,6 +3021,7 @@ namespace DAES.BLL
                                  aux.TipoOrganizacionId == (int)DAES.Infrastructure.Enum.TipoOrganizacion.AsociacionGremial)
                         {
                             parrafo = parrafo.Replace("[RAZONSOCIAL]", organizacion.RazonSocial != null ? "#" + organizacion.RazonSocial.ToString() + "#" : "[ERROR_Disolucion]");
+
                             parrafo = parrafo.Replace("[FECHAASAMBLEASOCIOS]", aux.FechaAsambleaSocios != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaAsambleaSocios.Value) + "#" : "[ERROR_Disolucion]");
                                 parrafo = parrafo.Replace("[FECHAESCRITURA]", aux.FechaEscrituraPublica != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaEscrituraPublica.Value) + "#" : "[ERROR_Disolucion]");
                                 parrafo = parrafo.Replace("[LUGARNOTARIO]", aux.NombreNotaria != null ? "#" + aux.NombreNotaria + "#" : "[ERROR_Disolucion]");
@@ -3028,6 +3029,7 @@ namespace DAES.BLL
                                 parrafo = parrafo.Replace("[FECHAPUBLICACION]", aux.FechaPubliccionDiarioOficial.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaPubliccionDiarioOficial.Value) + "#" : "[ERROR_Disolucion]");
                                 parrafo = parrafo.Replace("[NUMEROOFICIO]", aux.NumeroOficio != null ? "Dicha disolución se encuentra aprobada por oficio ordinario N° #" + aux.NumeroOficio + "#" : aux.FechaOficio != null ? "" : ".");
                                 parrafo = parrafo.Replace("[FECHAOFICIO]", aux.NumeroOficio != null && aux.FechaOficio != null ? "de fecha #" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", aux.FechaOficio.Value) + "#." : "");
+
                             if (parrafo.Contains("ERROR_Disolucion"))
                                 {
                                     throw new Exception(string.Format("Error al emitir, el apartado de Disolucion no tiene todos los campos requeridos"));
@@ -3073,7 +3075,9 @@ namespace DAES.BLL
                                 table.WidthPercentage = 100.0f;
                                 table.HorizontalAlignment = Element.ALIGN_CENTER;
                                 table.DefaultCell.BorderColor = Color.LIGHT_GRAY;
+
                                     table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
+
                                 table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
                                 PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
                                 cellDesde.HorizontalAlignment = Element.ALIGN_CENTER;
@@ -4440,8 +4444,9 @@ namespace DAES.BLL
                                     ColumnText.ShowTextAligned(pdfContentByte, Element.ALIGN_CENTER, new Phrase(configmensajeVerificacion.Valor + " usando el código " + id, _fontStandard), 300, delta + 0, 0);
                                 }
                             }
-                            finally 
-                            { 
+                            finally
+                            {
+
                                 stamper.Close();
                             }
                             content = ms.ToArray();
