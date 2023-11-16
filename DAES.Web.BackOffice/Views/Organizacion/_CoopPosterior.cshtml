@@ -45,14 +45,14 @@
                 @Html.EditorFor(m => Model.Disolucions[i].NumeroFojas, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
             <th>
-                @Html.LabelFor(m => Model.Disolucions[i].AñoInscripcion, htmlAttributes: new { @class = "control-label col-md-10" })
-                @Html.EditorFor(m => Model.Disolucions[i].AñoInscripcion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.LabelFor(m => Model.Disolucions[i].DatosCBR, htmlAttributes: new { @class = "control-label col-md-10" })
+                @Html.EditorFor(m => Model.Disolucions[i].DatosCBR, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
         </tr>
         <tr>
             <th>
-                @Html.LabelFor(m => Model.Disolucions[i].DatosCBR, htmlAttributes: new { @class = "control-label col-md-10" })
-                @Html.EditorFor(m => Model.Disolucions[i].DatosCBR, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.LabelFor(m => Model.Disolucions[i].AñoInscripcion, htmlAttributes: new { @class = "control-label col-md-10" })
+                @Html.EditorFor(m => Model.Disolucions[i].AñoInscripcion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
             <th>
                 @Html.LabelFor(m => Model.Disolucions[i].DatosNotario, htmlAttributes: new { @class = "control-label col-md-10" })
@@ -63,7 +63,16 @@
                 @Html.EditorFor(m => Model.Disolucions[i].NombreNotaria, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
         </tr>
-
+        <tr>
+            <th>
+                @Html.LabelFor(m => Model.Disolucions[i].ComisionPosterior, htmlAttributes: new { @class = "control-label col-md-7" })
+                @Html.EditorFor(m => Model.Disolucions[i].ComisionPosterior, new { htmlAttributes = new { @id = "comisionPosterior", @class = "form-label", @style = "height: 20px;" } })
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
         <tr>
             <th>
                 @Html.LabelFor(m => Model.Disolucions[i].FechaComiLiquiJuntaSocios, htmlAttributes: new { @class = "control-label col-md-10" })
@@ -78,16 +87,7 @@
                 @Html.EditorFor(m => Model.Disolucions[i].FechaTermino, new { htmlAttributes = new { @class = "form-control col-md-10" } })
             </th>
         </tr>
-        <tr>
-            <th>
-                @Html.LabelFor(m => Model.Disolucions[i].ComisionPosterior, htmlAttributes: new { @class = "control-label col-md-10" })
-                @Html.EditorFor(m => Model.Disolucions[i].ComisionPosterior, new { htmlAttributes = new { @id = "comisionPosterior", @class = "form-control", @style = "height: 20px;" } })
-            </th>
-            <th>
-            </th>
-            <th>
-            </th>
-        </tr>
+
         <tr>
             <th>
             </th>
