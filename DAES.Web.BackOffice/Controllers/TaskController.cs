@@ -8,6 +8,7 @@ using DAES.Model.Core;
 using DAES.Model.FirmaDocumento;
 using DAES.Model.SistemaIntegrado;
 using DAES.Web.BackOffice.Helper;
+using Microsoft.Ajax.Utilities;
 using net.sf.ehcache.search.aggregator;
 using org.apache.sis.@internal.jaxb.gmx;
 using org.apache.tika.metadata;
@@ -83,8 +84,10 @@ namespace DAES.Web.BackOffice.Controllers
         public List<HttpPostedFileBase> Archivos { get; set; }
         public List<Proceso> Procesos { get; set; }
 
-
-
+        //INI
+        //se Agrego List 
+        public List<DocOficio> DocOficio { get; set; }
+        //FIN
 
     }
 
@@ -128,6 +131,7 @@ namespace DAES.Web.BackOffice.Controllers
     [Authorize]
     public class TaskController : Controller
     {
+
         private BLL.Custom _custom = new BLL.Custom();
         private SistemaIntegradoContext db = new SistemaIntegradoContext();
 
@@ -184,6 +188,7 @@ namespace DAES.Web.BackOffice.Controllers
         public ActionResult CrearDocumento(int WorkflowId)
         {
 
+
             ViewBag.TipoDocumentoId = new SelectList(db.TipoDocumento.OrderBy(q => q.Nombre), "TipoDocumentoId", "Nombre");
             ViewBag.TipoPrivacidadId = new SelectList(db.TipoPrivacidad.OrderBy(q => q.Nombre), "TipoPrivacidadId", "Nombre");
 
@@ -191,9 +196,18 @@ namespace DAES.Web.BackOffice.Controllers
             var model = new TaskModel();
             model.Workflow = workflow;
             model.Documentos = db.Documento.Where(q => q.Workflow.ProcesoId == model.Workflow.ProcesoId).OrderBy(q => q.FechaCreacion).ToList();
+
+            //INI
+            //prueba veremos que pasa 
+
+            var documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
+            model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
+            //FIN
+
+
             var tipoDeUsuario = Helper.Helper.CurrentUser.Perfil.Nombre;
             ViewBag.TipoUsuario = tipoDeUsuario;
-            
+
             return View(model);
         }
 
@@ -1374,7 +1388,7 @@ namespace DAES.Web.BackOffice.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult FiscalizacionDelete(int id)
         {
-           
+
             if (ModelState.IsValid)
             {
                 var fiscalizacion = db.Fiscalizacion.Find(id);
@@ -1615,13 +1629,13 @@ namespace DAES.Web.BackOffice.Controllers
 
         //    return View(model);
         //}
-
+        //metodo que no se usa 
         public ActionResult VistaFormularioOfi(int WorkflowId)
         {
             var model = new TaskModel();
             var wf = db.Workflow.Find(WorkflowId);
-            
-            
+
+
 
 
             //var def_workflow = model.Workflow.DefinicionWorkflow;
@@ -1672,13 +1686,13 @@ namespace DAES.Web.BackOffice.Controllers
 
             return View(model);
         }
-
+        //metodo que guarda y crea los nuevos DOC 
         [HttpPost]
-        public ActionResult GuardarDocOfi(int WorkflowId , DocOficioss ofi)
-       {
+        public ActionResult GuardarDocOfi(int WorkflowId, DocOficioss ofi)
+        {
             var model = new TaskModel();
             model.Workflow = db.Workflow.FirstOrDefault(q => q.WorkflowId == WorkflowId);
-            Debug.WriteLine("estoy en el metodo "+ofi.Parrafo1+" "+ ofi.Parrafo2);
+            Debug.WriteLine("estoy en el metodo " + ofi.Parrafo1 + " " + ofi.Parrafo2);
 
             if (model.Workflow.DocOficio.Any()) {
 
@@ -1697,27 +1711,29 @@ namespace DAES.Web.BackOffice.Controllers
                 var mirar = model.Workflow.DocOficio;
                 model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId));
                 db.SaveChanges();
-                
+
             }
             else
             {
+                var mirar = model.ProcesoId;
+                var mirar2 = ofi.ProcesoId;
                 var nuevoregistro = new DocOficio
                 {
                     WorkFlowId = WorkflowId,
-                    ProcesoId =model.ProcesoId,
-                    NUMERO_REGISTRO= ofi.NUMERO_REGISTRO,
-                    ANTECEDENTES= ofi.ANTECEDENTES  ,
-                    MATERIA=ofi.MATERIA,
+                    ProcesoId = ofi.ProcesoId,
+                    NUMERO_REGISTRO = ofi.NUMERO_REGISTRO,
+                    ANTECEDENTES = ofi.ANTECEDENTES,
+                    MATERIA = ofi.MATERIA,
                     DE_DOC = ofi.DE_DOC,
                     A_DOC = ofi.A_DOC,
-                    DIRECCION=ofi.DIRECCION,
-                    CORREO=ofi.CORREO,
+                    DIRECCION = ofi.DIRECCION,
+                    CORREO = ofi.CORREO,
                     Parrafo1 = ofi.Parrafo1,
                     Parrafo2 = ofi.Parrafo2,
                     Parrafo3 = ofi.Parrafo3,
                     Tabla = ofi.Tabla,
                     FileName = "DocumentoCreado" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
-                    
+
                 };
                 db.DocOficios.Add(nuevoregistro);
                 db.SaveChanges();
@@ -1729,15 +1745,36 @@ namespace DAES.Web.BackOffice.Controllers
 
             }
 
-            
-            return PartialView("_VistaFormularioOfi",model);
+
+            return PartialView("_VistaFormularioOfi", model);
             //return View(model);
 
         }
-        public async Task<ActionResult> ShowDoc(int id)
+        public async Task<ActionResult> ShowDoc(int id )
         {
-            var model = await db.DocOficios.Where(q => q.WorkFlowId == id).FirstAsync();
-            return File(model.Content, "application/pdf");
+            
+                var model = await db.DocOficios.Where(q => q.WorkFlowId == id).FirstOrDefaultAsync();
+
+            if (model != null)
+            {
+                return File(model.Content, "application/pdf");
+
+
+            }
+            else {
+                id = id - 1;
+                var documentoAnterior = await db.DocOficios
+                 .Where(q => q.WorkFlowId == id)
+                .OrderByDescending(q => q.FechaCreacion)
+                 .Skip(1) // Salta el documento actual
+                 .FirstOrDefaultAsync();
+                var mirar = documentoAnterior;
+                var mirarid = id;
+
+                return File(documentoAnterior.Content, "application/pdf");
+
+            }
+                 
         }
 
 
@@ -1754,7 +1791,7 @@ namespace DAES.Web.BackOffice.Controllers
 
     }
 
-
+    //clase 
     public class DocOficioss
     {
         public int DocOficioId { get; set; }
