@@ -36,6 +36,17 @@
         content: "";
         margin-bottom: 10px;
     }
+    .miTabla {
+        border-collapse: collapse;
+        width: 100%;
+        table-layout: fixed; /* Fija el ancho de la tabla */
+    }
+
+    .miTabla td {
+        border: 1px solid black;
+        width: 50px; /* Ancho fijo para las celdas */
+        white-space: nowrap; /* Evita que el contenido haga saltos de línea en las celdas */
+    }
 </style>
 
 <div class="panel panel-default">
@@ -52,6 +63,7 @@
             <button id="boldButton" class="btn btn-danger">Negrita</button>
             <button id="italicButton" class="btn btn-danger">Italic</button>
             <button id="subButton" class="btn btn-danger">Subrayar</button>
+            <button onclick="agregarTabla()">Agregar Tabla Personalizada</button>
 
             <table>
                 <tr>
@@ -68,7 +80,7 @@
                                 }
                                 else
                                 {
-                                  
+
                                     @Html.Raw(string.Empty)
                                 }
                             </div>
@@ -89,7 +101,7 @@
                                 }
                                 else
                                 {
-                                  
+
                                     @Html.Raw(string.Empty)
                                 }
                             </div>
@@ -150,7 +162,7 @@
                                 }
                                 else
                                 {
-                                    
+
                                     @Html.Raw(string.Empty)
                                 }
                             </div>
@@ -171,7 +183,7 @@
                                 }
                                 else
                                 {
-                                    
+
                                     @Html.Raw(string.Empty)
                                 }
                             </div>
@@ -604,7 +616,55 @@
         container.appendChild(element.cloneNode(true));
         return container.innerHTML;
     }
-    
+
+    function agregarTabla() {
+        // Solicitar al usuario las dimensiones de la tabla
+        var filas = prompt("Ingrese el número de filas:", "");
+        var columnas = prompt("Ingrese el número de columnas:", "");
+
+        // Validar las entradas del usuario
+        if (isNaN(filas) || isNaN(columnas) || filas <= 0 || columnas <= 0) {
+            alert("Por favor, ingrese números válidos y mayores que cero.");
+            return;
+        }
+
+        // Crear una tabla dinámica con la clase "miTabla"
+        var nuevaTabla = '<br/><table class="miTabla">';
+
+        for (var i = 0; i < filas; i++) {
+            nuevaTabla += '<tr>';
+            for (var j = 0; j < columnas; j++) {
+                nuevaTabla += '<td>&nbsp;</td>'; // Añade un espacio en blanco a cada celda
+            }
+            nuevaTabla += '</tr>';
+        }
+
+        nuevaTabla += '</table>';
+
+        // Agregar la nueva tabla al contenido del div editable
+        document.getElementById('Tabla').innerHTML += nuevaTabla;
+    }
+    /*
+    function agregarTabla(filas, columnas) {
+        var filas = prompt("Ingrese el número de filas:", "3");
+        var columnas = prompt("Ingrese el número de columnas:", "4");
+
+        // Crear una tabla dinámica con la clase "miTabla"
+        var nuevaTabla = '<br/><table class="miTabla">';
+
+        for (var i = 0; i < filas; i++) {
+            nuevaTabla += '<tr>';
+            for (var j = 0; j < columnas; j++) {
+                nuevaTabla += '<td>&nbsp;</td>'; // Añade un espacio en blanco a cada celda
+            }
+            nuevaTabla += '</tr>';
+        }
+
+        nuevaTabla += '</table>';
+
+        // Agregar la nueva tabla al contenido del div editable
+        document.getElementById('Tabla').innerHTML += nuevaTabla;
+    }*/
 </script>
 
 
