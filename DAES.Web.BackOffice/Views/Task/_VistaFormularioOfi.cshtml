@@ -282,22 +282,25 @@
             </table>
         </div>
         <div class="col-md-6">
-            @{
-                if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+            
+                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                 {
-
                     var firstDoc = Model.Workflow.DocOficio.FirstOrDefault();
                     if (firstDoc != null)
                     {
                         <embed src="@Url.Action("ShowDoc", "Task", new { id = firstDoc.WorkFlowId })" width="96%" height="990px" type="application/pdf" />
                     }
+                    else
+                    {
+                        @* No hay contenido para mostrar *@
+                    }
                 }
                 else
                 {
-
+                    @* No hay contenido para mostrar *@
                 }
                 <br />
-            }
+            
 
         </div>
         <div>
