@@ -51,8 +51,9 @@ namespace DAES.Model.SistemaIntegrado
         public int? OrganizacionId { get; set; }
         public virtual Organizacion Organizacion { get; set; }
 
+        [Column("LugarNotario")]
         [Display(Name = "Lugar notario")]
-        public string LugarNotario { get; set; }
+        public string LugarNotarioP { get; set; }
 
         [Display(Name = "Tipo Junta")]
         public int? TipoGeneralId { get; set; }

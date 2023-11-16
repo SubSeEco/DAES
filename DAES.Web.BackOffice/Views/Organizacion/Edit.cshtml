@@ -422,8 +422,7 @@
                 <input type="button" value="Limpiar campos" id="limpiarSan" class="btn btn-primary" />
                 @if (Model.Saneamientos.Any())
                 {
-
-                    @Html.ActionLink("Eliminar saneamiento", "EliminarSanemiento", "Organizacion", new { IdSaneamiento = Model.Saneamientos.FirstOrDefault().IdSaneamiento, IdOrganizacion = Model.OrganizacionId }, htmlAttributes: new { @class = "btn btn-success" })
+                    @Html.ActionLink("Eliminar saneamiento", "EliminarSanemiento", "Organizacion", new { IdSaneamiento = Model.Saneamientos.FirstOrDefault().IdSaneamiento, IdOrganizacion = Model.OrganizacionId }, htmlAttributes: new { @class = "btn btn-danger" })
                 }
             </div>
         }
@@ -497,7 +496,7 @@
         }
     }
 
-    <div class="panel panel-default" id="disolucionModulo">
+    <div class="panel panel-default">
         <div class="panel-heading">Disolución</div>
         <div class="panel-body">
             <div id="disolucion">
