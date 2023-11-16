@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using DAES.Model.GestionDocumental;
+using DAES.Model.GestionProcesos;
 using DAES.Model.SistemaIntegrado;
-using DAES.Model.GestionDocumental;
 using ExpressiveAnnotations.Attributes;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAES.Model.DTO
 {
@@ -34,8 +35,13 @@ namespace DAES.Model.DTO
         public string Observacion { get; set; }
 
         public DAES.Model.GestionDocumental.Documento Documento { get; set; }
+
+        public GDGP GDGP { get; set; }
+        public ProcesoGP ProcesoGP { get; set; }
+        public List<WorkflowGP> WorkflowGP { get; set; }
         public Solicitante Solicitante { get; set; }
         public List<Adjunto> Adjuntos { get; set; }
+        public List<DocumentoGP> DocumentoGP { get; set; }
         public List<ProcesoDocumento> ProcesoDocumentos { get; set; }
     }
 }

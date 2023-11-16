@@ -63,6 +63,9 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Id documento GD")]
         public int DocumentoId { get; set; }
 
+        [Display(Name = "Id Proceso GP")]
+        public int? ProcesoGPId { get; set; }
+
         [Display(Name = "Correlativo GD")]
         public string Correlativo { get; set; }
 
@@ -70,8 +73,8 @@ namespace DAES.Model.SistemaIntegrado
         public int? OrganizacionId { get; set; }
         public virtual Organizacion Organizacion { get; set; }
 
-       /* public int? SupervisorAuxiliarId { get; set; }
-        public virtual SupervisorAuxiliar SupervisorAuxiliar { get; set; }*/
+        /* public int? SupervisorAuxiliarId { get; set; }
+         public virtual SupervisorAuxiliar SupervisorAuxiliar { get; set; }*/
 
 
         [Display(Name = "Solicitante")]
@@ -80,6 +83,9 @@ namespace DAES.Model.SistemaIntegrado
 
         [NotMapped]
         public string UserId { get; set; }
+
+        [NotMapped]
+        public bool ProcesoGD { get; set; }
 
         public virtual ICollection<Workflow> Workflows { get; set; }
         public virtual ICollection<ActualizacionOrganizacion> ActualizacionOrganizacions { get; set; }
@@ -91,7 +97,7 @@ namespace DAES.Model.SistemaIntegrado
 
         public virtual ICollection<EstudioSocioEconomico> EstudioSocioEconomicos { get; set; }
         public virtual ICollection<CooperativaAbierta> CooperativaAbiertas { get; }
-        public virtual ICollection<SupervisorAuxiliar> SupervisorAuxiliars { get; set; }        
+        public virtual ICollection<SupervisorAuxiliar> SupervisorAuxiliars { get; set; }
         public virtual ICollection<ActualizacionSupervisor> ActualizacionSupervisors { get; set; }
         public virtual ICollection<ActualizacionEscrituraConstitucion> ActualizacionEscrituraConstitucions { get; set; }
         public virtual ICollection<ActualizacionPersonaFacultada> ActualizacionPersonaFacultadas { get; set; }

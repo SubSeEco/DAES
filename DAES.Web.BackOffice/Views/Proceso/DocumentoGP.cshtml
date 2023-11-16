@@ -1,0 +1,46 @@
+﻿@model IEnumerable<DAES.Model.DTO.DTODocumentoGP>
+@{
+    ViewBag.Title = "Documentos Gestión de Procesos GD";
+    var listIds = ViewBag.Ids as IEnumerable<int>;
+}
+
+<table class="table table-hover table-striped datatable">
+<thead>
+    <tr>
+        <th></th>
+        <th>@Html.DisplayNameFor(model=>model.FirstOrDefault().Id)</th>
+        <th>@Html.DisplayNameFor(model=>model.FirstOrDefault().Doc_Correlativo)</th>
+        <th>@Html.DisplayNameFor(model=>model.FirstOrDefault().Doc_FechaCreacion)</th>
+        <th>@Html.DisplayNameFor(model=>model.FirstOrDefault().MateriaGD)</th>
+        <th>@Html.DisplayNameFor(model=>model.FirstOrDefault().ReferenciaGD)</th>
+        <th>@Html.DisplayNameFor(model=>model.FirstOrDefault().ObservacionGD)</th>
+        <th></th>
+        <th></th>
+    </tr>
+</thead>
+<tbody>
+    @foreach(var item in Model)
+    {
+        <tr>
+            <td>
+                @if (listIds.Any(i => i == item.Id))
+                {
+                    <span class="label label-danger label-as-badge">Con procesos</span>
+                }
+                else
+                {
+                    <span class="label label-success label-as-badge">Sin procesos</span>
+                }
+            </td>
+            <td>@Html.DisplayFor(modelItem=>item.Id)</td>
+            <td>@Html.DisplayFor(modelItem => item.Doc_Correlativo)</td>
+            <td>@String.Format("{0:dd-MM-yyyy HH:mm:ss}", item.Doc_FechaCreacion)</td>
+            <td>@Html.DisplayFor(modelItem => item.ReferenciaGD)</td>
+            <td>@Html.DisplayFor(modelItem => item.ObservacionGD)</td>
+            <td></td>
+            <td></td>
+            <td>@Html.ActionLink("Seleccionar", "DocumentoCreateGP", new { item.Id }, new { @class = "btn btn-primary" })</td>
+        </tr>
+    }
+</tbody>
+</table>

@@ -182,7 +182,7 @@
             //TEST
             OficioTEST = 107,
 
-            
+
 
 
 
@@ -289,7 +289,25 @@
             PasswordHSM = 22
         }
 
+        public enum EstadoProcesoGP
+        {
+            EnProceso = 1,
+            Anulado = 2,
+            Terminado = 3
+        }
 
+        public enum TipoAprobacionGP
+        {
+            SinAprobacion = 1,
+            Aprobado = 2,
+            Rechaza = 3
+        }
+
+        public enum DefinicionProcesoGP
+        {
+            IngresoInterno = 4,
+            IngresoOP = 5 //Ingreso Oficina de Partes
+        }
 
         public enum Genero
         {
