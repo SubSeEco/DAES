@@ -22,22 +22,23 @@
             </tr>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaPublicacion)
-                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaPublicacion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().Autorizado)
                     @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().Autorizado, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaJuntaGeneral)
-                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaJuntaGeneral, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaPublicacion)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaPublicacion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().TipoGeneralId)
+                    @Html.DropDownListFor(model => model.ExistenciaAnteriors.FirstOrDefault().TipoGeneralId, null, "Seleccione...", new { @class = "form-control col-md-10" })
+
                 </th>
             </tr>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().TipoGeneralId)
-                    @Html.DropDownListFor(model => model.ExistenciaAnteriors.FirstOrDefault().TipoGeneralId, null, "Seleccione...", new { @class = "form-control col-md-10" })
+                    @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaJuntaGeneral)
+                    @Html.EditorFor(model => Model.ExistenciaAnteriors.FirstOrDefault().FechaJuntaGeneral, new { htmlAttributes = new { @class = "form-control col-md-10" } })
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => Model.ExistenciaAnteriors.FirstOrDefault().LugarNotario)
@@ -85,22 +86,22 @@
     </tr>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FechaPublicacion)
-            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FechaPublicacion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
-        </th>
-        <th>
             @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].Autorizado)
             @Html.EditorFor(model => Model.ExistenciaAnteriors[i].Autorizado, new { htmlAttributes = new { @class = "form-control col-md-10" } })
         </th>
         <th>
-            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FechaJuntaGeneral)
-            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FechaJuntaGeneral, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FechaPublicacion)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FechaPublicacion, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId)
+            @Html.DropDownListFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ExistenciaAnteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10" })
         </th>
     </tr>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId)
-            @Html.DropDownListFor(model => Model.ExistenciaAnteriors[i].TipoGeneralId, new SelectList(ViewBag.TipoGeneralId, "Value", "Text", Model.ExistenciaAnteriors[i].TipoGeneralId), "Seleccione...", new { @class = "form-control col-md-10" })
+            @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].FechaJuntaGeneral)
+            @Html.EditorFor(model => Model.ExistenciaAnteriors[i].FechaJuntaGeneral, new { htmlAttributes = new { @class = "form-control col-md-10" } })
         </th>
         <th>
             @Html.DisplayNameFor(model => Model.ExistenciaAnteriors[i].LugarNotario)

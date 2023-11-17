@@ -24,6 +24,12 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using static iTextSharp.text.pdf.AcroFields;
 using System.Web.Services.Description;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System.Web.UI.WebControls;
+using Image = iTextSharp.text.Image;
+using System.Windows.Input;
+using OfficeOpenXml.Style;
+using Org.BouncyCastle.Asn1.X500;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -521,7 +527,7 @@ namespace DAES.BLL
                         exi.Fojas = item.Fojas;
                         exi.AnoInscripcion = item.AnoInscripcion;
                         exi.DatosCBR = item.DatosCBR;
-                        exi.LugarNotario = item.LugarNotario;
+                        exi.LugarNotarioP = item.LugarNotarioP;
                         exi.TipoGeneralId = item.TipoGeneralId;
                     }
 
@@ -553,7 +559,7 @@ namespace DAES.BLL
                         sane.Fojass = item.Fojass;
                         sane.FechaaInscripcion = item.FechaaInscripcion;
                         sane.DatossCBR = item.DatossCBR;
-                        sane.LugarNotario = item.LugarNotario;
+                        sane.LugarNotarioSa = item.LugarNotarioSa;
                         //Sane.OrganizacionId = item.OrganizacionId;
 
 
@@ -1467,7 +1473,11 @@ namespace DAES.BLL
                 string parrafos = string.Format(configuracioncertificado.Parrafo1 != null ? configuracioncertificado.Parrafo1 : " ");
 
                 var tipoOrganizacion = context.TipoOrganizacion.Find(organizacion.TipoOrganizacionId);
-
+                float marginLeft = doc.LeftMargin;
+                float marginRight = doc.RightMargin;
+                float marginTop = doc.TopMargin;
+                float marginBottom = doc.BottomMargin;
+                doc.SetMargins(marginLeft, marginRight, marginTop, 72);
                 doc.Open();
 
                 doc.AddTitle(configuracioncertificado.Titulo);
@@ -1491,10 +1501,7 @@ namespace DAES.BLL
 
                 Phrase PhraseUNO;
                 Phrase PhraseDOS;
-                Phrase PhraseDOSSuperior;
-                Phrase PhraseDOSInferior;
                 Phrase PhraseTRES;
-                Phrase PhraseCINCO;
                 Paragraph subtitulo;
                 Paragraph subtitulo2 = null;
                 Paragraph subtitulo3 = null;
@@ -1519,6 +1526,70 @@ namespace DAES.BLL
                 }
 
                 Image imagenLogo = Image.GetInstance(logo.Valor);
+                imagenLogo.ScalePercent(20);
+
+                PdfPTable tableHeader = new PdfPTable(1);
+                tableHeader.WidthPercentage = 100f;
+                tableHeader.DefaultCell.Border = Rectangle.NO_BORDER;
+                tableHeader.DefaultCell.Border = 0;
+
+                // Logo en una fila de 3 columnas
+                PdfPTable logoTable = new PdfPTable(3);
+                logoTable.DefaultCell.Border = Rectangle.NO_BORDER;
+                logoTable.DefaultCell.Border = 0;
+
+                PdfPCell logoCell = new PdfPCell(imagenLogo);
+                logoCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                logoCell.BorderWidth = 0;
+                logoCell.PaddingTop = 20;
+                logoCell.Border = Rectangle.NO_BORDER;
+                logoTable.AddCell(logoCell);
+
+                // Añadir dos celdas vacías para completar las 3 columnas
+                for (int i = 0; i < 2; i++)
+                {
+                    PdfPCell emptyCell = new PdfPCell();
+                    emptyCell.BorderWidth = 0;
+                    logoTable.AddCell(emptyCell);
+                }
+
+                // Añadir la tabla de logos a la tabla principal
+                PdfPCell logoTableCell = new PdfPCell(logoTable);
+                logoTableCell.BorderWidth = 0;
+                tableHeader.AddCell(logoTableCell);
+
+                // Título centrado en la siguiente fila
+                string[] titulo = configuracioncertificado.Titulo.Split('#');
+                Phrase PhraseTitulo;
+                Paragraph tituloFinal = new Paragraph();
+                index = 0;
+                foreach (var element in titulo)
+                {
+                    if (index == 0)
+                    {
+                        PhraseTitulo = new Phrase(element, _fontTitulo);
+                    }
+                    else
+                    {
+                        PhraseTitulo = new Phrase(SaltoLinea + element, _fontTituloSegundario);
+                    }
+                    tituloFinal.Add(PhraseTitulo);
+                    index++;
+                }
+
+                PdfPCell titleCell = new PdfPCell(new Phrase(tituloFinal));
+                titleCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                titleCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                titleCell.BorderWidth = 0;
+                titleCell.PaddingTop = 20;
+                tableHeader.AddCell(titleCell);
+
+                // ... (continuación de tu código)
+
+                // Agregar la tabla principal al documento
+                doc.Add(tableHeader);
+
+                /*Image imagenLogo = Image.GetInstance(logo.Valor);
                 imagenLogo.ScalePercent(20);
 
                 PdfPTable tableHeader = new PdfPTable(3);
@@ -1580,7 +1651,7 @@ namespace DAES.BLL
                 cell.Border = Rectangle.NO_BORDER;
                 tableHeader.AddCell(cell);
 
-                doc.Add(tableHeader);
+                doc.Add(tableHeader);*/
                 doc.Add(new Paragraph());
 
 
@@ -2046,7 +2117,7 @@ namespace DAES.BLL
                                 {
                                     parrafo3[0] = parrafo3[0].Replace("[EXISTEREFORMA]", organizacion.ReformaAnteriors.Any() || organizacion.ReformaPosteriors.Any() ? "El acta constitutiva" : "La reforma estatutaria");
                                     parrafo3[0] = parrafo3[0].Replace("[FECHAESCRITURA]", saniamientoAnt.FechaEscrituraPublicaa.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", saniamientoAnt.FechaEscrituraPublicaa.Value) + "#" : "ERROR_Saneamiento");
-                                    parrafo3[0] = parrafo3[0].Replace("[LUGARNOTARIO]", saniamientoAnt.LugarNotario != null ? "#" + saniamientoAnt.LugarNotario + "#" : "ERROR_Saneamiento");
+                                    parrafo3[0] = parrafo3[0].Replace("[LUGARNOTARIO]", saniamientoAnt.LugarNotarioSa != null ? "#" + saniamientoAnt.LugarNotarioSa + "#" : "ERROR_Saneamiento");
                                     parrafo3[0] = parrafo3[0].Replace("[DATOGENERALNOTARIO]", saniamientoAnt.DatoGeneralesNotario != null ? "#" + saniamientoAnt.DatoGeneralesNotario + "#" : "ERROR_Saneamiento");
                                     parrafo3[0] = parrafo3[0].Replace("[FECHAPUBLICACION]", saniamientoAnt.FechaaPublicacionDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", saniamientoAnt.FechaaPublicacionDiario.Value) + "#" : "ERROR_Saneamiento");
                                     if (parrafo3[0].Contains("ERROR_Saneamiento"))
@@ -2362,7 +2433,7 @@ namespace DAES.BLL
                                 parrafo2[0] = parrafo2[0].Replace("[TIPOGENERAL]", LegalPost.TipoGeneralId != null ? "#" + LegalPost.TipoGeneral.Nombre + "#" : "ERROR_Legal");
                                 parrafo2[0] = parrafo2[0].Replace("[FECHAJUNTAGENERALSOCIOS]", LegalPost.FechaConstitutivaSocios.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", LegalPost.FechaConstitutivaSocios.Value) + "#" : "ERROR_Legal");
                                 parrafo2[0] = parrafo2[0].Replace("[FECHAESCRITURA]", LegalPost.FechaEscrituraPublica.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", LegalPost.FechaEscrituraPublica.Value) + "#" : "ERROR_Legal");
-                                parrafo2[0] = parrafo2[0].Replace("[LUGARNOTARIO]", LegalPost.LugarNotario != null ? "#" + LegalPost.LugarNotario + "#" : "ERROR_Legal");
+                                parrafo2[0] = parrafo2[0].Replace("[LUGARNOTARIO]", LegalPost.LugarNotarioP != null ? "#" + LegalPost.LugarNotarioP + "#" : "ERROR_Legal");
                                 parrafo2[0] = parrafo2[0].Replace("[DATOGENERALNOTARIO]", LegalPost.DatosGeneralesNotario != null ? "#" + LegalPost.DatosGeneralesNotario + "#" : "ERROR_Legal");
                                 parrafo2[0] = parrafo2[0].Replace("[FECHAPUBLICACION]", LegalPost.FechaPublicacionn.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", LegalPost.FechaPublicacionn.Value) + "#" : "ERROR_Legal");
                                 parrafo2[0] = parrafo2[0].Replace("[FOJASNUMERO]", LegalPost.Fojas != null ? "#" + LegalPost.Fojas + "#" : "ERROR_Legal");
@@ -2438,7 +2509,7 @@ namespace DAES.BLL
                                 {
                                     parrafo3[0] = parrafo3[0].Replace("[EXISTEREFORMA]", organizacion.ReformaPosteriors.Any() ? "El acta contitutiva" : "La reforma estatutaria");
                                     parrafo3[0] = parrafo3[0].Replace("[FECHAESCRITURA]", saneamientoAnt.FechaEscrituraPublicaa.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", saneamientoAnt.FechaEscrituraPublicaa.Value) + "#" : "ERROR_Saneamiento");
-                                    parrafo3[0] = parrafo3[0].Replace("[LUGARNOTARIO]", saneamientoAnt.LugarNotario != null ? "#" + saneamientoAnt.LugarNotario + "#" : "ERROR_Saneamiento");
+                                    parrafo3[0] = parrafo3[0].Replace("[LUGARNOTARIO]", saneamientoAnt.LugarNotarioSa != null ? "#" + saneamientoAnt.LugarNotarioSa + "#" : "ERROR_Saneamiento");
                                     parrafo3[0] = parrafo3[0].Replace("[DATOGENERALNOTARIO]", saneamientoAnt.DatoGeneralesNotario != null ? "#" + saneamientoAnt.DatoGeneralesNotario + "#" : "ERROR_Saneamiento");
                                     parrafo3[0] = parrafo3[0].Replace("[FECHAPUBLICACION]", saneamientoAnt.FechaaPublicacionDiario.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", saneamientoAnt.FechaaPublicacionDiario.Value) + "#" : "ERROR_Saneamiento");
                                     parrafo3[0] = parrafo3[0].Replace("[FOJASNUMERO]", saneamientoAnt.Fojass != null ? "#" + saneamientoAnt.Fojass + "#" : "ERROR_Saneamiento");
@@ -3981,7 +4052,7 @@ namespace DAES.BLL
                 doc.Add(SaltoLinea);
                 doc.Add(parraOb);
                 doc.Add(SaltoLinea);
-
+                Paragraph porOrdenpha = new Paragraph();
                 if (organizacion.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa)
                 {
                     //string orden = "Por orden del Subsecretario";
@@ -3993,19 +4064,20 @@ namespace DAES.BLL
                             "la personalidad jurídica de dicha Cooperativa." + "\n" + "\n" +
                             "Saluda atentamente a ustedes";
 
-                        Paragraph porOrden = new Paragraph(orden, _fontStandard);
-                        porOrden.Alignment = Element.ALIGN_JUSTIFIED;
-                        doc.Add(porOrden);
+                        //Paragraph porOrden = new Paragraph(orden, _fontStandard);
+                        //porOrden.Alignment = Element.ALIGN_JUSTIFIED;
+                        //doc.Add(porOrden);
+                        porOrdenpha = new Paragraph(orden, _fontStandard);
                     }
                     else
                     {
 
 
                         string orden = "Saluda atentamente a ustedes.";
-                        Paragraph porOrden = new Paragraph(orden, _fontStandard);
-                        porOrden.Alignment = Element.ALIGN_JUSTIFIED;
-                        doc.Add(porOrden);
-
+                        //Paragraph porOrden = new Paragraph(orden, _fontStandard);
+                        //porOrden.Alignment = Element.ALIGN_JUSTIFIED;
+                        //doc.Add(porOrden);
+                        porOrdenpha = new Paragraph(orden, _fontStandard);
 
                     }
                 }
@@ -4022,17 +4094,20 @@ namespace DAES.BLL
                             // "\n" + "\n" +
                             "Saluda atentamente a ustedes";
 
-                        Paragraph porOrden = new Paragraph(orden, _fontStandard);
-                        porOrden.Alignment = Element.ALIGN_JUSTIFIED;
-                        doc.Add(porOrden);
+                        //Paragraph porOrden = new Paragraph(orden, _fontStandard);
+                        //porOrden.Alignment = Element.ALIGN_JUSTIFIED;
+                        //doc.Add(porOrden);
+                        porOrdenpha = new Paragraph(orden, _fontStandard);
                     }
                     else
                     {
                         string orden = "Saluda atentamente a ustedes.";
-                        Paragraph porOrden = new Paragraph(orden, _fontStandard);
-                        porOrden.Alignment = Element.ALIGN_JUSTIFIED;
-                        doc.Add(porOrden);
+                        //Paragraph porOrden = new Paragraph(orden, _fontStandard);
+                        //porOrden.Alignment = Element.ALIGN_JUSTIFIED;
+                        //doc.Add(porOrden);
+                        porOrdenpha = new Paragraph(orden, _fontStandard);
                     }
+
                 }
                 doc.Add(SaltoLinea);
                 if ((int)DAES.Infrastructure.Enum.TipoDocumento.VigenciaDirectorio == TipoDocumentoId)
@@ -4051,8 +4126,27 @@ namespace DAES.BLL
                     throw new Exception("La configuración de url de rúbrica es inválida.");
                 }
 
+                //xuxu ResponsableFinal
+                porOrdenpha.Alignment = Element.ALIGN_LEFT;
+                var tableSaludo = new PdfPTable(1);
+                var cellSaludo = new PdfPCell();
+                cellSaludo.UseVariableBorders = true;
+                cellSaludo.Border = Rectangle.NO_BORDER;
+                Paragraph ResponsableFinal = new Paragraph();
+                Phrase responsable = new Phrase(firmante.Nombre, _fontStandardBold);
+                //ResponsableFinal.Add(porOrdenpha);
+                ResponsableFinal.Add(SaltoLinea);
+                ResponsableFinal.Add(responsable);
+                ResponsableFinal.Add(SaltoLinea);
+                Phrase _cargo = new Phrase(firmante.Cargo, _fontStandardBold);
+                ResponsableFinal.Add(_cargo); 
+                ResponsableFinal.Add(SaltoLinea);
+                Phrase _unidad = new Phrase(firmante.UnidadOrganizacional, _fontStandardBold);
+                ResponsableFinal.Add(_unidad);
+                ResponsableFinal.Alignment = Element.ALIGN_CENTER;
 
-                Paragraph responsable = new Paragraph(firmante.Nombre, _fontStandardBold);
+                //doc.Add(ResponsableFinal2);
+                /*Paragraph responsable = new Paragraph(firmante.Nombre, _fontStandardBold);
                 responsable.Alignment = centrar;
                 doc.Add(responsable);
 
@@ -4063,7 +4157,20 @@ namespace DAES.BLL
                 Paragraph _unidad = new Paragraph(firmante.UnidadOrganizacional, _fontStandardBold);
                 _unidad.Alignment = centrar;
                 doc.Add(_unidad);
-                doc.Add(SaltoLinea);
+                doc.Add(SaltoLinea);*/
+
+                //var cellSaludo = new PdfPCell(new Phrase("soy contenido de celda"));
+                cellSaludo.AddElement(porOrdenpha);
+                cellSaludo.AddElement(ResponsableFinal);
+                tableSaludo.AddCell(cellSaludo);
+                tableSaludo.DefaultCell.Border = Rectangle.NO_BORDER;
+
+                doc.Add(tableSaludo);
+                //var image = ConvertirTablaAImagen(tableSaludo);
+                //doc.Add(image);
+                //byte[] imagenBytes = ConvertirTablaABytes(tableSaludo);
+                //Image imagenBytes = ConvertirContenidoABytes(ResponsableFinal);
+                //InsertarImagenEnDocumento(imagenBytes, doc);
                 doc.Close();
 
                 return memStream.ToArray();
@@ -4218,8 +4325,8 @@ namespace DAES.BLL
                         Fojass = saneamiento.Fojass,
                         FechaaInscripcion = saneamiento.FechaaInscripcion,
                         DatossCBR = saneamiento.DatossCBR,
-                        LugarNotario = saneamiento.LugarNotario
-                });
+                        LugarNotarioSa = saneamiento.LugarNotarioSa
+                    });
                     context.SaveChanges();
                 }
 
@@ -4325,7 +4432,7 @@ namespace DAES.BLL
                         Fojas = ExiPost.Fojas,
                         AnoInscripcion = ExiPost.AnoInscripcion,
                         DatosCBR = ExiPost.DatosCBR,
-                        LugarNotario = ExiPost.LugarNotario,
+                        LugarNotarioP = ExiPost.LugarNotarioP,
                         TipoGeneralId = ExiPost.TipoGeneralId
                     });
                     context.SaveChanges();
@@ -4444,9 +4551,7 @@ namespace DAES.BLL
                                     ColumnText.ShowTextAligned(pdfContentByte, Element.ALIGN_CENTER, new Phrase(configmensajeVerificacion.Valor + " usando el código " + id, _fontStandard), 300, delta + 0, 0);
                                 }
                             }
-                            finally
-                            {
-
+                            finally { 
                                 stamper.Close();
                             }
                             content = ms.ToArray();
@@ -6417,8 +6522,11 @@ namespace DAES.BLL
                             }
                         }
 
-
-                        var docto = hsms.Sign(documento.File, idsFirma, documento.DocumentoId, documento.Folio, url_tramites_en_linea.Valor, qr);
+                        var organizacionId = documento.OrganizacionId;
+                        var Orga = db.Organizacion.Where(q => q.OrganizacionId == organizacionId).ToList();
+                        var tipoOrgaId = Orga.FirstOrDefault().TipoOrganizacionId;
+                        var TipoOrganizacion = db.TipoOrganizacion.Where(q => q.TipoOrganizacionId == tipoOrgaId).FirstOrDefault().Nombre;
+                        var docto = hsms.Sign(documento.File, idsFirma, documento.DocumentoId, documento.Folio, url_tramites_en_linea.Valor, qr, TipoOrganizacion);
                         documento.Content = docto;
                         //documento.Signed = true;
                         documento.Firmado = true;
@@ -6583,8 +6691,11 @@ namespace DAES.BLL
                                 response.Errors.Add(ex.Message);
                             }
                         }
-
-                        var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, url_tramites_en_linea.Valor, qr);
+                        var organizacionId = documento.OrganizacionId;
+                        var Orga = db.Organizacion.Where(q => q.OrganizacionId == organizacionId).ToList();
+                        var tipoOrgaId = Orga.FirstOrDefault().TipoOrganizacionId;
+                        var TipoOrganizacion = db.TipoOrganizacion.Where(q => q.TipoOrganizacionId == tipoOrgaId).FirstOrDefault().Nombre;
+                        var docto = hsms.Sign(documento.Content, idsFirma, documento.DocumentoId, documento.Folio, url_tramites_en_linea.Valor, qr, TipoOrganizacion);
                         documento.Content = docto;
                         //documento.Signed = true;
                         documento.Firmado = true;
