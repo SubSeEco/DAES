@@ -63,7 +63,7 @@
             <button id="boldButton" class="btn btn-danger">Negrita</button>
             <button id="italicButton" class="btn btn-danger">Italic</button>
             <button id="subButton" class="btn btn-danger">Subrayar</button>
-            <button onclick="agregarTabla()">Agregar Tabla Personalizada</button>
+            <!-- <button onclick="agregarTabla()">Agregar Tabla Personalizada</button> -->
 
             <table>
                 <tr>
@@ -616,7 +616,7 @@
         container.appendChild(element.cloneNode(true));
         return container.innerHTML;
     }
-
+    /*
     function agregarTabla() {
         // Solicitar al usuario las dimensiones de la tabla
         var filas = prompt("Ingrese el número de filas:", "");
@@ -643,7 +643,7 @@
 
         // Agregar la nueva tabla al contenido del div editable
         document.getElementById('Tabla').innerHTML += nuevaTabla;
-    }
+    }*/
     /*
     function agregarTabla(filas, columnas) {
         var filas = prompt("Ingrese el número de filas:", "3");
