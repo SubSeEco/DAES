@@ -4,6 +4,21 @@ Este archivo esta basado en el formato Keep a Changelog(https://keepachangelog.c
 
 Cambios realizados en la solución, tanto adherencias, como modificaciones y eliminaciones hechas durante el proceso de desarrollo del tramite N°2 Certificado de Disolucion
 
+## [2.5.7.3 DAES Completo] - 17-11-2023
+
+### Changed
+
+- Correciones en la generación de certificados.
+- Correccion al momento de guardar datos desde Editar Organizacion.
+- Correccion de modulos en vistas parciales de Editar Organizacion.
+- Se ordenaron modulos en el edit organizacion(BO):
+  - Saneamiento
+  - Existencias
+  - Disolución
+- Se reordeno la parte superior del documento(todos) ahora imagen, titulo y folio lo muestra en "cascada".
+- El saludo junto con el responsable(final del PDF) ya no se coloca sobre la firma y no se "corta" entre paginas.
+- Algunos de los campos que lo guardaba en "create" se solucionaron.
+
 ## [2.5.7.2 DAES Completo] - 15.11-2023
 
 ### Changed
