@@ -4,6 +4,21 @@ Este archivo esta basado en el formato Keep a Changelog(https://keepachangelog.c
 
 Cambios realizados en la solución, tanto adherencias, como modificaciones y eliminaciones hechas durante el proceso de desarrollo del tramite N°2 Certificado de Disolucion
 
+## [2.5.7 DAES Completo] - 06-11-2023
+
+### Changed
+
+- Se modificaron los metodos de Firma `Sign`, `SignREST` y `SignWSDL` ajustandolos a iText 4.1.6.
+
+### Deleted
+
+- Se elimino DAES.BLL y DAES.Infrastructure la libreria iText 5.5.13
+- Se elimino de ambos web.config la dependencia de publicKeyToken de iText 5.5.13
+
+### Added
+
+- Se agrego iTextSharp-LGPL 4.1.6
+
 ## [2.5.0.1 FrontOffice - 27-02-2023]
 
 ### Added
