@@ -26,6 +26,28 @@
         z-index: 10;
         box-shadow: 3px 2px 10px 1px #b0b0b0;
     }
+
+    .rich-text-content div {
+        margin-bottom: 10px;
+    }
+
+    .rich-text-content br {
+        display: block;
+        content: "";
+        margin-bottom: 10px;
+    }
+
+    .miTabla {
+        border-collapse: collapse;
+        width: 100%;
+        table-layout: fixed; /* Fija el ancho de la tabla */
+    }
+
+        .miTabla td {
+            border: 1px solid black;
+            width: 50px; /* Ancho fijo para las celdas */
+            white-space: nowrap; /* Evita que el contenido haga saltos de línea en las celdas */
+        }
 </style>
 
 <div class="panel panel-default">
@@ -42,8 +64,154 @@
             <button id="boldButton" class="btn btn-danger">Negrita</button>
             <button id="italicButton" class="btn btn-danger">Italic</button>
             <button id="subButton" class="btn btn-danger">Subrayar</button>
+            <!-- <button onclick="agregarTabla()">Agregar Tabla Personalizada</button> -->
 
             <table>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().NUMERO_REGISTRO, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="NUMERO_REGISTRO" name="NUMERO_REGISTRO" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                                {
+                                    var numeroRegistro = Model.Workflow.DocOficio.FirstOrDefault()?.NUMERO_REGISTRO;
+                                    @Html.Raw(numeroRegistro ?? string.Empty)
+                                }
+                                else
+                                {
+
+                                    @Html.Raw(string.Empty)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().ANTECEDENTES, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="ANTECEDENTES" name="ANTECEDENTES" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                                {
+                                    var ANTECEDENTES = Model.Workflow.DocOficio.FirstOrDefault()?.ANTECEDENTES;
+                                    @Html.Raw(ANTECEDENTES ?? string.Empty)
+                                }
+                                else
+                                {
+
+                                    @Html.Raw(string.Empty)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().MATERIA, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="MATERIA" name="MATERIA" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                                {
+                                    var MATERIA = Model.Workflow.DocOficio.FirstOrDefault()?.MATERIA;
+                                    @Html.Raw(MATERIA ?? string.Empty)
+                                }
+                                else
+                                {
+                                    @Html.Raw(string.Empty)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().DE_DOC, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="DE_DOC" name="DE_DOC" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                                {
+                                    var DE_DOC = Model.Workflow.DocOficio.FirstOrDefault()?.DE_DOC;
+                                    @Html.Raw(DE_DOC ?? string.Empty)
+                                }
+                                else
+                                {
+                                    @Html.Raw(string.Empty)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().A_DOC, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="A_DOC" name="A_DOC" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                                {
+                                    var A_DOC = Model.Workflow.DocOficio.FirstOrDefault()?.A_DOC;
+                                    @Html.Raw(A_DOC ?? string.Empty)
+                                }
+                                else
+                                {
+
+                                    @Html.Raw(string.Empty)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().DIRECCION, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="DIRECCION" name="DIRECCION" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                                {
+                                    var DIRECCION = Model.Workflow.DocOficio.FirstOrDefault()?.DIRECCION;
+                                    @Html.Raw(DIRECCION ?? string.Empty)
+                                }
+                                else
+                                {
+
+                                    @Html.Raw(string.Empty)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().CORREO, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="CORREO" name="CORREO" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                                {
+                                    var CORREO = Model.Workflow.DocOficio.FirstOrDefault()?.CORREO;
+                                    @Html.Raw(CORREO ?? string.Empty)
+                                }
+                                else
+                                {
+
+                                    @Html.Raw(string.Empty)
+                                }
+                            </div>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <td>
 
@@ -51,9 +219,15 @@
 
                         <div class="col-md-12">
                             <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable" contenteditable="true">
-                                @if (Model.Workflow.DocOficio.Any())
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
-                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo1)
+                                    var Parrafo1 = Model.Workflow.DocOficio.FirstOrDefault()?.Parrafo1;
+                                    @Html.Raw(Parrafo1 ?? string.Empty)
+                                }
+                                else
+                                {
+
+                                    @Html.Raw(string.Empty)
                                 }
                             </div>
                         </div>
@@ -64,10 +238,15 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo2, htmlAttributes: new { @class = "control-label col-md-6" })
                         <div class="col-md-12">
                             <div id="Parrafo2" class="form-control col-md-12 editable" contenteditable="true">
-
-                                @if (Model.Workflow.DocOficio.Any())
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
-                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Parrafo2)
+                                    var Parrafo2 = Model.Workflow.DocOficio.FirstOrDefault()?.Parrafo2;
+                                    @Html.Raw(Parrafo2 ?? string.Empty)
+                                }
+                                else
+                                {
+
+                                    @Html.Raw(string.Empty)
                                 }
                             </div>
                         </div>
@@ -75,12 +254,18 @@
                 </tr>
                 <tr>
                     <td>
-                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Tabla, htmlAttributes: new { @class = "control-label col-md-6" })
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo3, htmlAttributes: new { @class = "control-label col-md-6" })
                         <div class="col-md-12">
-                            <div id="Tabla" class="form-control col-md-12 editable" contenteditable="true">
-                                @if (Model.Workflow.DocOficio.Any())
+                            <div id="Parrafo3" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
-                                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla)
+                                    var Parrafo3 = Model.Workflow.DocOficio.FirstOrDefault()?.Parrafo3;
+                                    @Html.Raw(Parrafo3 ?? string.Empty)
+                                }
+                                else
+                                {
+
+                                    @Html.Raw(string.Empty)
                                 }
                             </div>
                         </div>
@@ -88,44 +273,49 @@
                 </tr>
                 <tr>
                     <td>
-                        <button id="btnCrearTabla" onclick="crearTabla()" class="btn btn-danger">Agregar Tabla</button>
-                        <button id="btnEliminarTabla" onclick="EliminarTabla()" class="btn btn-danger" style="display:none;">Eliminar Tabla</button>
-                        <div id="dimension">
-                            <input id="number" type="number" class="form-control" />X<input id="number2" type="number" class="form-control" />
-                        </div>
- 
-</td>
-                </tr>
-            </table>
 
-            <div id="DataBase" class="form-control col-md-12 editable" contenteditable="true" style="display: none">
-                @if (Model.Workflow.DocOficio.Any())
-                {
-                    @Html.Raw(Model.Workflow.DocOficio.FirstOrDefault().Tabla);
-                }
-            </div>
-            </div>
-            <table id="miTabla" style="width:50%;">
-                <tr>
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Tabla, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                        <div class="col-md-12">
+                            <div id="Tabla" name="Tabla" class="form-control col-md-12 editable" contenteditable="true">
+                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                                {
+                                    var Tabla = Model.Workflow.DocOficio.FirstOrDefault()?.Tabla;
+                                    @Html.Raw(Tabla ?? string.Empty)
+                                }
+                                else
+                                {
+
+                                    @Html.Raw(string.Empty)
+                                }
+                            </div>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </div>
-
         <div class="col-md-6">
 
-            @{
-               /* if (Model.Workflow.DocOficio.Any())
+            @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+            {
+                var firstDoc = Model.Workflow.DocOficio.FirstOrDefault();
+                if (firstDoc != null)
                 {
-                    Console.WriteLine("workflowid" + Model.Workflow.WorkflowId);
-                    <embed src="@Url.Action("ShowDoc", "Task", new { id = Model.Workflow.WorkflowId })" width="96%" height="990px" type="application/pdf" />
-
+                    <embed src="@Url.Action("ShowDoc", "Task", new { id = firstDoc.WorkFlowId })" width="96%" height="990px" type="application/pdf" />
                 }
-                <br />*/  
+                else
+                {
+                    @* No hay contenido para mostrar *@
+                }
             }
+            else
+            {
+                @* No hay contenido para mostrar *@
+            }
+            <br />
+
 
         </div>
-
-
         <div>
             <button id="GuardarDocOf" type="submit" class="btn btn-danger">Vista Previa</button>
         </div>
@@ -155,7 +345,8 @@
 
     $(document).ready(function () {
         console.log($('#prueba').val());
-        if ($(".editor-for-input").val() != null) {
+        if ($(".editor-for-input").val() != null)
+        {
             console.log("entre en el if ");
             var texto = $(".editor-for-input").val();
             $("#divEditable").html(texto);
@@ -230,13 +421,7 @@
             }
         };
 
-        $guardar.on('click', function () {
-            var div3 = document.getElementById("Parrafo1").innerHTML;
-            var div = document.getElementById("Parrafo2").innerHTML;
-            var div2 = document.getElementById("Tabla").innerHTML;
-            alert(div + "   " + div2 + " " + div3);
 
-        });
         $boldButton.on('click', function () {
             document.execCommand('bold', false, null); // negrita
             $boldButton.show();
@@ -260,50 +445,54 @@
         });
     });
 
-    $(document).ready(function () {
-        // Maneja el evento de cambio en el EditorFor para actualizar el div Parrafo1
-        $("#editorForParrafo1").on("change", function () {
-            var nuevoTexto = $(this).val();
-            $("#Parrafo1").html(nuevoTexto);
-        });
-
-        // Cuando la página se carga, copia el contenido inicial del EditorFor al div Parrafo1
-        var textoInicial = $("#editorForParrafo1").val();
-        $("#Parrafo1").html(textoInicial);
-    });
 
 
     $(document).ready(function () {
-        //var parrafo1 = document.getElementById("Parrafo1").innerHTML;
-        //var parrafo2 = document.getElementById("Parrafo2").innerHTML;
-        //var tabla = document.getElementById("Tabla").innerHTML;
-        //console.log("estoy arriba del ajax" + parrafo1 + " " + parrafo2 + "" + tabla);
-        //Model.Workflow.Parrafo1 = parrafo1;
-        //Model.Workflow.WorkflowId = workflowId;
-        var editorValue = document.getElementById("DataBase").innerHTML;
-        filas =""
-        matriz = []
-        if (editorValue != null)
-        {
-            $('#number').val(3)
-            $('#number2').val(3)
-            filas = editorValue.split(';');
-            matriz = []
-            ArmarDataTabla()
-            crearTabla()
-            
-        }
-        document.addEventListener("DOMContentLoaded", function () {
-            if (editorValue != null) {
-                for (var i = 0; i < 3; i++) {
-                    for (var j = 0; j < 3; j++) {
-                        console.log("Asignando valor a fila" + i + j);
-                        document.getElementById("#fila" + i + j).innerHTML = "hola";
-                    }
-                }
 
-            }
-        });
+        var Parrafo1 = document.getElementById("Parrafo1");
+        Parrafo1.focus();
+
+        var Parrafo2 = document.getElementById("Parrafo2");
+        Parrafo2.focus();
+
+        var Tabla = document.getElementById("Tabla");
+        Tabla.focus();
+
+        var range1 = document.createRange();
+        var range2 = document.createRange();
+        var range3 = document.createRange();
+
+        var selection = window.getSelection();
+
+        range1.selectNodeContents(Parrafo1);
+        range2.selectNodeContents(Parrafo2);
+        range3.selectNodeContents(Tabla);
+
+        range1.collapse(true);
+        range2.collapse(true);
+        range3.collapse(true);
+
+        selection.removeAllRanges();
+        selection.addRange(range1);
+        selection.addRange(range2);
+        selection.addRange(range3);
+
+        var contenido1 = Parrafo1.textContent;
+        contenido1 = contenido1.replace(/^\n+/, "");
+        Parrafo1.textContent = contenido1;
+
+
+        var contenido2 = Parrafo2.textContent;
+        contenido2 = contenido2.replace(/^\n+/, "");
+        Parrafo2.textContent = contenido2;
+
+        //var contenido3 = Tabla.textContent;
+        //contenido3 = contenido3.replace(/^\n+/, "");
+        //Tabla.textContent = contenido3;
+
+
+
+
         // Obtén la URL actual
         var url = window.location.href;
 
@@ -340,137 +529,144 @@
             console.log("URL no contiene parámetros.");
         }
 
-        $("#GuardarDocOf").click(function () {
-            console.log("estoy arriba del data ");
-            datoFinal =""
-            for (var i = 0; i < 3; i++)
-            {
-                for (var j = 0; j < 3; j++)
-                {
-                    if (i = 3 - 1) {
-                        if (j = 3 - 1) {
-                            datoFinal = datoFinal + matriz[i][j] + ""
-                        } else {
-                            datoFinal = datoFinal + matriz[i][j] + ";"
-                        }                        
-                    } else {
-                        datoFinal = datoFinal + matriz[i][j]+","
-                    }
-                    
-                }
-            }
-            console.log("dato final: " + datoFinal)
-            var data = {
-                //var valorDiv = $("#miDiv").text();
+            $("#GuardarDocOf").click(function () {
+                console.log("estoy arriba del data ");
+                console.log("numero" + NUMERO_REGISTRO + " antecedentes " + ANTECEDENTES);
+                console.log("procesoId " + @Model.Workflow.ProcesoId);
+                var tablaElement = document.getElementById("Tabla");
 
-                Parrafo1: document.getElementById("Parrafo1").innerHTML,
-                WorkflowId: workflowId,
-                Parrafo2: document.getElementById("Parrafo2").innerHTML,
-                DocOficioId: null,
-                Tabla: datoFinal,
-                Content: null,
-                FileName: null,
-                FechaCreacion: null
+                console.log("tabla" + tablaElement);
+                var texto = tablaElement.innerHTML;
+
+                //texto = texto.replace(/<[^>]*>/g, '');
+                //texto = texto.replace(/style="[^"]*"/g, '');
+                //var cart_div = document.getElementById("Tabla").innerHTML();
+                var div = document.createElement("div");
+
+                div.innerHTML = texto;
+                console.log("soy el div \n:" + div);
+                var prueba = convertToHTML(tablaElement);
+                var x = tablaElement.innerText;
+                var y = x.innerHTML;
 
 
-                //tabla: document.getElementById("Tabla").innerHTML
 
-            };
-            console.log("estoy arriba del ajax" + data.parrafo1 + " " + data.parrafo2 + "" + data.tabla);
+                var nuevoElemento = document.createElement("div");
+                nuevoElemento.innerText = tablaElement.innerText;
+                var contenidoHTML = nuevoElemento.innerHTML;
+
+                //console.log("este es el sin div pero con br \n:" + contenidoHTML);
+                // var contenidoEnriquecido = div.textContent;
+                console.log("este es el que tiene div  \n:" + texto);
+                //console.log("texto enriquecido" + contenidoEnriquecido);
+                texto = texto.replace(/^\n+/, ""); //quitar espacios al inicio
+                texto = texto.replace(/<\/b>\s*<div>/g, "</b><div>");// Reemplaza los saltos de línea entre </b> y <div> con una cadena vacía
+                texto = texto.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
+                texto = texto.replace(/\n+/g, ' ');  // Reemplaza múltiples saltos de línea con un espacio
+                texto = texto.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio
+
+                var mate = document.getElementById("MATERIA").innerHTML.trim();
+                mate = mate.replace(/^\n+/, ""); //quitar espacios al inicio
+                mate = mate.replace(/<\/b>\s*<div>/g, "</b><div>");// Reemplaza los saltos de línea entre </b> y <div> con una cadena vacía
+                mate = mate.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
+                mate = mate.replace(/\n+/g, ' ');  // Reemplaza múltiples saltos de línea con un espacio
+                mate = mate.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio
+
+                  var proce=@Model.Workflow.ProcesoId;
+                 var data = {
+                              //var valorDiv = $("#miDiv").text();
+
+
+                     ProcesoId: proce,
+                        NUMERO_REGISTRO: document.getElementById("NUMERO_REGISTRO").innerHTML.trim(),
+                     ANTECEDENTES: document.getElementById("ANTECEDENTES").innerHTML.trim(),
+                     MATERIA: mate, //document.getElementById("MATERIA").innerHTML.trim(),
+                        DE_DOC: document.getElementById("DE_DOC").innerHTML.trim(),
+                     A_DOC: document.getElementById("A_DOC").innerHTML.trim(),
+                     DIRECCION: document.getElementById("DIRECCION").innerHTML.trim(),
+                     CORREO: document.getElementById("CORREO").innerHTML.trim(),
+                        Parrafo1: document.getElementById("Parrafo1").innerHTML.trim(),
+                        WorkflowId: workflowId,
+                        Parrafo2: document.getElementById("Parrafo2").innerHTML.trim(),
+                        Parrafo3: document.getElementById("Parrafo3").innerHTML.trim(),
+                     DocOficioId: null,
+                     Tabla: texto,//contenidoHTML,//document.getElementById("Tabla").innerHTML,
+                        Content :null,
+                        FileName :null,
+                        FechaCreacion :null
+
+
+                            //tabla: document.getElementById("Tabla").innerHTML
+
+                };
             $.ajax({
                 type: "POST",
                 url: "/Task/GuardarDocOfi",
-                data: data,
+                data : data ,
                 success: function (result) {
                     $("#elemento").html(result);
                 }
             });
 
 
-        });
+            });
     });
 
-    function agregarFila(fila) {
-        fila++
-        var table = document.getElementById("miTabla");
-        var row = table.insertRow(-1); // Inserta una fila al final de la tabla
-        for (var i = 0; i < table.rows[0].cells.length; i++) {
-            var cell = row.insertCell(i); // Inserta una celda en la nueva fila
-            //var cellId = "celda" + (i + 1); // Genera un ID único para cada celda
-            var cellId = document.createElement("div");
-            cellId.classList.add("form-control", "col-md-12", "editable");
-            cellId.setAttribute("contenteditable", "true");
-            cellId.setAttribute("id", "fila" + fila + i); // Asigna un ID único a la celda
-            cellId.innerHTML = matriz[fila][i]
-            cell.appendChild(cellId); // Agrega el nodo de texto a la celda
-            row.appendChild(cell); // Agrega la celda a la fila
+    function convertToHTML(element) {
+        var container = document.createElement('div');
+        container.appendChild(element.cloneNode(true));
+        return container.innerHTML;
+    }
+    /*
+    function agregarTabla() {
+        // Solicitar al usuario las dimensiones de la tabla
+        var filas = prompt("Ingrese el número de filas:", "");
+        var columnas = prompt("Ingrese el número de columnas:", "");
+
+        // Validar las entradas del usuario
+        if (isNaN(filas) || isNaN(columnas) || filas <= 0 || columnas <= 0) {
+            alert("Por favor, ingrese números válidos y mayores que cero.");
+            return;
         }
-    }
 
-    function ArmarDataTabla()
-    {
-        for (var i = 0; i < filas.length; i++) {
-            var elementos = filas[i].split(',');
-            matriz.push(elementos);
-        }
-        console.log(matriz);
-    }
-    //
-    function agregarColumna(columna) {
-        var table = document.getElementById("miTabla");
-        var row = table.rows[0]; // Obtén la primera fila de la tabla (puedes ajustar esto según tus necesidades)
+        // Crear una tabla dinámica con la clase "miTabla"
+        var nuevaTabla = '<br/><table class="miTabla">';
 
-        var cell = document.createElement("td"); // Crea una nueva celda
-        //var cellText = document.createTextNode("Nuevo Contenido"); // Crea un nodo de texto para el contenido de la celda
-        var cellText = document.createElement("div");
-        cellText.classList.add("form-control", "col-md-12", "editable");
-        cellText.setAttribute("contenteditable", "true");
-        cellText.setAttribute("id", "fila0" + columna); // Asigna un ID único a la celda
-        cellText.innerHTML = matriz[0][columna]
-        cell.appendChild(cellText); // Agrega el nodo de texto a la celda
-        row.appendChild(cell); // Agrega la celda a la fila
-    }
-
-    function crearTabla() {
-
-            var x = $('#number').val();
-        var y = $('#number2').val();
-        if (x > 0 && y > 0) {
-            var table = document.getElementById("miTabla");
-            table.insertRow(0);
-            for (var i = 0; i < x; i++) {
-                agregarColumna(i)
+        for (var i = 0; i < filas; i++) {
+            nuevaTabla += '<tr>';
+            for (var j = 0; j < columnas; j++) {
+                nuevaTabla += '<td>&nbsp;</td>'; // Añade un espacio en blanco a cada celda
             }
-            for (var i = 0; i < y - 1; i++) {
-                agregarFila(i)
-            }
-            $("#btnCrearTabla").hide();
-            $("#btnEliminarTabla").show();
-            $("#dimension").hide();
-        } else {
-            alert("fila y columna debe ser mayor a 0.");
+            nuevaTabla += '</tr>';
         }
 
-    }
+        nuevaTabla += '</table>';
 
-    function EliminarTabla() {
-        var respuesta = confirm("¿Quieres continuar?");
+        // Agregar la nueva tabla al contenido del div editable
+        document.getElementById('Tabla').innerHTML += nuevaTabla;
+    }*/
+    /*
+    function agregarTabla(filas, columnas) {
+        var filas = prompt("Ingrese el número de filas:", "3");
+        var columnas = prompt("Ingrese el número de columnas:", "4");
 
-        if (respuesta == true) {
-            var table = document.getElementById("miTabla");
-            var rows = table.getElementsByTagName("tr");
-            for (var i = rows.length - 1; i >= 0; i--) {
-                var row = rows[i];
-                row.parentNode.removeChild(row);
+        // Crear una tabla dinámica con la clase "miTabla"
+        var nuevaTabla = '<br/><table class="miTabla">';
+
+        for (var i = 0; i < filas; i++) {
+            nuevaTabla += '<tr>';
+            for (var j = 0; j < columnas; j++) {
+                nuevaTabla += '<td>&nbsp;</td>'; // Añade un espacio en blanco a cada celda
             }
-            $("#btnEliminarTabla").hide();
-            $("#btnCrearTabla").show();
-            $("#dimension").show();
+            nuevaTabla += '</tr>';
         }
 
-    }
+        nuevaTabla += '</table>';
+
+        // Agregar la nueva tabla al contenido del div editable
+        document.getElementById('Tabla').innerHTML += nuevaTabla;
+    }*/
 </script>
 
 
-
-
+<!--FIN-->

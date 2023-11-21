@@ -44,5 +44,14 @@ namespace DAES.Model.SistemaIntegrado
         public int x { get; set; }
         [NotMapped]
         public int y { get; set; }
+        public string NUMERO_REGISTRO { get; set; }
+        public string DIRECCION { get; set; }
+        public int ProcesoId { get; set; }
+        public string ANTECEDENTES { get; set; }
+        public string MATERIA { get; set; }
+        public string A_DOC { get; set; }
+        public string CORREO { get; set; }
+        public string Parrafo3 { get; set; }
+        public string DE_DOC { get; set; }
     }
 }
