@@ -1056,7 +1056,7 @@ namespace DAES.BLL
 
             //NEW
             doc.Open();
-            doc.AddTitle(docofi.Parrafo1);
+            doc.AddTitle(docofi.FileName);
 
             var centrar = Element.ALIGN_CENTER;
             Paragraph paragraphTITULO = new Paragraph(docofi.Parrafo1, _fontTitulo);
@@ -1123,13 +1123,12 @@ namespace DAES.BLL
 
 
             //agregar Registro --Anntecedentes -- materia 
-            PdfPTable tableEncabezadoUno = new PdfPTable(3);
+            PdfPTable tableEncabezadoUno = new PdfPTable(2);
             tableEncabezadoUno.WidthPercentage = 100f;
             tableEncabezadoUno.DefaultCell.Border = Rectangle.NO_BORDER;
             tableEncabezadoUno.DefaultCell.Border = 0;
             
             tableEncabezadoUno.AddCell(new PdfPCell()); // Primera posición vacía.
-            tableEncabezadoUno.AddCell(new PdfPCell()); // Segunda posición vacía.
 
             //Registro 
             string ord = "ORD.: N°";

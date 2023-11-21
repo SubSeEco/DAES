@@ -197,12 +197,15 @@ namespace DAES.Web.BackOffice.Controllers
             model.Workflow = workflow;
             model.Documentos = db.Documento.Where(q => q.Workflow.ProcesoId == model.Workflow.ProcesoId).OrderBy(q => q.FechaCreacion).ToList();
 
-            //INI
+            
             //prueba veremos que pasa 
-
-            var documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
-            model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
+            if (db.DocOficios.Where(q => q.WorkFlowId == WorkflowId).Any() == false)
+            {
+                var documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
+                model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
+            }
             //FIN
+            
 
 
             var tipoDeUsuario = Helper.Helper.CurrentUser.Perfil.Nombre;
@@ -1732,7 +1735,7 @@ namespace DAES.Web.BackOffice.Controllers
                     Parrafo2 = ofi.Parrafo2,
                     Parrafo3 = ofi.Parrafo3,
                     Tabla = ofi.Tabla,
-                    FileName = "DocumentoCreado" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
+                    FileName = "DocumentoCreadoTask_"+ WorkflowId + "_" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
 
                 };
                 db.DocOficios.Add(nuevoregistro);
@@ -1757,6 +1760,7 @@ namespace DAES.Web.BackOffice.Controllers
 
             if (model != null)
             {
+
                 return File(model.Content, "application/pdf");
 
 
