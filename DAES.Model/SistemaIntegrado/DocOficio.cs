@@ -70,7 +70,7 @@ namespace DAES.Model.SistemaIntegrado
         public string Tabla { get; set; }
 
         public byte[] Content { get; set; }
-
+        [Display(Name = "Nombre del Archivo")]
         public string FileName { get; set; }
 
         [Display(Name = "Fecha")]
