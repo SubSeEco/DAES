@@ -150,8 +150,32 @@ namespace DAES.Model.SistemaIntegrado
         [NotMapped]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime? FechaDisPost { get; set; }       
+        public DateTime? FechaDisPost { get; set; }
+        [NotMapped]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaInicioAnterior { get; set; }
+        [NotMapped]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaInicioPosterior { get; set; }
+        [NotMapped]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaTerminoAnterior { get; set; }
+        [NotMapped]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaTerminoPosterior { get; set; }
 
+        [NotMapped]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaComisionAnterior { get; set; }
+        [NotMapped]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? FechaComisionPosterior { get; set; }
         public virtual List<ComisionLiquidadora> ComisionLiquidadoras { get; set; }
 
 

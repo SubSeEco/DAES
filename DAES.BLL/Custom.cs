@@ -30,6 +30,8 @@ using System.Windows.Input;
 using OfficeOpenXml.Style;
 using Org.BouncyCastle.Asn1.X500;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using iTextSharp.text.html.simpleparser;
+using System.Text.RegularExpressions;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -964,10 +966,47 @@ namespace DAES.BLL
 
                         disolucion.FechaComiLiquiJuntaSocios = item.FechaComiLiquiJuntaSocios;
 
-                        disolucion.FechaInicio = item.FechaInicio;
+                        //disolucion.FechaInicio = item.FechaInicio;
 
-                        disolucion.FechaTermino = item.FechaTermino;
+                        //disolucion.FechaTermino = item.FechaTermino;
+                        if (item.FechaComisionAnterior != null)
+                        {
+                            disolucion.FechaComiLiquiJuntaSocios = item.FechaComisionAnterior;
+                        }
+                        else if (item.FechaComisionPosterior != null)
+                        {
+                            disolucion.FechaComiLiquiJuntaSocios = item.FechaComisionPosterior;
+                        }
+                        else
+                        {
+                            disolucion.FechaComiLiquiJuntaSocios = item.FechaComiLiquiJuntaSocios;
+                        }
 
+                        if (item.FechaInicioAnterior != null)
+                        {
+                            disolucion.FechaInicio = item.FechaInicioAnterior;
+                        }
+                        else if (item.FechaInicioPosterior != null)
+                        {
+                            disolucion.FechaInicio = item.FechaInicioPosterior;
+                        }
+                        else
+                        {
+                            disolucion.FechaInicio = item.FechaInicio;
+                        }
+
+                        if (item.FechaTerminoAnterior != null)
+                        {
+                            disolucion.FechaTermino = item.FechaTerminoAnterior;
+                        }
+                        else if (item.FechaTerminoPosterior != null)
+                        {
+                            disolucion.FechaTermino = item.FechaTerminoPosterior;
+                        }
+                        else
+                        {
+                            disolucion.FechaTermino = item.FechaTermino;
+                        }
                         foreach (var help in comisionLiquidadoras)
                         {
                             var comisionLiqui = context.ComisionLiquidadora.Where(q => q.ComisionLiquidadoraId == help.ComisionLiquidadoraId);
@@ -1046,15 +1085,18 @@ namespace DAES.BLL
         }
 
 
+        //TODO: Se crea nuevo metodo para documento configuracion
+        //ALEX
         public byte[] CrearDocumentoConfOficio(DocOficio docofi)
         {
-            #region Configurar PreDocumento
+
             EventoTitulos ev = new EventoTitulos();
             Font _fontTitulo = new Font(Font.HELVETICA, 18, Font.BOLD, Color.DARK_GRAY);
             Font _fontNumero = new Font(Font.HELVETICA, 20, Font.BOLD, Color.DARK_GRAY);
             Font _fontFirmante = new Font(Font.HELVETICA, 12, Font.BOLD, Color.DARK_GRAY);
             Font _fontStandard = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.DARK_GRAY);
             Font _fontStandardBold = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
+            Font _fontNegrita = new Font(Font.HELVETICA, 10, Font.BOLD);
 
             MemoryStream memStream = new MemoryStream();
             Document doc = new Document(PageSize.LEGAL);
@@ -1062,9 +1104,17 @@ namespace DAES.BLL
             write.PageEvent = ev;
             Chunk SaltoLinea = Chunk.NEWLINE;
 
+            var MIRAR = docofi.Parrafo1;
+            var MIRAR2 = docofi.Parrafo2;
+            var mirar3 = docofi.Tabla;
+
+            // Contenido HTML con formato enriquecido
+
+
+
             //NEW
             doc.Open();
-            doc.AddTitle(docofi.Parrafo1);
+            doc.AddTitle(docofi.FileName);
 
             var centrar = Element.ALIGN_CENTER;
             Paragraph paragraphTITULO = new Paragraph(docofi.Parrafo1, _fontTitulo);
@@ -1124,45 +1174,245 @@ namespace DAES.BLL
             cell.Border = Rectangle.NO_BORDER;
             tableHeader.AddCell(cell);
 
+
+            StyleSheet styles = new StyleSheet();
+            styles.LoadTagStyle("b", "font", "Arial");
+            styles.LoadTagStyle("i", "font", "Arial");
+
+
+            //agregar Registro --Anntecedentes -- materia 
+            PdfPTable tableEncabezadoUno = new PdfPTable(2);
+            tableEncabezadoUno.WidthPercentage = 100f;
+            tableEncabezadoUno.DefaultCell.Border = Rectangle.NO_BORDER;
+            tableEncabezadoUno.DefaultCell.Border = 0;
+
+            tableEncabezadoUno.AddCell(new PdfPCell()); // Primera posición vacía.
+
+            //Registro 
+            string ord = "ORD.: N°";
+            var paragrafR = new Paragraph(ord, _fontNegrita);
+            var paraNumeroOrden = new Paragraph(docofi.NUMERO_REGISTRO, _fontStandard);
+            paragrafR.AddRange(paraNumeroOrden);
+            paragrafR.Alignment = Element.ALIGN_RIGHT;
+            //Antecedentes
+            string ANT = "ANT.: ";
+            var paragrafAnt = new Paragraph(ANT, _fontNegrita);
+            var paragrafAntP = new Paragraph(docofi.ANTECEDENTES, _fontStandard);
+            paragrafAnt.AddRange(paragrafAntP);
+            paragrafAnt.Alignment = Element.ALIGN_RIGHT;
+
+            string MAT = "MAT.: ";
+            var paragrafMat = new Paragraph(MAT, _fontNegrita);
+            var paragrafMATP = new Paragraph(docofi.MATERIA, _fontStandard);
+            paragrafMat.AddRange(paragrafMATP);
+            paragrafMat.Alignment = Element.ALIGN_RIGHT;
+
+
+
+
+            string reg = paragrafR.Content;
+            reg = EliminarDivYBr(reg);
+
+            string ante = paragrafAnt.Content;
+            ante = EliminarDivYBr(ante);
+
+            string mat = paragrafMat.Content;
+            mat = EliminarDivYBr(mat);
+
+
+            PdfPCell cell3 = new PdfPCell();
+            //List<IElement> htmlE = HTMLWorker.ParseToList(new StringReader(reg), styles);
+            List<IElement> htmlE = HTMLWorker.ParseToList(new StringReader(reg), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlE)
+            {
+                var mirarmirar = reg;
+                cell3.AddElement(element);
+            }
+
+            //List<IElement> htmlEl = HTMLWorker.ParseToList(new StringReader(ante), styles);
+            List<IElement> htmlEl = HTMLWorker.ParseToList(new StringReader(ante), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlEl)
+            {
+                var mirarmirar = ante;
+                cell3.AddElement(element);
+            }
+
+            //List<IElement> htmlElem = HTMLWorker.ParseToList(new StringReader(mat), styles);
+            List<IElement> htmlElem = HTMLWorker.ParseToList(new StringReader(mat), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlElem)
+            {
+                var mirarmirar = mat;
+                cell3.AddElement(element);
+            }
+
+
+            cell3.HorizontalAlignment = Element.ALIGN_RIGHT;
+            cell3.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cell3.BorderWidth = 0;
+            cell3.PaddingTop = 20;
+            cell.Border = Rectangle.NO_BORDER;
+
+            tableEncabezadoUno.AddCell(cell3);
+
+            // var paragrafAnt = new Paragraph((string.Format("ANT.: "), _fontNegrita) + docofi.Parrafo1, _fontStandard);
+            //paragrafAnt.Alignment = Element.ALIGN_RIGHT;
+            //Materia
+            //var paragrafMAT = new Paragraph((string.Format("MAT.: N°"), _fontNegrita) + docofi.Parrafo1, _fontStandard);
+            //paragrafMAT.Alignment = Element.ALIGN_RIGHT;
+
             doc.Add(tableHeader);
             doc.Add(SaltoLinea);
-            doc.Add(new Paragraph());
-
-            /*
-            ////Configuracion - Parrafos / Se deben agregar todos los parrafos aqui
-            string parrafo_1 = string.Format(docofi.Parrafo1 != null ? docofi.Parrafo1 : string.Empty);
-            string parrafo_2 = string.Format(docofi.Parrafo2 != null ? docofi.Parrafo2 : string.Empty);
-            string parrafo_3 = string.Format(docofi.Tabla != null ? docofi.Tabla : string.Empty);
-
-            //para cuando se necesite con color
-            string parrafo_fin = "Se hace presente que no se registra en nuestros archivos la cancelación de la personalidad jurídica de dicha Cooperativa."
-                             + "\n" + "\n" + "Saluda atentamente a ustedes";
-
-            //para cuando se necesite sin color
-            string parrafo_final = "Saluda atentamente a ustedes.";
-            
-
-           
-            Paragraph paragraphUNO = new Paragraph(parrafo_1, _fontStandard);
-            paragraphUNO.Alignment = Element.ALIGN_JUSTIFIED;
-
-            Paragraph paragraphDOS = new Paragraph(parrafo_2, _fontStandard);
-            paragraphDOS.Alignment = Element.ALIGN_JUSTIFIED;
-
-            Paragraph paragraphTabla = new Paragraph(parrafo_3, _fontStandard);
-            paragraphTabla.Alignment = Element.ALIGN_JUSTIFIED;
-
-
-
-            doc.Add(paragraphUNO);
+            doc.Add(tableEncabezadoUno);
             doc.Add(SaltoLinea);
-            doc.Add(paragraphDOS);
+
+            //aqui esta DE - A - Direccion - Correo 
+            PdfPTable tablaDeA = new PdfPTable(1);
+            tablaDeA.WidthPercentage = 100f;
+            tablaDeA.DefaultCell.Border = Rectangle.NO_BORDER;
+            tablaDeA.DefaultCell.Border = 0;
+            //DE
+            string DE_DOC = "DE: ";
+            var paragrafDEDOC = new Paragraph(DE_DOC, _fontNegrita);
+            var paraDEDOC = new Paragraph(docofi.DE_DOC, _fontStandard);
+            paragrafDEDOC.AddRange(paraDEDOC);
+            paragrafDEDOC.Alignment = Element.ALIGN_RIGHT;
+            string DEDO = paragrafDEDOC.Content;
+            DEDO = EliminarDivYBr(DEDO);
+
+
+            //A
+            string A_DOC = "A: ";
+            var paragrafA_DOC = new Paragraph(A_DOC, _fontNegrita);
+            var paraA_DOC = new Paragraph(docofi.A_DOC, _fontStandard);
+            paragrafA_DOC.AddRange(paraA_DOC);
+            paragrafA_DOC.Alignment = Element.ALIGN_RIGHT;
+            string ADO = paragrafA_DOC.Content;
+            ADO = EliminarDivYBr(ADO);
+
+            //Direccion
+            var parrafoDireccion = new Paragraph(docofi.DIRECCION, _fontStandard);
+            parrafoDireccion.Alignment = Element.ALIGN_LEFT;
+            string parrafoDireccionFOR = parrafoDireccion.Content;
+            parrafoDireccionFOR = EliminarDivYBr(parrafoDireccionFOR);
+            //Correo
+            var parrafoCorreo = new Paragraph(docofi.CORREO, _fontStandard);
+            parrafoCorreo.Alignment = Element.ALIGN_LEFT;
+            string parrafoCorreoFor = parrafoCorreo.Content;
+            parrafoCorreoFor = EliminarDivYBr(parrafoCorreoFor);
+
+            PdfPCell cellDE = new PdfPCell();
+            //List<IElement> htmlElementoDE = HTMLWorker.ParseToList(new StringReader(DEDO), styles);
+            List<IElement> htmlElementoDE = HTMLWorker.ParseToList(new StringReader(DEDO), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlElementoDE)
+            {
+                var mirarmirar = DEDO;
+                cellDE.AddElement(element);
+            }
+
+            PdfPCell cellA = new PdfPCell();
+            //List<IElement> htmlElementoA = HTMLWorker.ParseToList(new StringReader(ADO), styles);
+            List<IElement> htmlElementoA = HTMLWorker.ParseToList(new StringReader(ADO), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlElementoA)
+            {
+                var mirarmirar = ADO;
+                cellA.AddElement(element);
+            }
+            //List<IElement> htmlElementoD = HTMLWorker.ParseToList(new StringReader(parrafoDireccionFOR), styles);
+            List<IElement> htmlElementoD = HTMLWorker.ParseToList(new StringReader(parrafoDireccionFOR), styles)
+            .OfType<IElement>()
+            .ToList();
+
+            foreach (var element in htmlElementoD)
+            {
+                var mirarmirar = parrafoDireccionFOR;
+                cellA.AddElement(element);
+            }
+            //List<IElement> htmlElementoC = HTMLWorker.ParseToList(new StringReader(parrafoCorreoFor), styles);
+            List<IElement> htmlElementoC = HTMLWorker.ParseToList(new StringReader(parrafoCorreoFor), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlElementoC)
+            {
+                var mirarmirar = parrafoCorreoFor;
+                cellA.AddElement(element);
+            }
+
+
+
+            tablaDeA.AddCell(cellDE);
+            tablaDeA.AddCell(cellA);
+
+
+            doc.Add(tablaDeA);
             doc.Add(SaltoLinea);
-            doc.Add(paragraphTabla);
-            doc.Add(SaltoLinea);*/
+            var tablitaparrafo = new Paragraph(docofi.Tabla, _fontStandard);
+            tablitaparrafo.Alignment = Element.ALIGN_LEFT;
+            string tablitapar = tablitaparrafo.Content;
+            tablitapar = EliminarDivYBr(tablitapar);
+            //List<IElement> htmlEle = HTMLWorker.ParseToList(new StringReader(tablitapar), styles);
+            List<IElement> htmlEle = HTMLWorker.ParseToList(new StringReader(tablitapar), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlEle)
+            {
+                var mirarmirar = tablitapar;
+                doc.Add(element);
+            }
+            //PdfPCell cell2 = new PdfPCell();
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //cell2.Border = Rectangle.RECTANGLE;
+            //tableEncabezadoUno.AddCell(cell2);
+
+            //string contenidoHTML = "<b>Estoy en negrita</b> y <i>yo en cursiva</i> <br> <div> hola mundo </div>";
+
+            //contenidoHTML = EliminarDivYBr(contenidoHTML);
+
+            // Parsear el HTML y convertirlo a PDF con formato enriquecido
+            // Estilo del HTML
+
+
+
+
+
+
+
+            //doc.Add(paragrafR);
+            //doc.Add(SaltoLinea);
+            //doc.Add(paragrafAnt);
+            // Parsear el HTML y convertirlo a PDF con formato enriquecido
+            /*List<IElement> htmlElements = HTMLWorker.ParseToList(new StringReader(contenidoHTML), styles);
+            foreach (var element in htmlElements)
+            {
+                var mirarmirar = contenidoHTML;
+                doc.Add(element);
+            }*/
+
             doc.Close();
-            #endregion
             return memStream.ToArray();
+        }
+
+        public string EliminarDivYBr(string html)
+        {
+            html = Regex.Replace(html, "<div.*?>", "<br />");
+            html = html.Replace("</div>", "");
+            html = html.Replace("<br>", "<br />");
+            return html;
         }
         //TODO: Se crea nuevo metodo para documento configuracion
         public byte[] CrearDocumentoConfiguracion(ConfiguracionCertificado configuracioncertificado)
