@@ -1562,7 +1562,6 @@ namespace DAES.BLL
                             }
                         }
 
-                        var docto = hsms.Sign(documento.File, idsFirma, documento.DocOficioId, documento.Folio, url_tramites_en_linea.Valor, qr);
                         var docto = hsms.SignOficio(documento.File, idsFirma, documento.WorkFlowId, documento.Folio, url_tramites_en_linea.Valor, qr);
                         documento.Content = docto;
                         //documento.Signed = true;
