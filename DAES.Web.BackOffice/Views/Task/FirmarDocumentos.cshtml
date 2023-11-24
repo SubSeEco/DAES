@@ -21,6 +21,7 @@
         bottom: 50%;
         background-color: darkcyan;
     }
+
     .btnNext {
         display: inline-block;
         border: 1px solid #444348;
@@ -70,8 +71,8 @@
         <p class="text-danger">
             Recuerde que solo se pueden firmar documentos en formato pdf
         </p>
-
-        @if (!Model.Documentos.Any())
+        <!-- Se agrega la validacion para considerar los dos flujos De Documentos y DocOficio-->
+        @if (!Model.Documentos.Any() && !Model.Workflow.DocOficio.Any())
         {
             <p>No existen documentos disponibles para firmar</p>
         }
@@ -107,15 +108,101 @@
                         </th>
                     </tr>
                 </thead>
+
+                <!-- aqui voy yo -->
+
+                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                {
+                    <tbody>
+                        @for (int i = 0; i < Model.Workflow.DocOficio.Count(); i++)
+                        {
+                            @*using (Html.BeginForm())
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("WorkflowId", Model.Documentos.ToArray()[i].WorkflowId)
+                                @Html.Hidden("DocumentoId", Model.Documentos.ToArray()[i].DocumentoId)
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(model => Model.Workflow.DocOficio.ToArray()[i].DocOficioId)
+                                </td>
+                                <td>
+                                    @if (Model.Workflow.DocOficio.ToArray()[i].Content != null && !string.IsNullOrWhiteSpace(Model.Workflow.DocOficio.ToArray()[i].FileName))
+                                    {
+                                        @Html.ActionLink(Model.Workflow.DocOficio.ToArray()[i].FileName, "Download", "Task", new { id = Model.Workflow.DocOficio.ToArray()[i].WorkFlowId }, null)
+                                    }
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(model => Model.Workflow.DocOficio.ToArray()[i].FechaCreacion)
+                                </td>
+                                <td>
+                                    Oficio
+                                </td>
+                                <td>
+                                    firma
+                                </td>
+                                <td>
+                                    Descripcion
+                                </td>
+                                <td>
+                                    @*<input type="submit" value="Firmar documento" class="btn btn-primary" />*@
+                                    @*@Html.ActionLink("Firmar documento", "FirmarDocumentosPost", null, new { id = Model.Documentos.ToArray()[i].DocumentoId }, new { @class = "btn btn-primary" })*@
+                                    @using (Html.BeginForm("SignResolucionOficio", "Task", new { id = Model.Workflow.DocOficio.ToArray()[i].WorkFlowId, idProceso = Model.Workflow.DocOficio.ToArray()[i].ProcesoId, idWorkflow = ViewBag.WorkflowId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        @*@Html.DropDownList("RubricaID", null, "Seleccione...", new { @class = "form-control" })*@
+                                        @Html.AntiForgeryToken()
+                                        @Html.HiddenFor(model => Model.ProcesoId)
+                                        <br /> <br />
+
+                                        if (Model.Workflow.DocOficio[i].FileName != null)
+                                        {
+                                            if (Model.Workflow.DocOficio[i].FileName.Contains(".pdf"))
+                                            {
+                                                <button class="btn btn-primary" type="submit" id="btn_firmar">Firmar Documento</button>
+
+                                            }
+                                        }
+
+
+                                    }
+
+
+                                </td>
+
+                                <td style="width:500px">
+
+                                    @if (Model.Workflow.DocOficio[i].Content != null)
+                                    {
+                                        if (Model.Workflow.DocOficio[i].FileName != null)
+                                        {
+                                            if (Model.Workflow.DocOficio[i].FileName.Contains(".pdf"))
+                                            {
+                                                var mirar = Model.Workflow.DocOficio[i].DocOficioId;
+                                                var mirar2 = Model.Workflow.DocOficio[i];
+                                                <embed src="@Url.Action("ShowDoc", "Task", new { id = Model.Workflow.DocOficio[i].WorkFlowId })" width="100%" height="300" type="application/pdf" />
+
+                                            }
+                                        }
+
+                                    }
+
+                                </td>
+
+                            </tr>
+                            @*}*@
+                        }
+                    </tbody>
+                }
                 <tbody>
                     @for (int i = 0; i < Model.Documentos.Count(); i++)
                     {
                         @*using (Html.BeginForm())
-            {
-                @Html.AntiForgeryToken()
-                @Html.Hidden("WorkflowId", Model.Documentos.ToArray()[i].WorkflowId)
-                @Html.Hidden("DocumentoId", Model.Documentos.ToArray()[i].DocumentoId)
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("WorkflowId", Model.Documentos.ToArray()[i].WorkflowId)
+                            @Html.Hidden("DocumentoId", Model.Documentos.ToArray()[i].DocumentoId)
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
                         <tr>
                             <td>
                                 @Html.DisplayFor(model => Model.Documentos.ToArray()[i].DocumentoId)
@@ -184,7 +271,7 @@
                         </tr>
                         @*}*@
                     }
-                    
+
                 </tbody>
             </table>
         }
