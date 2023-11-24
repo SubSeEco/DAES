@@ -244,31 +244,107 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
 
                             </dl>
                             @*@{
-                                    //si la tarea no tiene aprobacion (tipo de aprobacion = 1)
-                                    if (workflow.TipoAprobacionId == 1)
-                                    {
-                                        //Aca van las opciones solicitadas (Detalles | Editar | Terminar) de WorkFlow
-                                        <p>
-                                            <a href="/Workflow/Details?id=@workflow.WorkflowId">Detalles</a> |
-                                            <a href="/Workflow/Edit?id=@workflow.WorkflowId">Editar</a> |
-                                            <a href="/Workflow/Stop?id=@workflow.WorkflowId">Terminar</a>
-                                        </p>
+            //si la tarea no tiene aprobacion (tipo de aprobacion = 1)
+            if (workflow.TipoAprobacionId == 1)
+            {
+                //Aca van las opciones solicitadas (Detalles | Editar | Terminar) de WorkFlow
+                <p>
+                    <a href="/Workflow/Details?id=@workflow.WorkflowId">Detalles</a> |
+                    <a href="/Workflow/Edit?id=@workflow.WorkflowId">Editar</a> |
+                    <a href="/Workflow/Stop?id=@workflow.WorkflowId">Terminar</a>
+                </p>
+            }
+            else
+            {
+                <p>
+                    <a href="/Workflow/Details?id=@workflow.WorkflowId" class="disabled">Detalles</a> |
+                    <a href="/Workflow/Edit?id=@workflow.WorkflowId" class="disabled">Editar</a> |
+                    <a href="/Workflow/Stop?id=@workflow.WorkflowId" class="disabled">Terminar</a>
+                </p>
+            }
+        }*@
+                            @if (workflow.DocOficio != null && workflow.DocOficio.Any())
+                            {
+                                var firstDoc = workflow.DocOficio.FirstOrDefault();
+                                Console.WriteLine("workflow" + workflow.DocOficio);
+                                if (firstDoc != null && firstDoc.WorkFlowId != null)
+                                {
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">Oficio Formulario Online</div>
+                                        <div class="panel-body">
+                                            <table class="table table-hover table-striped datatable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Archivo</th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => workflow.DocOficio.FirstOrDefault().FechaCreacion)
+                                                        </th>
+                                                        <th>
+                                                            Autor
+                                                        </th>
+                                                        <th>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    @foreach (var item in workflow.DocOficio)
+                                                    {
+                                                    <td>
+                                                        @Html.DisplayFor(model => item.FileName)
+                                                    </td>
+                                                    <td>
+                                                        @if (item != null && item.FechaCreacion != null)
+                                                        {
+                                                            string.Format("{0:dd-MM-yyyy HH:mm:ss}", item.FechaCreacion);
+                                                        }
+                                                        else
+                                                        {
+
+                                                        }
+
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(model => workflow.User.UserName)
+                                                    </td>
+                                                    <td>
+                                                        @if (item != null && item.WorkFlowId == workflow.WorkflowId)
+                                                        {
+                                                            //var firstDoc = workflow.DocOficio.FirstOrDefault();
+                                                            //Console.WriteLine("first doc " + firstDoc.WorkFlowId);
+                                                            //Console.WriteLine("URL: " + Url.Action("ShowDoc", "Task", new { id = firstDoc.WorkFlowId }));
+                                                            if (item.Content != null) //firstDoc != null ||
+                                                            {
+
+
+                                                                <embed src="@Url.Action("ShowDoc", "Task", new { id = item.WorkFlowId })" width="100%" height="300" type="application/pdf" />
+
+                                                            }
+                                                            else
+                                                            {
+                                                                @* No hay contenido para mostrar *@
+                                                            }
+
+
+                                                        }
+                                                    </td>
+                                                }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     }
                                     else
                                     {
-                                        <p>
-                                            <a href="/Workflow/Details?id=@workflow.WorkflowId" class="disabled">Detalles</a> |
-                                            <a href="/Workflow/Edit?id=@workflow.WorkflowId" class="disabled">Editar</a> |
-                                            <a href="/Workflow/Stop?id=@workflow.WorkflowId" class="disabled">Terminar</a>
-                                        </p>
+                                        <!-- Manejar el caso cuando firstDoc o firstDoc.WorkFlowId es null -->
                                     }
-                                }*@
-                           
-                            @if (workflow.Documentos.Any(q=>q.Activo == true))
+
+                                }
+                            @if (workflow.Documentos.Any(q => q.Activo == true))
                             {
                                 <hr />
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Documentos de la tarea</div>
+                                    <div class="panel-heading">Documentos de la  tarea Adjuntos</div>
                                     <div class="panel-body">
                                         @ViewBag.persona
                                         <table class="table table-hover table-striped datatable">
@@ -306,18 +382,18 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
                                                                 {
                                                                     //si el perfil esta dentro de los roles
                                                                     @*if (ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.Admininstrador ||
-                                                                            ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.Jefatura ||
-                                                                            ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.AreaContable ||
-                                                                            ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.AreaLegal ||
-                                                                            ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.AreaRegistro ||
-                                                                            ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.Secretaria)
-                                                                        {
-                                                                            @Html.ActionLink(item.FileName, "Download", "Documento", new { id = item.DocumentoId }, null)
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            @Html.DisplayFor(model => item.FileName)
-                                                                        }*@
+                                                    ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.Jefatura ||
+                                                    ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.AreaContable ||
+                                                    ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.AreaLegal ||
+                                                    ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.AreaRegistro ||
+                                                    ViewBag.persona == (int)DAES.Infrastructure.Enum.Perfil.Secretaria)
+                                                {
+                                                    @Html.ActionLink(item.FileName, "Download", "Documento", new { id = item.DocumentoId }, null)
+                                                }
+                                                else
+                                                {
+                                                    @Html.DisplayFor(model => item.FileName)
+                                                }*@
                                                                     if (!string.IsNullOrWhiteSpace(item.FileName))
                                                                     {
                                                                         @Html.ActionLink(item.FileName, "Download", "Documento", new { id = item.DocumentoId }, null)
@@ -331,13 +407,13 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
 
                                                             @*Se deja como link*@
                                                             @if (item.Content != null && !string.IsNullOrWhiteSpace(item.FileName) && ViewBag.persona == 1)
-                                                                {
-                                                                    @Html.ActionLink(item.FileName, "Download", "Documento", new { id = item.DocumentoId }, null)
-                                                                }
-                                                                @if (item.Url != null)
-                                                                {
-                                                                    <a href="@item.Url" target="_blank">@item.FileName</a>
-                                                                }
+                                                            {
+                                                                @Html.ActionLink(item.FileName, "Download", "Documento", new { id = item.DocumentoId }, null)
+                                                            }
+                                                            @if (item.Url != null)
+                                                            {
+                                                                <a href="@item.Url" target="_blank">@item.FileName</a>
+                                                            }
 
 
 

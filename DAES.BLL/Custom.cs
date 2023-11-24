@@ -1414,7 +1414,177 @@ namespace DAES.BLL
             html = html.Replace("<br>", "<br />");
             return html;
         }
-        //TODO: Se crea nuevo metodo para documento configuracion
+
+        public ResponseMessage SignResoOficio(DocOficio obj, string email, int HorasExtrasId)
+        {
+            var response = new ResponseMessage();
+            //var persona = new SIGPER();
+            //var gp = new Infrastructure.GestionProcesos.GestionProcesos();
+            // var gps = new Infrastructure.Interfaces.IGestionProcesos();
+
+            using (SistemaIntegradoContext context = new SistemaIntegradoContext())
+            {
+                try
+                {
+
+                    //var documento = db.Documento.FirstOrDefault(q => q.DocumentoId == obj.DocumentoId);
+                    var documento = context.DocOficios.FirstOrDefault(q => q.WorkFlowId == obj.WorkFlowId);
+                    if (documento == null)
+                        response.Errors.Add("Documento no encontrado");
+
+                    if (obj.Firmado == true)
+                        response.Errors.Add("Documento ya se encuentra firmado");
+
+                    var rubrica = db.Rubrica.FirstOrDefault(q => q.Email == email);
+                    /*old firma*/
+                    //var rubrica = _repository.Get<Rubrica>(q => q.Email == email && q.HabilitadoFirma == true);
+                    //string IdentificadorFirma = string.Empty;
+                    //bool habilitado = false;
+                    //foreach (var fir in rubrica)
+                    //{
+                    //    if (fir == null)
+                    //        response.Errors.Add("Usuario sin información de firma electrónica");
+                    //    if (fir != null && string.IsNullOrWhiteSpace(fir.IdentificadorFirma))
+                    //        response.Errors.Add("Usuario no tiene identificador de firma electrónica");
+
+                    //    if (documento.Proceso.DefinicionProcesoId == int.Parse(fir.IdProceso))
+                    //    {
+                    //        habilitado = true;
+                    //        IdentificadorFirma = fir.IdentificadorFirma;
+                    //    }
+
+                    //    if (fir.HabilitadoFirma != true)
+                    //        response.Errors.Add("Usuario no se encuentra habilitado para firmar");
+                    //}
+                    /**/
+
+                    if (rubrica == null)
+                        response.Errors.Add("No se encontraron firmas habilitadas para el usuario");
+
+                    var HSMUser = db.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.UserHSM);
+                    if (HSMUser == null)
+                        response.Errors.Add("No se encontró la configuración de usuario de HSM.");
+                    if (HSMUser != null && string.IsNullOrWhiteSpace(HSMUser.Valor))
+                        response.Errors.Add("La configuración de usuario de HSM es inválida.");
+
+                    var HSMPassword = db.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.PasswordHSM);
+                    if (HSMPassword == null)
+                        response.Errors.Add("No se encontró la configuración de usuario de HSM.");
+                    if (HSMPassword != null && string.IsNullOrWhiteSpace(HSMPassword.Valor))
+                        response.Errors.Add("La configuración de password de HSM es inválida.");
+
+                    var url_tramites_en_linea = db.Configuracion.FirstOrDefault(q => q.Nombre == nameof(Infrastructure.Enum.Configuracion.url_tramites_en_linea));
+                    if (url_tramites_en_linea == null)
+                        response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
+                    if (url_tramites_en_linea != null && url_tramites_en_linea.Valor.IsNullOrWhiteSpace())
+                        response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
+
+
+                    if (response.IsValid)
+                    {
+                        var persona = sg.GetUserByEmail(email);
+
+                        /*se buscar la persona para determinar la subsecretaria*/
+                        if (!string.IsNullOrEmpty(email))
+                        {
+                            if (persona == null)
+                                response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
+
+                            if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
+                                response.Errors.Add("No se encontró la subsecretaría del firmante");
+                        }
+
+                        /*Se busca proceso para determinar tipo de documento*/
+                        string TipoDocto = "OTRO";
+                        var result = "Oficios"; // documento.TipoDocumentoId.Nombre.ToString();
+                        var a = result;
+                        switch (result)
+                        {
+                            case "Resoluciones Ministeriales Exentas":
+                                TipoDocto = "RMEX";
+                                break;
+
+                            case "Resoluciones Administrativas Exentas":
+                                TipoDocto = "RAEX";
+                                break;
+                            case "Cartas":
+                                TipoDocto = "CART";
+                                break;
+                            case "Memorandos":
+                                TipoDocto = "MEMO";
+                                break;
+                            case "Circulares":
+                                TipoDocto = "CIRC";
+                                break;
+                            case "Oficios":
+                                TipoDocto = "OFIC";
+                                break;
+                            case var pa when a.Contains("Certificado"):
+                                TipoDocto = "CERT";
+                                break;
+                            default:
+                                TipoDocto = "OTRO";
+                                break;
+                        }
+                        var proceso = db.Proceso.FirstOrDefault(q => q.ProcesoId == documento.ProcesoId);
+
+
+                        //listado de id de firmantes
+                        var idsFirma = new List<string>();
+                        idsFirma.Add(rubrica.IdentificadorFirma);
+
+                        //generar código QR
+                        byte[] qr = fl.CreateQr(string.Concat(url_tramites_en_linea.Valor, "/GPDocumentoVerificacion/Details/", documento.DocOficioId));
+
+                        //si el documento ya tiene folio no solicitarlo nuevamente
+                        if (string.IsNullOrWhiteSpace(documento.Folio))
+                        {
+
+                            try
+                            {
+
+                                var folios = folio.GetFolio(string.Join(", ", email), TipoDocto, persona.SubSecretaria);
+                                if (folios == null)
+                                    response.Errors.Add("Servicio de folio no entregó respuesta");
+
+                                if (folios != null && folios.status == "ERROR")
+                                    response.Errors.Add(folios.error);
+
+                                documento.Folio = folios.folio;
+                                documento.File = documento.Content;
+
+
+                                context.SaveChanges();
+                            }
+                            catch (Exception ex)
+                            {
+                                response.Errors.Add(ex.Message);
+                            }
+                        }
+
+                        var docto = hsms.Sign(documento.File, idsFirma, documento.DocOficioId, documento.Folio, url_tramites_en_linea.Valor, qr);
+                        var docto = hsms.SignOficio(documento.File, idsFirma, documento.WorkFlowId, documento.Folio, url_tramites_en_linea.Valor, qr);
+                        documento.Content = docto;
+                        //documento.Signed = true;
+                        documento.Firmado = true;
+
+                        context.SaveChanges();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    response.Errors.Add(ex.Message);
+                }
+
+            }
+
+
+            return response;
+        }
+
+
+        //FIN ALEX
         public byte[] CrearDocumentoConfiguracion(ConfiguracionCertificado configuracioncertificado)
         {
             #region Configurar PreDocumento
