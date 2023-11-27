@@ -80,7 +80,7 @@ namespace DAES.Model.SistemaIntegrado
         public byte[] File { get; set; }
 
         [Display(Name = "Firmado")]
-        public bool? Firmado { get; set; } = false;
+        public bool Firmado { get; set; } = false;
 
         [Display(Name = "Tipo documento")]
         public int? TipoDocumentoId { get; set; }
