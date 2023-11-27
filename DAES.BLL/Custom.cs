@@ -1156,7 +1156,7 @@ namespace DAES.BLL
             tableHeader.AddCell(cell);
 
             //Id
-            var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
+            /*var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
             paragrafId.Alignment = Element.ALIGN_RIGHT;
 
             var paragrafDate = new Paragraph(string.Format("{0:dd-MM-yyyy HH:mm:ss}", DateTime.Now), _fontStandard);
@@ -1164,7 +1164,7 @@ namespace DAES.BLL
 
             cell = new PdfPCell();
             cell.AddElement(paragrafId);
-            cell.AddElement(paragrafDate);
+            cell.AddElement(paragrafDate);*/
 
             cell.HorizontalAlignment = Element.ALIGN_RIGHT;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1429,27 +1429,7 @@ namespace DAES.BLL
                         response.Errors.Add("Documento ya se encuentra firmado");
 
                     var rubrica = db.Rubrica.FirstOrDefault(q => q.Email == email);
-                    /*old firma*/
-                    //var rubrica = _repository.Get<Rubrica>(q => q.Email == email && q.HabilitadoFirma == true);
-                    //string IdentificadorFirma = string.Empty;
-                    //bool habilitado = false;
-                    //foreach (var fir in rubrica)
-                    //{
-                    //    if (fir == null)
-                    //        response.Errors.Add("Usuario sin información de firma electrónica");
-                    //    if (fir != null && string.IsNullOrWhiteSpace(fir.IdentificadorFirma))
-                    //        response.Errors.Add("Usuario no tiene identificador de firma electrónica");
 
-                    //    if (documento.Proceso.DefinicionProcesoId == int.Parse(fir.IdProceso))
-                    //    {
-                    //        habilitado = true;
-                    //        IdentificadorFirma = fir.IdentificadorFirma;
-                    //    }
-
-                    //    if (fir.HabilitadoFirma != true)
-                    //        response.Errors.Add("Usuario no se encuentra habilitado para firmar");
-                    //}
-                    /**/
 
                     if (rubrica == null)
                         response.Errors.Add("No se encontraron firmas habilitadas para el usuario");
@@ -1559,6 +1539,22 @@ namespace DAES.BLL
                         documento.Content = docto;
                         //documento.Signed = true;
                         documento.Firmado = true;
+                        var proc = db.Proceso.FirstOrDefault(q => q.ProcesoId == documento.ProcesoId);
+                        var work = db.Workflow.FirstOrDefault(q => q.ProcesoId == documento.ProcesoId);
+                        db.Documento.Add(new Documento()
+                        {
+                            FechaCreacion = documento.FechaCreacion,
+                            Autor = work.User.UserName,
+                            FileName = documento.FileName,
+                            Content = documento.Content,
+                            TipoDocumentoId = (int)Infrastructure.Enum.TipoDocumento.Oficio,
+                            Firmado = true,
+                            //Signed = false,
+                            WorkflowId = documento.WorkFlowId,
+                            ProcesoId = documento.ProcesoId,
+                            OrganizacionId = proc.OrganizacionId,
+                         });
+                        db.SaveChanges();
 
                         context.SaveChanges();
 
@@ -1638,7 +1634,7 @@ namespace DAES.BLL
             tableHeader.AddCell(cell);
 
             //Id
-            var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
+            /*var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
             paragrafId.Alignment = Element.ALIGN_RIGHT;
 
             var paragrafDate = new Paragraph(string.Format("{0:dd-MM-yyyy HH:mm:ss}", DateTime.Now), _fontStandard);
@@ -1646,7 +1642,7 @@ namespace DAES.BLL
 
             cell = new PdfPCell();
             cell.AddElement(paragrafId);
-            cell.AddElement(paragrafDate);
+            cell.AddElement(paragrafDate);*/
 
             cell.HorizontalAlignment = Element.ALIGN_RIGHT;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;

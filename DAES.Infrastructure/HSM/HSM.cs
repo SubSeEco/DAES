@@ -431,10 +431,10 @@ namespace DAES.Infrastructure.Hsm//verlo, posiblemente esta mal
                                 //ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(string.Format(TipoOrganizacion), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 185, 0);
                                 //ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(string.Format(TipoOrganizacion), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 152, 0);
                                 //estampa de folio
-                                ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(string.Format("Folio {0}", folio), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 200, 0);
+                                ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(string.Format("Folio {0}", folio), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 95, 0);
                                 //ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(string.Format("Folio wachinei{0}", folio), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 167, 0);
                                 //estampa de fecha
-                                ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(DateTime.Now.ToString("dd/MM/yyyy"), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 215, 0);
+                                ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(DateTime.Now.ToString("dd/MM/yyyy"), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 110, 0);
                                 //ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(DateTime.Now.ToString("dd/MM/yyyy"), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 182, 0);
                             }
                             catch (System.Exception ex)
