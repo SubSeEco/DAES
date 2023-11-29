@@ -1104,8 +1104,7 @@ namespace DAES.BLL
             write.PageEvent = ev;
             Chunk SaltoLinea = Chunk.NEWLINE;
 
-            var MIRAR = docofi.Parrafo1;
-            var MIRAR2 = docofi.Parrafo2;
+
             var mirar3 = docofi.Tabla;
 
             // Contenido HTML con formato enriquecido
@@ -1117,8 +1116,8 @@ namespace DAES.BLL
             doc.AddTitle(docofi.FileName);
 
             var centrar = Element.ALIGN_CENTER;
-            Paragraph paragraphTITULO = new Paragraph(docofi.Parrafo1, _fontTitulo);
-            paragraphTITULO.Alignment = centrar;
+            //Paragraph paragraphTITULO = new Paragraph(docofi.Parrafo1, _fontTitulo);
+            //paragraphTITULO.Alignment = centrar;
 
             var logo = context.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.URLImagenLogo);
             if (logo == null)
@@ -1157,7 +1156,7 @@ namespace DAES.BLL
             tableHeader.AddCell(cell);
 
             //Id
-            var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
+            /*var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
             paragrafId.Alignment = Element.ALIGN_RIGHT;
 
             var paragrafDate = new Paragraph(string.Format("{0:dd-MM-yyyy HH:mm:ss}", DateTime.Now), _fontStandard);
@@ -1165,13 +1164,13 @@ namespace DAES.BLL
 
             cell = new PdfPCell();
             cell.AddElement(paragrafId);
-            cell.AddElement(paragrafDate);
+            cell.AddElement(paragrafDate);*/
 
             cell.HorizontalAlignment = Element.ALIGN_RIGHT;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.BorderWidth = 0;
             cell.PaddingTop = 20;
-            cell.Border = Rectangle.NO_BORDER;
+            //cell.Border = Rectangle.NO_BORDER;
             tableHeader.AddCell(cell);
 
 
@@ -1184,9 +1183,9 @@ namespace DAES.BLL
             PdfPTable tableEncabezadoUno = new PdfPTable(2);
             tableEncabezadoUno.WidthPercentage = 100f;
             tableEncabezadoUno.DefaultCell.Border = Rectangle.NO_BORDER;
-            tableEncabezadoUno.DefaultCell.Border = 0;
+            tableEncabezadoUno.DefaultCell.BorderWidth = 0;
 
-            tableEncabezadoUno.AddCell(new PdfPCell()); // Primera posición vacía.
+            tableEncabezadoUno.AddCell(new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER });
 
             //Registro 
             string ord = "ORD.: N°";
@@ -1220,46 +1219,42 @@ namespace DAES.BLL
             mat = EliminarDivYBr(mat);
 
 
-            PdfPCell cell3 = new PdfPCell();
-            //List<IElement> htmlE = HTMLWorker.ParseToList(new StringReader(reg), styles);
+            PdfPCell cellOAM = new PdfPCell();
             List<IElement> htmlE = HTMLWorker.ParseToList(new StringReader(reg), styles)
             .OfType<IElement>()
             .ToList();
             foreach (var element in htmlE)
             {
                 var mirarmirar = reg;
-                cell3.AddElement(element);
+                cellOAM.AddElement(element);
             }
 
-            //List<IElement> htmlEl = HTMLWorker.ParseToList(new StringReader(ante), styles);
             List<IElement> htmlEl = HTMLWorker.ParseToList(new StringReader(ante), styles)
             .OfType<IElement>()
             .ToList();
             foreach (var element in htmlEl)
             {
                 var mirarmirar = ante;
-                cell3.AddElement(element);
+                cellOAM.AddElement(element);
             }
 
-            //List<IElement> htmlElem = HTMLWorker.ParseToList(new StringReader(mat), styles);
             List<IElement> htmlElem = HTMLWorker.ParseToList(new StringReader(mat), styles)
             .OfType<IElement>()
             .ToList();
             foreach (var element in htmlElem)
             {
                 var mirarmirar = mat;
-                cell3.AddElement(element);
+                cellOAM.AddElement(element);
             }
 
+            cellOAM.Border = Rectangle.NO_BORDER;
+            cellOAM.HorizontalAlignment = Element.ALIGN_RIGHT;
 
-            cell3.HorizontalAlignment = Element.ALIGN_RIGHT;
-            cell3.VerticalAlignment = Element.ALIGN_MIDDLE;
-            cell3.BorderWidth = 0;
-            cell3.PaddingTop = 20;
-            cell.Border = Rectangle.NO_BORDER;
 
-            tableEncabezadoUno.AddCell(cell3);
+            tableEncabezadoUno.AddCell(cellOAM);
 
+            tableEncabezadoUno.DefaultCell.Border = Rectangle.NO_BORDER;
+            tableEncabezadoUno.DefaultCell.BorderWidth = 0;
             // var paragrafAnt = new Paragraph((string.Format("ANT.: "), _fontNegrita) + docofi.Parrafo1, _fontStandard);
             //paragrafAnt.Alignment = Element.ALIGN_RIGHT;
             //Materia
@@ -1272,27 +1267,63 @@ namespace DAES.BLL
             doc.Add(SaltoLinea);
 
             //aqui esta DE - A - Direccion - Correo 
-            PdfPTable tablaDeA = new PdfPTable(1);
-            tablaDeA.WidthPercentage = 100f;
+            PdfPTable tablaDeA = new PdfPTable(2);
+            tablaDeA.WidthPercentage = 100;
             tablaDeA.DefaultCell.Border = Rectangle.NO_BORDER;
+            tablaDeA.DefaultCell.BorderWidth = 0;
             tablaDeA.DefaultCell.Border = 0;
-            //DE
+            //"DE" en duro para primera celda
             string DE_DOC = "DE: ";
             var paragrafDEDOC = new Paragraph(DE_DOC, _fontNegrita);
-            var paraDEDOC = new Paragraph(docofi.DE_DOC, _fontStandard);
-            paragrafDEDOC.AddRange(paraDEDOC);
             paragrafDEDOC.Alignment = Element.ALIGN_RIGHT;
-            string DEDO = paragrafDEDOC.Content;
+
+            PdfPCell cellDE1 = new PdfPCell();
+            List<IElement> htmlElementoD1 = HTMLWorker.ParseToList(new StringReader(DE_DOC), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlElementoD1)
+            {
+                var mirarmirar = DE_DOC;
+                cellDE1.AddElement(element);
+            }
+
+
+            //"DE" para segunda celda ,primera fila
+            var paraDEDOC = new Paragraph(docofi.DE_DOC, _fontStandard);
+            paraDEDOC.Alignment = Element.ALIGN_RIGHT;
+            string DEDO = paraDEDOC.Content;
             DEDO = EliminarDivYBr(DEDO);
 
+            PdfPCell cellDE2 = new PdfPCell();
+            List<IElement> htmlElementoDE2 = HTMLWorker.ParseToList(new StringReader(DEDO), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlElementoDE2)
+            {
+                var mirarmirar = DEDO;
+                cellDE2.AddElement(element);
+            }
 
-            //A
+
+            // "A " en duro para primera celda ,segunda fila 
             string A_DOC = "A: ";
             var paragrafA_DOC = new Paragraph(A_DOC, _fontNegrita);
-            var paraA_DOC = new Paragraph(docofi.A_DOC, _fontStandard);
-            paragrafA_DOC.AddRange(paraA_DOC);
             paragrafA_DOC.Alignment = Element.ALIGN_RIGHT;
-            string ADO = paragrafA_DOC.Content;
+
+            PdfPCell cellA1 = new PdfPCell();
+            List<IElement> htmlElementoA1 = HTMLWorker.ParseToList(new StringReader(A_DOC), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmlElementoA1)
+            {
+                var mirarmirar = A_DOC;
+                cellA1.AddElement(element);
+            }
+
+
+            // "A " en segunda celda ,segunda fila 
+            var paraA_DOC = new Paragraph(docofi.A_DOC, _fontStandard);
+            string ADO = paraA_DOC.Content;
             ADO = EliminarDivYBr(ADO);
 
             //Direccion
@@ -1300,66 +1331,61 @@ namespace DAES.BLL
             parrafoDireccion.Alignment = Element.ALIGN_LEFT;
             string parrafoDireccionFOR = parrafoDireccion.Content;
             parrafoDireccionFOR = EliminarDivYBr(parrafoDireccionFOR);
+
             //Correo
             var parrafoCorreo = new Paragraph(docofi.CORREO, _fontStandard);
             parrafoCorreo.Alignment = Element.ALIGN_LEFT;
             string parrafoCorreoFor = parrafoCorreo.Content;
             parrafoCorreoFor = EliminarDivYBr(parrafoCorreoFor);
 
-            PdfPCell cellDE = new PdfPCell();
-            //List<IElement> htmlElementoDE = HTMLWorker.ParseToList(new StringReader(DEDO), styles);
-            List<IElement> htmlElementoDE = HTMLWorker.ParseToList(new StringReader(DEDO), styles)
+            PdfPCell cellA2 = new PdfPCell();
+            List<IElement> htmlElementoA2 = HTMLWorker.ParseToList(new StringReader(ADO), styles)
             .OfType<IElement>()
             .ToList();
-            foreach (var element in htmlElementoDE)
-            {
-                var mirarmirar = DEDO;
-                cellDE.AddElement(element);
-            }
-
-            PdfPCell cellA = new PdfPCell();
-            //List<IElement> htmlElementoA = HTMLWorker.ParseToList(new StringReader(ADO), styles);
-            List<IElement> htmlElementoA = HTMLWorker.ParseToList(new StringReader(ADO), styles)
-            .OfType<IElement>()
-            .ToList();
-            foreach (var element in htmlElementoA)
+            foreach (var element in htmlElementoA2)
             {
                 var mirarmirar = ADO;
-                cellA.AddElement(element);
+                cellA2.AddElement(element);
             }
-            //List<IElement> htmlElementoD = HTMLWorker.ParseToList(new StringReader(parrafoDireccionFOR), styles);
             List<IElement> htmlElementoD = HTMLWorker.ParseToList(new StringReader(parrafoDireccionFOR), styles)
             .OfType<IElement>()
             .ToList();
-
             foreach (var element in htmlElementoD)
             {
                 var mirarmirar = parrafoDireccionFOR;
-                cellA.AddElement(element);
+                cellA2.AddElement(element);
             }
-            //List<IElement> htmlElementoC = HTMLWorker.ParseToList(new StringReader(parrafoCorreoFor), styles);
             List<IElement> htmlElementoC = HTMLWorker.ParseToList(new StringReader(parrafoCorreoFor), styles)
             .OfType<IElement>()
             .ToList();
             foreach (var element in htmlElementoC)
             {
                 var mirarmirar = parrafoCorreoFor;
-                cellA.AddElement(element);
+                cellA2.AddElement(element);
             }
 
+            float[] anchosCeldas = { 10, 90 };
+            tablaDeA.SetWidths(anchosCeldas);
+            //borra los bordes
+            cellDE1.Border = Rectangle.NO_BORDER;
+            cellDE2.Border = Rectangle.NO_BORDER;
+            cellA1.Border = Rectangle.NO_BORDER;
+            cellA2.Border = Rectangle.NO_BORDER;
 
 
-            tablaDeA.AddCell(cellDE);
-            tablaDeA.AddCell(cellA);
+            tablaDeA.AddCell(cellDE1);
+            tablaDeA.AddCell(cellDE2);
+            tablaDeA.AddCell(cellA1);
+            tablaDeA.AddCell(cellA2);
 
 
             doc.Add(tablaDeA);
             doc.Add(SaltoLinea);
+
             var tablitaparrafo = new Paragraph(docofi.Tabla, _fontStandard);
             tablitaparrafo.Alignment = Element.ALIGN_LEFT;
             string tablitapar = tablitaparrafo.Content;
             tablitapar = EliminarDivYBr(tablitapar);
-            //List<IElement> htmlEle = HTMLWorker.ParseToList(new StringReader(tablitapar), styles);
             List<IElement> htmlEle = HTMLWorker.ParseToList(new StringReader(tablitapar), styles)
             .OfType<IElement>()
             .ToList();
@@ -1368,40 +1394,7 @@ namespace DAES.BLL
                 var mirarmirar = tablitapar;
                 doc.Add(element);
             }
-            //PdfPCell cell2 = new PdfPCell();
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //cell2.Border = Rectangle.RECTANGLE;
-            //tableEncabezadoUno.AddCell(cell2);
 
-            //string contenidoHTML = "<b>Estoy en negrita</b> y <i>yo en cursiva</i> <br> <div> hola mundo </div>";
-
-            //contenidoHTML = EliminarDivYBr(contenidoHTML);
-
-            // Parsear el HTML y convertirlo a PDF con formato enriquecido
-            // Estilo del HTML
-
-
-
-
-
-
-
-            //doc.Add(paragrafR);
-            //doc.Add(SaltoLinea);
-            //doc.Add(paragrafAnt);
-            // Parsear el HTML y convertirlo a PDF con formato enriquecido
-            /*List<IElement> htmlElements = HTMLWorker.ParseToList(new StringReader(contenidoHTML), styles);
-            foreach (var element in htmlElements)
-            {
-                var mirarmirar = contenidoHTML;
-                doc.Add(element);
-            }*/
 
             doc.Close();
             return memStream.ToArray();
@@ -1414,7 +1407,172 @@ namespace DAES.BLL
             html = html.Replace("<br>", "<br />");
             return html;
         }
-        //TODO: Se crea nuevo metodo para documento configuracion
+
+        public ResponseMessage SignResoOficio(DocOficio obj, string email, int HorasExtrasId)
+        {
+            var response = new ResponseMessage();
+            //var persona = new SIGPER();
+            //var gp = new Infrastructure.GestionProcesos.GestionProcesos();
+            // var gps = new Infrastructure.Interfaces.IGestionProcesos();
+
+            using (SistemaIntegradoContext context = new SistemaIntegradoContext())
+            {
+                try
+                {
+
+                    //var documento = db.Documento.FirstOrDefault(q => q.DocumentoId == obj.DocumentoId);
+                    var documento = context.DocOficios.FirstOrDefault(q => q.WorkFlowId == obj.WorkFlowId);
+                    if (documento == null)
+                        response.Errors.Add("Documento no encontrado");
+
+                    if (obj.Firmado == true)
+                        response.Errors.Add("Documento ya se encuentra firmado");
+
+                    var rubrica = db.Rubrica.FirstOrDefault(q => q.Email == email);
+
+
+                    if (rubrica == null)
+                        response.Errors.Add("No se encontraron firmas habilitadas para el usuario");
+
+                    var HSMUser = db.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.UserHSM);
+                    if (HSMUser == null)
+                        response.Errors.Add("No se encontró la configuración de usuario de HSM.");
+                    if (HSMUser != null && string.IsNullOrWhiteSpace(HSMUser.Valor))
+                        response.Errors.Add("La configuración de usuario de HSM es inválida.");
+
+                    var HSMPassword = db.Configuracion.FirstOrDefault(q => q.ConfiguracionId == (int)Infrastructure.Enum.Configuracion.PasswordHSM);
+                    if (HSMPassword == null)
+                        response.Errors.Add("No se encontró la configuración de usuario de HSM.");
+                    if (HSMPassword != null && string.IsNullOrWhiteSpace(HSMPassword.Valor))
+                        response.Errors.Add("La configuración de password de HSM es inválida.");
+
+                    var url_tramites_en_linea = db.Configuracion.FirstOrDefault(q => q.Nombre == nameof(Infrastructure.Enum.Configuracion.url_tramites_en_linea));
+                    if (url_tramites_en_linea == null)
+                        response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
+                    if (url_tramites_en_linea != null && url_tramites_en_linea.Valor.IsNullOrWhiteSpace())
+                        response.Errors.Add("No se encontró la configuración de la url de verificación de documentos");
+
+
+                    if (response.IsValid)
+                    {
+                        var persona = sg.GetUserByEmail(email);
+
+                        /*se buscar la persona para determinar la subsecretaria*/
+                        if (!string.IsNullOrEmpty(email))
+                        {
+                            if (persona == null)
+                                response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
+
+                            if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
+                                response.Errors.Add("No se encontró la subsecretaría del firmante");
+                        }
+
+                        /*Se busca proceso para determinar tipo de documento*/
+                        string TipoDocto = "OTRO";
+                        var result = "Oficios"; // documento.TipoDocumentoId.Nombre.ToString();
+                        var a = result;
+                        switch (result)
+                        {
+                            case "Resoluciones Ministeriales Exentas":
+                                TipoDocto = "RMEX";
+                                break;
+
+                            case "Resoluciones Administrativas Exentas":
+                                TipoDocto = "RAEX";
+                                break;
+                            case "Cartas":
+                                TipoDocto = "CART";
+                                break;
+                            case "Memorandos":
+                                TipoDocto = "MEMO";
+                                break;
+                            case "Circulares":
+                                TipoDocto = "CIRC";
+                                break;
+                            case "Oficios":
+                                TipoDocto = "OFIC";
+                                break;
+                            case var pa when a.Contains("Certificado"):
+                                TipoDocto = "CERT";
+                                break;
+                            default:
+                                TipoDocto = "OTRO";
+                                break;
+                        }
+                        var proceso = db.Proceso.FirstOrDefault(q => q.ProcesoId == documento.ProcesoId);
+
+
+                        //listado de id de firmantes
+                        var idsFirma = new List<string>();
+                        idsFirma.Add(rubrica.IdentificadorFirma);
+
+                        //generar código QR
+                        byte[] qr = fl.CreateQr(string.Concat(url_tramites_en_linea.Valor, "/GPDocumentoVerificacion/Details/", documento.DocOficioId));
+
+                        //si el documento ya tiene folio no solicitarlo nuevamente
+                        if (string.IsNullOrWhiteSpace(documento.Folio))
+                        {
+
+                            try
+                            {
+
+                                var folios = folio.GetFolio(string.Join(", ", email), TipoDocto, persona.SubSecretaria);
+                                if (folios == null)
+                                    response.Errors.Add("Servicio de folio no entregó respuesta");
+
+                                if (folios != null && folios.status == "ERROR")
+                                    response.Errors.Add(folios.error);
+
+                                documento.Folio = folios.folio;
+                                documento.File = documento.Content;
+
+
+                                context.SaveChanges();
+                            }
+                            catch (Exception ex)
+                            {
+                                response.Errors.Add(ex.Message);
+                            }
+                        }
+
+                        var docto = hsms.SignOficio(documento.File, idsFirma, documento.WorkFlowId, documento.Folio, url_tramites_en_linea.Valor, qr);
+                        documento.Content = docto;
+                        //documento.Signed = true;
+                        documento.Firmado = true;
+                        var proc = db.Proceso.FirstOrDefault(q => q.ProcesoId == documento.ProcesoId);
+                        var work = db.Workflow.FirstOrDefault(q => q.ProcesoId == documento.ProcesoId);
+                        db.Documento.Add(new Documento()
+                        {
+                            FechaCreacion = documento.FechaCreacion,
+                            Autor = work.User.UserName,
+                            FileName = documento.FileName,
+                            Content = documento.Content,
+                            TipoDocumentoId = (int)Infrastructure.Enum.TipoDocumento.Oficio,
+                            Firmado = true,
+                            //Signed = false,
+                            WorkflowId = documento.WorkFlowId,
+                            ProcesoId = documento.ProcesoId,
+                            OrganizacionId = proc.OrganizacionId,
+                         });
+                        db.SaveChanges();
+
+                        context.SaveChanges();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    response.Errors.Add(ex.Message);
+                }
+
+            }
+
+
+            return response;
+        }
+
+
+        //FIN ALEX
         public byte[] CrearDocumentoConfiguracion(ConfiguracionCertificado configuracioncertificado)
         {
             #region Configurar PreDocumento
@@ -1476,7 +1634,7 @@ namespace DAES.BLL
             tableHeader.AddCell(cell);
 
             //Id
-            var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
+            /*var paragrafId = new Paragraph(string.Format("Nro Folio XX"), _fontNumero);
             paragrafId.Alignment = Element.ALIGN_RIGHT;
 
             var paragrafDate = new Paragraph(string.Format("{0:dd-MM-yyyy HH:mm:ss}", DateTime.Now), _fontStandard);
@@ -1484,7 +1642,7 @@ namespace DAES.BLL
 
             cell = new PdfPCell();
             cell.AddElement(paragrafId);
-            cell.AddElement(paragrafDate);
+            cell.AddElement(paragrafDate);*/
 
             cell.HorizontalAlignment = Element.ALIGN_RIGHT;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;

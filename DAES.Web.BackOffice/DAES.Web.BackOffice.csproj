@@ -425,6 +425,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap_flatly.css" />
+    <Content Include="Content\cursiva.png" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.min.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap4.css" />
@@ -586,6 +587,8 @@
     <Content Include="Content\8928161-K.png" />
     <Content Include="Content\Gridmvc.css" />
     <Content Include="Content\14530378-8.png" />
+    <Content Include="Content\negrita.png" />
+    <Content Include="Content\subrayar.png" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />

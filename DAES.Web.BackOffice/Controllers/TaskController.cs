@@ -185,7 +185,7 @@ namespace DAES.Web.BackOffice.Controllers
             model.Documentos = db.Documento.Where(q => q.Workflow.ProcesoId == model.Workflow.ProcesoId).OrderBy(q => q.FechaCreacion).ToList();
             //INI
             //prueba veremos que pasa 
-            if (db.DocOficios.Where(q => q.WorkFlowId == WorkflowId) == null)
+            if (db.DocOficios.Where(q => q.WorkFlowId == WorkflowId).Any() == false)
             {
                 var documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
                 model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
@@ -1019,6 +1019,13 @@ namespace DAES.Web.BackOffice.Controllers
             ViewBag.procesoId = model.Workflow.ProcesoId;
             ViewBag.WorkflowId = WorkflowId;
 
+            if (db.DocOficios.Where(q => q.WorkFlowId == WorkflowId).Any() == false)
+            {
+                var documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
+                model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
+
+
+            }
 
             return View(model);
         }
@@ -1681,27 +1688,24 @@ namespace DAES.Web.BackOffice.Controllers
 
             if (model.Workflow.DocOficio.Any())
             {
-                model.Workflow.DocOficio.FirstOrDefault().NUMERO_REGISTRO = ofi.NUMERO_REGISTRO;
-                model.Workflow.DocOficio.FirstOrDefault().ProcesoId = ofi.ProcesoId;
-                model.Workflow.DocOficio.FirstOrDefault().ANTECEDENTES = ofi.ANTECEDENTES;
-                model.Workflow.DocOficio.FirstOrDefault().MATERIA = ofi.MATERIA;
-                model.Workflow.DocOficio.FirstOrDefault().DE_DOC = ofi.DE_DOC;
-                model.Workflow.DocOficio.FirstOrDefault().A_DOC = ofi.A_DOC;
-                model.Workflow.DocOficio.FirstOrDefault().DIRECCION = ofi.DIRECCION;
-                model.Workflow.DocOficio.FirstOrDefault().CORREO = ofi.CORREO;
-                model.Workflow.DocOficio.FirstOrDefault().Parrafo1 = ofi.Parrafo1;
-                model.Workflow.DocOficio.FirstOrDefault().Parrafo2 = ofi.Parrafo2;
-                model.Workflow.DocOficio.FirstOrDefault().Parrafo3 = ofi.Parrafo3;
-                model.Workflow.DocOficio.FirstOrDefault().Tabla = ofi.Tabla;
-                var mirar = model.Workflow.DocOficio;
-                model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId));
-                db.SaveChanges();
-
+                if (model.Workflow.DocOficio.FirstOrDefault().Firmado == false) { 
+              
+                    model.Workflow.DocOficio.FirstOrDefault().NUMERO_REGISTRO = ofi.NUMERO_REGISTRO;
+                    model.Workflow.DocOficio.FirstOrDefault().ProcesoId = ofi.ProcesoId;
+                    model.Workflow.DocOficio.FirstOrDefault().ANTECEDENTES = ofi.ANTECEDENTES;
+                    model.Workflow.DocOficio.FirstOrDefault().MATERIA = ofi.MATERIA;
+                    model.Workflow.DocOficio.FirstOrDefault().DE_DOC = ofi.DE_DOC;
+                    model.Workflow.DocOficio.FirstOrDefault().A_DOC = ofi.A_DOC;
+                    model.Workflow.DocOficio.FirstOrDefault().DIRECCION = ofi.DIRECCION;
+                    model.Workflow.DocOficio.FirstOrDefault().CORREO = ofi.CORREO;
+                    model.Workflow.DocOficio.FirstOrDefault().Tabla = ofi.Tabla;
+                    var mirar = model.Workflow.DocOficio;
+                    model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId));
+                    db.SaveChanges();
+                }           
             }
             else
             {
-                var mirar = model.ProcesoId;
-                var mirar2 = ofi.ProcesoId;
                 var nuevoregistro = new DocOficio
                 {
                     WorkFlowId = WorkflowId,
@@ -1713,11 +1717,9 @@ namespace DAES.Web.BackOffice.Controllers
                     A_DOC = ofi.A_DOC,
                     DIRECCION = ofi.DIRECCION,
                     CORREO = ofi.CORREO,
-                    Parrafo1 = ofi.Parrafo1,
-                    Parrafo2 = ofi.Parrafo2,
-                    Parrafo3 = ofi.Parrafo3,
+                    Firmado = false,
                     Tabla = ofi.Tabla,
-                    FileName = "DocumentoCreado" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
+                    FileName = "DocumentoCreadoTask_" + WorkflowId + "_" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
                 };
                 db.DocOficios.Add(nuevoregistro);
                 db.SaveChanges();
@@ -1757,6 +1759,61 @@ namespace DAES.Web.BackOffice.Controllers
             }
         }
 
+        public FileResult Download(int id)
+        {
+            var documento = db.DocOficios.FirstOrDefault(q => q.WorkFlowId == id);
+            return File(documento.Content, System.Net.Mime.MediaTypeNames.Application.Octet, documento.FileName);
+        }
+
+        [HttpPost]
+        public ActionResult SignResolucionOficio(int id, int idProceso, string RubricaID, int? idWorkflow)
+        {
+
+            Custom _custom = new Custom();
+
+            var doc = db.DocOficios.FirstOrDefault(q => q.WorkFlowId == id);
+            var email = Helper.Helper.CurrentUser.Email;
+
+            //ESTO ESTABA ESCRITO
+            //var model = db.Workflow.Where(q => q.ProcesoId == idProceso).First().WorkflowId;
+            //var workflowId = model.WorkflowId;
+
+            //ESTO ES NUEVO
+            //Obtengo lista de tareas en ese proceso
+            var model = db.Workflow.Where(q => q.WorkflowId == idWorkflow);
+            var workflowId = model.First().WorkflowId;
+
+
+            doc.File = doc.Content;
+            var _useCaseInteractor = new TaskController(_repository, _sigper, _file, _folio, _hsm, _email);
+            var deff = db.DefinicionProceso.ToArray();
+            var obj = db.Proceso.FirstOrDefault(q => q.ProcesoId == idProceso);
+            doc.TipoDocumentoId = (int)Infrastructure.Enum.TipoDocumento.Oficio;
+
+            var _UseCaseResponseMessage = _custom.SignResoOficio(doc, email, idProceso);
+
+            //Si es valida la firma 
+            if (_UseCaseResponseMessage.IsValid)
+            {
+                TempData["Message"] = Properties.Settings.Default.Success;
+
+                //return Redirect(Request.UrlReferrer.ToString());
+                return RedirectToAction("FirmarDocumentos", new { WorkflowId = workflowId });
+            }
+
+
+            foreach (var item in _UseCaseResponseMessage.Errors)
+            {
+                ModelState.AddModelError(string.Empty, item);
+                TempData["Error"] = item;
+
+            }
+
+            //return Redirect("/Inbox/Index");
+            return Redirect(Request.UrlReferrer.ToString());
+
+            //return RedirectToAction("FirmarDocumentos", new { WorkflowId = model });
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -1778,9 +1835,6 @@ namespace DAES.Web.BackOffice.Controllers
             public string A_DOC { get; set; }
             public string DIRECCION { get; set; }
             public string CORREO { get; set; }
-            public string Parrafo1 { get; set; }
-            public string Parrafo2 { get; set; }
-            public string Parrafo3 { get; set; }
             public string Tabla { get; set; }
             public byte[] Content { get; set; }
             public string FileName { get; set; }
