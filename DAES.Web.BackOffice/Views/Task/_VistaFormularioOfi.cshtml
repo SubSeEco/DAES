@@ -267,21 +267,7 @@
         </div>
 
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
     <div id="elemento"></div>
-
 
 
 
@@ -298,9 +284,7 @@
             $("#divEditable").html(texto);
         }
 
-
-
-        //var $Parrafo1 = $('#Parrafo1');
+         //var $Parrafo1 = $('#Parrafo1');
         //var $Parrafo2 = $('#Parrafo2');
         var $Tabla = $('#Tabla');
         var $boldButton = $('#boldButton');
@@ -308,14 +292,6 @@
         var $subButton = $('#subButton');
         //var ediDiv = $('#ediDiv');
         var $ediDiv = $('#ediDiv');
-
-
-
-
-
-
-
-
 
         var $guardar = $('#guardar');
 
@@ -393,13 +369,10 @@
 
 
 
-    $(document).ready(function () {
+    //$(document).ready(function () {
+    $(document).one('click', '#GuardarDocOf', function () {
 
-       // var Parrafo1 = document.getElementById("Parrafo1");
-       // Parrafo1.focus();
-
-       // var Parrafo2 = document.getElementById("Parrafo2");
-       // Parrafo2.focus();
+     
 
         var Tabla = document.getElementById("Tabla");
         Tabla.focus();
@@ -422,21 +395,6 @@
        // selection.addRange(range1);
        // selection.addRange(range2);
         selection.addRange(range3);
-
-        /*var contenido1 = Parrafo1.textContent;
-        contenido1 = contenido1.replace(/^\n+/, "");
-        Parrafo1.textContent = contenido1;
-
-
-        var contenido2 = Parrafo2.textContent;
-        contenido2 = contenido2.replace(/^\n+/, "");
-        Parrafo2.textContent = contenido2;*/
-
-        //var contenido3 = Tabla.textContent;
-        //contenido3 = contenido3.replace(/^\n+/, "");
-        //Tabla.textContent = contenido3;
-
-
 
 
         // Obtén la URL actual
@@ -474,36 +432,29 @@
         } else {
             console.log("URL no contiene parámetros.");
         }
-        $(document).on('click', '#GuardarDocOf', function () {
-                console.log("estoy arriba del data ");
-                console.log("numero" + NUMERO_REGISTRO + " antecedentes " + ANTECEDENTES);
-                console.log("procesoId " + @Model.Workflow.ProcesoId);
+
+       
+            
+             
                 var tablaElement = document.getElementById("Tabla");
 
-                console.log("tabla" + tablaElement);
+                
                 var texto = tablaElement.innerHTML;
 
-                //texto = texto.replace(/<[^>]*>/g, '');
-                //texto = texto.replace(/style="[^"]*"/g, '');
-                //var cart_div = document.getElementById("Tabla").innerHTML();
+                
                 var div = document.createElement("div");
 
                 div.innerHTML = texto;
-                console.log("soy el div \n:" + div);
+                console.log("soy el div onclick \n:" + div);
                 var prueba = convertToHTML(tablaElement);
                 var x = tablaElement.innerText;
                 var y = x.innerHTML;
-
-
 
                 var nuevoElemento = document.createElement("div");
                 nuevoElemento.innerText = tablaElement.innerText;
                 var contenidoHTML = nuevoElemento.innerHTML;
 
-                //console.log("este es el sin div pero con br \n:" + contenidoHTML);
-                // var contenidoEnriquecido = div.textContent;
-                console.log("este es el que tiene div  \n:" + texto);
-                //console.log("texto enriquecido" + contenidoEnriquecido);
+                
                 texto = texto.replace(/^\n+/, ""); //quitar espacios al inicio
                 texto = texto.replace(/<\/b>\s*<div>/g, "</b><div>");// Reemplaza los saltos de línea entre </b> y <div> con una cadena vacía
                 texto = texto.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
@@ -515,13 +466,11 @@
                 mate = mate.replace(/<\/b>\s*<div>/g, "</b><div>");// Reemplaza los saltos de línea entre </b> y <div> con una cadena vacía
                 mate = mate.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
                 mate = mate.replace(/\n+/g, ' ');  // Reemplaza múltiples saltos de línea con un espacio
-                mate = mate.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio
-
-                  var proce=@Model.Workflow.ProcesoId;
+                mate = mate.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio */
+            console.log("soy el onclick2 \n:");
+                 var proce=@Model.Workflow.ProcesoId;
                  var data = {
-                              //var valorDiv = $("#miDiv").text();
-
-
+                             
                      ProcesoId: proce,
                         NUMERO_REGISTRO: document.getElementById("NUMERO_REGISTRO").innerHTML.trim(),
                      ANTECEDENTES: document.getElementById("ANTECEDENTES").innerHTML.trim(),
@@ -540,10 +489,9 @@
                         FileName :null,
                         FechaCreacion :null
 
-
-                            //tabla: document.getElementById("Tabla").innerHTML
-
-                };
+            };
+            console.log("llamando al metodo  \n:");
+            
             $.ajax({
                 type: "POST",
                 url: "/Task/GuardarDocOfi",
@@ -552,13 +500,10 @@
                     $("#DocOf").html(result);
                     //$("#elemento").empty();
 
-
                     //$("#elemento").html(result);
                 }
-            });
-
-
-            });
+            });                        
+       // });
     });
 
     function convertToHTML(element) {
@@ -566,12 +511,11 @@
         container.appendChild(element.cloneNode(true));
         return container.innerHTML;
     }
-    function inicializarDespuesDeCargar() {
+   /* function inicializarDespuesDeCargar() {
         // Asignar eventos a elementos dentro de la PartialView
          $(document).on('click', '#GuardarDocOf', function () {
          console.log("estoy arriba del data ");
-         console.log("numero" + NUMERO_REGISTRO + " antecedentes " + ANTECEDENTES);
-         console.log("procesoId " + @Model.Workflow.ProcesoId);
+        
          var tablaElement = document.getElementById("Tabla");
 
          console.log("tabla" + tablaElement);
@@ -609,10 +553,10 @@
          mate = mate.replace(/<\/b>\s*<div>/g, "</b><div>");// Reemplaza los saltos de línea entre </b> y <div> con una cadena vacía
          mate = mate.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
          mate = mate.replace(/\n+/g, ' ');  // Reemplaza múltiples saltos de línea con un espacio
-         mate = mate.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio
+         mate = mate.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio*/
 
-           var proce=@Model.Workflow.ProcesoId;
-          var data = {
+       //    var proce=@Model.Workflow.ProcesoId;
+       /*   var data = {
                        //var valorDiv = $("#miDiv").text();
 
 
@@ -653,56 +597,8 @@
 
 
      });
-    }
-    /*
-    function agregarTabla() {
-        // Solicitar al usuario las dimensiones de la tabla
-        var filas = prompt("Ingrese el número de filas:", "");
-        var columnas = prompt("Ingrese el número de columnas:", "");
-
-        // Validar las entradas del usuario
-        if (isNaN(filas) || isNaN(columnas) || filas <= 0 || columnas <= 0) {
-            alert("Por favor, ingrese números válidos y mayores que cero.");
-            return;
-        }
-
-        // Crear una tabla dinámica con la clase "miTabla"
-        var nuevaTabla = '<br/><table class="miTabla">';
-
-        for (var i = 0; i < filas; i++) {
-            nuevaTabla += '<tr>';
-            for (var j = 0; j < columnas; j++) {
-                nuevaTabla += '<td>&nbsp;</td>'; // Añade un espacio en blanco a cada celda
-            }
-            nuevaTabla += '</tr>';
-        }
-
-        nuevaTabla += '</table>';
-
-        // Agregar la nueva tabla al contenido del div editable
-        document.getElementById('Tabla').innerHTML += nuevaTabla;
     }*/
-    /*
-    function agregarTabla(filas, columnas) {
-        var filas = prompt("Ingrese el número de filas:", "3");
-        var columnas = prompt("Ingrese el número de columnas:", "4");
 
-        // Crear una tabla dinámica con la clase "miTabla"
-        var nuevaTabla = '<br/><table class="miTabla">';
-
-        for (var i = 0; i < filas; i++) {
-            nuevaTabla += '<tr>';
-            for (var j = 0; j < columnas; j++) {
-                nuevaTabla += '<td>&nbsp;</td>'; // Añade un espacio en blanco a cada celda
-            }
-            nuevaTabla += '</tr>';
-        }
-
-        nuevaTabla += '</table>';
-
-        // Agregar la nueva tabla al contenido del div editable
-        document.getElementById('Tabla').innerHTML += nuevaTabla;
-    }*/
 </script>
 
 
