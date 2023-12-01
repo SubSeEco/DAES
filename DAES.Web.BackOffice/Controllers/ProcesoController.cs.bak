@@ -1,7 +1,5 @@
 ﻿using DAES.Infrastructure.GestionDocumental;
-using DAES.Infrastructure.GestionProcesos;
 using DAES.Infrastructure.SistemaIntegrado;
-using DAES.Model.DTO;
 using DAES.Model.SistemaIntegrado;
 using DAES.Web.BackOffice.Helper;
 using System.Data;
@@ -20,7 +18,6 @@ namespace DAES.Web.BackOffice.Controllers
         private GestionDocumentalContext dbgd = new GestionDocumentalContext();
         private SistemaIntegradoContext db = new SistemaIntegradoContext();
         private BLL.Custom _custom = new BLL.Custom();
-        private readonly GestionProcesosContext _context = new GestionProcesosContext();
 
         public JsonResult GetOrganizacion(string term)
         {
@@ -213,110 +210,6 @@ namespace DAES.Web.BackOffice.Controllers
             return View(model);
         }
 
-        public ActionResult DocumentoGP()
-        {
-            Response.AddHeader("Refresh", "90");
-
-            //int DefWork = 106;
-            int DefWork = 189;
-            ViewBag.Ids = db.Proceso.Where(q => !q.Terminada).Select(q => q.DocumentoId).ToList();
-
-            var modelWork = _context.WorkflowGP.Where(q => !q.Terminada && !q.Anulada && q.DefinicionWorkflowId == DefWork && q.Pl_UndCod == 200900)
-                .Select(p => p.ProcesoId)
-                .SelectMany(procesoId => _context.GDGP.Where(g => g.DestinoUnidadCodigo == "200900" && g.ProcesoGP.EstadoProcesoGP.EstadoProcesoId == 1
-                && g.ProcesoId == procesoId)
-                .Select(q => new DTODocumentoGP()
-                {
-                    Id = q.GDId,
-                    Doc_Correlativo = q.ProcesoId.ToString(),
-                    Doc_FechaCreacion = q.FechaIngreso.Value,
-                    ReferenciaGD = q.Referencia,
-                    ObservacionGD = q.Observacion
-                })).ToList();
-
-            return View(modelWork);
-        }
-
-        public ActionResult DocumentoCreateGP(int? id)
-        {
-            ViewBag.DefinicionProcesoId = new SelectList(db.DefinicionProceso.Where(q => q.Habilitado).OrderBy(q => q.Nombre), "DefinicionProcesoId", "Nombre");
-            ViewBag.UserId = new SelectList(db.Users.Where(q => q.Habilitado).OrderBy(q => q.UserName).ToList(), "Id", "UserName");
-            var gd = _context.GDGP.Find(id);
-
-            var model = new DTOProceso()
-            {
-                GDGP = gd,
-                ProcesoGP = _context.ProcesoGP.First(q => q.ProcesoId == gd.ProcesoId),
-                WorkflowGP = _context.WorkflowGP.Where(q => q.ProcesoId == gd.ProcesoId).OrderByDescending(q => q.WorkflowId).ToList(),
-                DocumentoGP = _context.DocumentoGP.Where(q => q.ProcesoId == gd.ProcesoId && q.Activo).ToList()
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult DocumentoCreateGP(Model.DTO.DTOProceso model)
-        {
-            if (model.DefinicionProcesoId != (int)Infrastructure.Enum.DefinicionProceso.ConstitucionOP)
-            {
-                if (!db.Organizacion.Any(q => q.OrganizacionId == model.OrganizacionId))
-                {
-                    ModelState.AddModelError(string.Empty, "La organización no fue encontrada.");
-                }
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var proceso = new Proceso()
-                    {
-                        DefinicionProcesoId = model.DefinicionProcesoId,
-                        Observacion = model.Observacion,
-                        UserId = model.UserId,
-                        ProcesoGPId = model.GDGP.ProcesoId,
-                        ProcesoGD = false
-                    };
-
-                    if (model.DefinicionProcesoId != (int)Infrastructure.Enum.DefinicionProceso.ConstitucionOP)
-                    {
-                        var organizacion = db.Organizacion.FirstOrDefault(q => q.OrganizacionId == model.OrganizacionId);
-                        proceso.Organizacion = new Organizacion()
-                        {
-                            OrganizacionId = organizacion.OrganizacionId,
-                            TipoOrganizacionId = organizacion.TipoOrganizacionId
-                        };
-                        proceso.OrganizacionId = model.OrganizacionId.Value;
-                    }
-
-                    proceso.Solicitante = new Solicitante()
-                    {
-                        Nombres = Helper.Helper.CurrentUser.UserName,
-                        Email = Helper.Helper.CurrentUser.Email
-                    };
-
-                    var p = _custom.ProcesoStart(proceso);
-
-                    TempData["Message"] = Properties.Settings.Default.Success;
-                    return RedirectToAction("Details", "ProcesoConsultor", new { id = p.ProcesoId });
-                }
-                catch (System.Exception ex)
-                {
-                    TempData["Error"] = ex.Message;
-                }
-            }
-
-            ViewBag.DefinicionProcesoId = new SelectList(db.DefinicionProceso.Where(q => q.Habilitado).OrderBy(q => q.Nombre), "DefinicionProcesoId", "Nombre", model.DefinicionProcesoId);
-            ViewBag.UserId = new SelectList(db.Users.Where(q => q.Habilitado).OrderBy(q => q.UserName).ToList(), "Id", "UserName", model.UserId);
-
-            model.Documento = dbgd.Documento.Find(model.DocumentoId);
-            model.Observacion = model.Documento.Doc_Asunto;
-            model.Adjuntos = dbgd.Adjunto.Where(q => q.IdRegistro == model.Documento.Id).ToList();
-            model.ProcesoDocumentos = dbgd.ProcesoDocumento.Where(q => q.Documento_Id == model.Documento.Id).ToList();
-
-            return View(model);
-        }
         public ActionResult Create()
         {
             ViewBag.DefinicionProcesoId = new SelectList(db.DefinicionProceso.Where(q => q.Habilitado).OrderBy(q => q.Nombre), "DefinicionProcesoId", "Nombre");

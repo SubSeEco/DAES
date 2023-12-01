@@ -661,6 +661,7 @@
     <Content Include="Views\ActualizarAsambleaOrdinariaAGAC\Finish.cshtml" />
     <Content Include="Views\ActualizarJuntaGeneralSociosCoop\Finish.cshtml" />
     <Content Include="Web.config" />
+    <Content Include="Views\Shared\_LayoutGP.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
