@@ -119,7 +119,6 @@ namespace DAES.Model.GestionProcesos
         //[DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         //public DateTime? FechaFirma { get; set; }
 
-        public virtual ICollection<ProcesoDocumentoDAESGP> ProcesoDocumentoDAESGP { get; set; }
 
         #region NotMapped
 

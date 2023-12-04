@@ -144,7 +144,6 @@
     <Compile Include="GestionProcesos\EstadoProcesoGP.cs" />
     <Compile Include="GestionProcesos\GDGP.cs" />
     <Compile Include="GestionProcesos\GrupoGP.cs" />
-    <Compile Include="GestionProcesos\ProcesoDocumentoDAESGP.cs" />
     <Compile Include="GestionProcesos\ProcesoGP.cs" />
     <Compile Include="GestionProcesos\TipoAprobacionGP.cs" />
     <Compile Include="GestionProcesos\TipoDocumentoGP.cs" />
