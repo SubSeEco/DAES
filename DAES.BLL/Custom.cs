@@ -5618,7 +5618,8 @@ namespace DAES.BLL
                     }
                 }
 
-                if (!proceso.ProcesoGD)
+                // if (proceso.ProcesoGD)
+                if (proceso.ProcesoGPId > 0)
                 {
                     var ProcesoGP = gpContext.ProcesoGP.First(q => q.ProcesoId == proceso.ProcesoGPId);
                     var workflowGPList = gpContext.WorkflowGP.Where(q => q.ProcesoId == ProcesoGP.ProcesoId).ToList();
@@ -5630,7 +5631,8 @@ namespace DAES.BLL
                 }
                 //guardar proceso
                 context.Proceso.Add(proceso);
-                if (!proceso.ProcesoGD)
+                // if (proceso.ProcesoGD)
+                if (proceso.ProcesoGPId > 0)
                 {
                     gpContext.SaveChanges();
                 }
