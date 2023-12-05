@@ -11,6 +11,7 @@ namespace DAES.Model.SistemaIntegrado
         public Workflow()
         {
             Documentos = new HashSet<Documento>();
+            DocOficio = new List<DocOficio>();
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
