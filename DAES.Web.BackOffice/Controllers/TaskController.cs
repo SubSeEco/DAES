@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using static org.apache.commons.lang.ObjectUtils;
 
 namespace DAES.Web.BackOffice.Controllers
 {
@@ -214,6 +215,38 @@ namespace DAES.Web.BackOffice.Controllers
                 var documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
                 model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
             }
+            
+            var prueba  = db.DocOficios.FirstOrDefault();
+           
+
+                var deNombre = db.Firmante.Where(q => q.EsActivo).FirstOrDefault()?.Nombre;
+                var deUnidad = db.Firmante.Where(q => q.EsActivo).FirstOrDefault()?.Cargo;
+                var datos = db.Proceso.FirstOrDefault()?.Organizacion.RazonSocial;
+                var direc = db.Proceso.FirstOrDefault()?.Organizacion.Direccion;
+                var correo = db.Proceso.FirstOrDefault()?.Organizacion.Email;
+                if (prueba.DE_DOC == null) 
+                {
+                    prueba.DE_DOC = $"{deNombre}<br>{deUnidad}";
+                }
+                if (prueba.A_DOC == null)
+                {
+                    prueba.A_DOC = datos;
+                }
+                if (prueba.DIRECCION == null)
+                {
+                    prueba.DIRECCION = direc;
+                }
+                if (prueba.CORREO == null)
+                {
+                    prueba.CORREO = correo;
+                }
+               
+                
+                model.Workflow.DocOficio.Add(prueba);
+
+                var mirar = model.Workflow.DocOficio;
+
+            
             //FIN
             var tipoDeUsuario = Helper.Helper.CurrentUser.Perfil.Nombre;
             ViewBag.TipoUsuario = tipoDeUsuario;
