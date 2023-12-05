@@ -1368,10 +1368,10 @@ namespace DAES.BLL
             float[] anchosCeldas = { 10, 90 };
             tablaDeA.SetWidths(anchosCeldas);
             //borra los bordes
-            //cellDE1.Border = Rectangle.NO_BORDER;
-            //cellDE2.Border = Rectangle.NO_BORDER;
-            //cellA1.Border = Rectangle.NO_BORDER;
-            //cellA2.Border = Rectangle.NO_BORDER;
+            cellDE1.Border = Rectangle.NO_BORDER;
+            cellDE2.Border = Rectangle.NO_BORDER;
+            cellA1.Border = Rectangle.NO_BORDER;
+            cellA2.Border = Rectangle.NO_BORDER;
             
 
             tablaDeA.AddCell(cellDE1);
