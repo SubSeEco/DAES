@@ -1368,11 +1368,11 @@ namespace DAES.BLL
             float[] anchosCeldas = { 10, 90 };
             tablaDeA.SetWidths(anchosCeldas);
             //borra los bordes
-            cellDE1.Border = Rectangle.NO_BORDER;
-            cellDE2.Border = Rectangle.NO_BORDER;
-            cellA1.Border = Rectangle.NO_BORDER;
-            cellA2.Border = Rectangle.NO_BORDER;
-
+            //cellDE1.Border = Rectangle.NO_BORDER;
+            //cellDE2.Border = Rectangle.NO_BORDER;
+            //cellA1.Border = Rectangle.NO_BORDER;
+            //cellA2.Border = Rectangle.NO_BORDER;
+            
 
             tablaDeA.AddCell(cellDE1);
             tablaDeA.AddCell(cellDE2);
@@ -1386,7 +1386,7 @@ namespace DAES.BLL
             var tablitaparrafo = new Paragraph(docofi.Tabla, _fontStandard);
             tablitaparrafo.Alignment = Element.ALIGN_LEFT;
             string tablitapar = tablitaparrafo.Content;
-            tablitapar = EliminarDivYBr(tablitapar);
+            tablitapar = EliminarDivYBrTexto(tablitapar);
             List<IElement> htmlEle = HTMLWorker.ParseToList(new StringReader(tablitapar), styles)
             .OfType<IElement>()
             .ToList();
@@ -1403,12 +1403,19 @@ namespace DAES.BLL
 
         public string EliminarDivYBr(string html)
         {
+            html = Regex.Replace(html, "<div.*?>", "", RegexOptions.Singleline);
             html = Regex.Replace(html, "<div.*?>", "<br />");
             html = html.Replace("</div>", "");
             html = html.Replace("<br>", "<br />");
             return html;
         }
-
+        public string EliminarDivYBrTexto(string html)
+        {
+            html = Regex.Replace(html, "<div.*?>", "<br />");
+            html = html.Replace("</div>", "");
+            html = html.Replace("<br>", "<br />");
+            return html;
+        }
         public ResponseMessage SignResoOficio(DocOficio obj, string email, int HorasExtrasId)
         {
             var response = new ResponseMessage();

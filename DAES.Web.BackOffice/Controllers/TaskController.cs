@@ -197,6 +197,32 @@ namespace DAES.Web.BackOffice.Controllers
             return View(model);
         }
 
+        public ActionResult CrearDocumentoWeb(int WorkflowId)
+        {
+
+            ViewBag.TipoDocumentoId = new SelectList(db.TipoDocumento.OrderBy(q => q.Nombre), "TipoDocumentoId", "Nombre");
+            ViewBag.TipoPrivacidadId = new SelectList(db.TipoPrivacidad.OrderBy(q => q.Nombre), "TipoPrivacidadId", "Nombre");
+
+            var workflow = db.Workflow.FirstOrDefault(q => q.WorkflowId == WorkflowId);
+            var model = new TaskModel();
+            model.Workflow = workflow;
+            model.Documentos = db.Documento.Where(q => q.Workflow.ProcesoId == model.Workflow.ProcesoId).OrderBy(q => q.FechaCreacion).ToList();
+            //INI
+            //prueba veremos que pasa 
+            if (db.DocOficios.Where(q => q.WorkFlowId == WorkflowId).Any() == false)
+            {
+                var documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
+                model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
+            }
+            //FIN
+            var tipoDeUsuario = Helper.Helper.CurrentUser.Perfil.Nombre;
+            ViewBag.TipoUsuario = tipoDeUsuario;
+
+            return View(model);
+        }
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CrearDocumento(TaskModel model)
