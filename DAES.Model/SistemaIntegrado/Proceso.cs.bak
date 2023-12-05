@@ -63,8 +63,6 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Id documento GD")]
         public int DocumentoId { get; set; }
 
-        [Display(Name = "Id Proceso GP")]
-        public int? ProcesoGPId { get; set; }
         [Display(Name = "Correlativo GD")]
         public string Correlativo { get; set; }
 
@@ -83,8 +81,6 @@ namespace DAES.Model.SistemaIntegrado
         [NotMapped]
         public string UserId { get; set; }
 
-        [NotMapped]
-        public bool ProcesoGD { get; set; }
         public virtual ICollection<Workflow> Workflows { get; set; }
         public virtual ICollection<ActualizacionOrganizacion> ActualizacionOrganizacions { get; set; }
         public virtual ICollection<Documento> Documentos { get; set; }

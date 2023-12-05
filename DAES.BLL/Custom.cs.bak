@@ -32,7 +32,6 @@ using Org.BouncyCastle.Asn1.X500;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using iTextSharp.text.html.simpleparser;
 using System.Text.RegularExpressions;
-using DAES.Infrastructure.GestionProcesos;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -42,7 +41,7 @@ namespace DAES.BLL
         private SmtpClient smtpClient = new SmtpClient();
         private MailMessage emailMsg = new MailMessage();
         private GestionDocumentalContext gestionDocumentalContext = new GestionDocumentalContext();
-        private readonly GestionProcesosContext gpContext = new GestionProcesosContext();
+
 
         private void Send()
         {
@@ -5112,12 +5111,6 @@ namespace DAES.BLL
                 proceso.UserId = obj.UserId;
                 proceso.FechaCreacion = DateTime.Now;
 
-                if (proceso.DefinicionProceso.DefinicionProcesoId == (int)Infrastructure.Enum.DefinicionProceso.SolicitudCertificadoManual ||
-                    proceso.DefinicionProceso.DefinicionProcesoId == (int)Infrastructure.Enum.DefinicionProceso.SolicitudCertificadoAutomatico)
-                {
-                    obj.ProcesoGD = true;
-                }
-                proceso.ProcesoGD = obj.ProcesoGD;
                 proceso.Solicitante = new Solicitante()
                 {
                     Nombres = obj.Solicitante.Nombres,
@@ -5129,31 +5122,17 @@ namespace DAES.BLL
                     Cargo = obj.Solicitante.Cargo
                 };
 
-                // en el caso de que el proceso se origine a partir de un documento de Gestor Antiguo, asociar datos
-                if (obj.ProcesoGD)
-                {
 
-                    //en el caso de que el proceso se origine a partir de un documento, asociar datos
-                    if (obj.DocumentoId > 0)
-                    {
-                        var documento = gestionDocumentalContext.Documento.FirstOrDefault(q => q.Id == obj.DocumentoId);
-                        if (documento != null)
-                        {
-                            proceso.DocumentoId = documento.Id;
-                            proceso.Correlativo = documento.Doc_Correlativo;
-                        }
-                    }
-                }
-                else
+
+
+                //en el caso de que el proceso se origine a partir de un documento, asociar datos
+                if (obj.DocumentoId > 0)
                 {
-                    if (obj.ProcesoGPId > 0)
+                    var documento = gestionDocumentalContext.Documento.FirstOrDefault(q => q.Id == obj.DocumentoId);
+                    if (documento != null)
                     {
-                        var documento = gpContext.DocumentoGP.First(q => q.ProcesoId == obj.ProcesoGPId);
-                        if (documento != null)
-                        {
-                            proceso.ProcesoGPId = documento.ProcesoId;
-                            proceso.Correlativo = documento.ProcesoId.ToString();
-                        }
+                        proceso.DocumentoId = documento.Id;
+                        proceso.Correlativo = documento.Doc_Correlativo;
                     }
                 }
 
@@ -5523,44 +5502,20 @@ namespace DAES.BLL
                     };
 
                     //si trae documento desde gestion documental, asociarlo
-                    if (proceso.ProcesoGD)
+                    if (proceso.DocumentoId > 0)
                     {
-
-
-                        if (proceso.DocumentoId > 0)
+                        foreach (var adjunto in gestionDocumentalContext.Adjunto.Where(q => q.IdRegistro == proceso.DocumentoId))
                         {
-                            foreach (var adjunto in gestionDocumentalContext.Adjunto.Where(q => q.IdRegistro == proceso.DocumentoId))
+                            workflow.Documentos.Add(new Documento()
                             {
-                                workflow.Documentos.Add(new Documento()
-                                {
-                                    Autor = adjunto.Adj_LoginUsuario,
-                                    Descripcion = adjunto.Adj_Descripcion,
-                                    FechaCreacion = adjunto.Adj_FechaCreacion,
-                                    FileName = adjunto.Adj_Nombre,
-                                    Url = adjunto.Adj_Url,
-                                    TipoPrivacidadId = (int)Infrastructure.Enum.TipoPrivacidad.Publico
-                                });
-                            }
+                                Autor = adjunto.Adj_LoginUsuario,
+                                Descripcion = adjunto.Adj_Descripcion,
+                                FechaCreacion = adjunto.Adj_FechaCreacion,
+                                FileName = adjunto.Adj_Nombre,
+                                Url = adjunto.Adj_Url,
+                                TipoPrivacidadId = (int)Infrastructure.Enum.TipoPrivacidad.Publico
+                            });
                         }
-                    }
-                    else
-                    {
-                        var adjuntos = gpContext.DocumentoGP.Where(q => q.ProcesoId == proceso.ProcesoGPId).ToList();
-                        if (proceso.ProcesoGPId > 0)
-                        {
-                            foreach (var doc in adjuntos)
-                            {
-                                workflow.Documentos.Add(new Documento()
-                                {
-                                    Autor = doc.Email,
-                                    Descripcion = doc.Descripcion,
-                                    FechaCreacion = doc.Fecha,
-                                    FileName = doc.FileName,
-                                    TipoPrivacidadId = (int)Infrastructure.Enum.TipoPrivacidad.Publico,
-                                    Content = doc.File,
-                                    ProcesoId = doc.ProcesoId
-                                });
-                            }                        }
                     }
 
                     //si es un trámite en linea y viene con documentos adjuntos, asociarlos al workflow
@@ -5618,24 +5573,8 @@ namespace DAES.BLL
                     }
                 }
 
-                // if (proceso.ProcesoGD)
-                if (proceso.ProcesoGPId > 0)
-                {
-                    var ProcesoGP = gpContext.ProcesoGP.First(q => q.ProcesoId == proceso.ProcesoGPId);
-                    var workflowGPList = gpContext.WorkflowGP.Where(q => q.ProcesoId == ProcesoGP.ProcesoId).ToList();
-                    var workflowGP = workflowGPList.First(q => !q.Terminada && !q.Anulada);
-
-                    ProcesoGP.EstadoProcesoId = (int)Infrastructure.Enum.EstadoProcesoGP.Terminado;
-                    workflowGP.Terminada = true;
-                    workflowGP.TipoAprobacionId = (int)Infrastructure.Enum.TipoAprobacionGP.Aprobado;
-                }
                 //guardar proceso
                 context.Proceso.Add(proceso);
-                // if (proceso.ProcesoGD)
-                if (proceso.ProcesoGPId > 0)
-                {
-                    gpContext.SaveChanges();
-                }
                 context.SaveChanges();
 
 
@@ -6754,8 +6693,7 @@ namespace DAES.BLL
                 try
                 {
                     //var errors = ModelState.Select(x => x.Value.Errors);
-                    var _responseFolio = _folio.GetFolio(string.Join(", ", emailsFirmantes), documentoOriginal.TipoDocumentoCodigo, "ECONOMIA" /*persona.SubSecretaria*/);
-                    //var _responseFolio = _folio.GetFolio(string.Join(", ", emailsFirmantes), documentoOriginal.TipoDocumentoCodigo, persona.SubSecretaria);
+                    var _responseFolio = _folio.GetFolio(string.Join(", ", emailsFirmantes), documentoOriginal.TipoDocumentoCodigo, persona.SubSecretaria);
                     if (_responseFolio == null)
                         responseCaseUse.Errors.Add("Error al llamar el servicio externo de folio");
 
@@ -6919,9 +6857,8 @@ namespace DAES.BLL
                         {
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
-                           if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
-                           response.Errors.Add("No se encontró la subsecretaría del firmante");
-                            //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
+
+                            if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
                                 response.Errors.Add("No se encontró la subsecretaría del firmante");
                         }
 
@@ -6973,8 +6910,8 @@ namespace DAES.BLL
 
                             try
                             {
-                                var folios = folio.GetFolio(string.Join(", ", email), TipoDocto, "ECONOMIA" /*persona.SubSecretaria*/);
-                                //var folios = folio.GetFolio(string.Join(", ", email), TipoDocto, persona.SubSecretaria);
+
+                                var folios = folio.GetFolio(string.Join(", ", email), TipoDocto, persona.SubSecretaria);
                                 if (folios == null)
                                     response.Errors.Add("Servicio de folio no entregó respuesta");
 
@@ -7092,8 +7029,7 @@ namespace DAES.BLL
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
-                            //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
-                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))                            
+                            if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
                                 response.Errors.Add("No se encontró la subsecretaría del firmante");
                         }
 
@@ -7144,8 +7080,8 @@ namespace DAES.BLL
 
                             try
                             {
-                                var folios = folio.GetFolio(string.Join(", ", rubrica.Email), TipoDocto, "ECONOMIA" /*persona.SubSecretaria*/);
-                                //var folios = folio.GetFolio(string.Join(", ", rubrica.Email), TipoDocto, persona.SubSecretaria);
+
+                                var folios = folio.GetFolio(string.Join(", ", rubrica.Email), TipoDocto, persona.SubSecretaria);
                                 if (folios == null)
                                     response.Errors.Add("Servicio de folio no entregó respuesta");
 

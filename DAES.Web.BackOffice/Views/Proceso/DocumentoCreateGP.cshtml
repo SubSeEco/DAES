@@ -1,0 +1,297 @@
+﻿@model DAES.Model.DTO.DTOProceso
+@{
+    ViewBag.Title = "Crear";
+    ViewBag.SubTitle = "Proceso Gestion Documental GP";
+}
+@using GridMvc.Html
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+<script>
+    $(document).ready(function () {
+        $("#NombreOrganizacion").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Proceso/GetOrganizacion/",
+                    data: { term: request.term },
+                    type: "POST",
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                return { id: item.id, value: item.value };
+                            }));
+                    }
+                });
+            },
+
+            select: function (event, ui) {
+                $("#NombreOrganizacion").val(ui.item.value);
+                $("#OrganizacionId").val(ui.item.id);
+                return false;
+            }
+        });
+
+        $('#DefinicionProcesoId').change(function () {
+            var value = $(this).val();
+            if (value != '51' && value != '82') {
+                $('#selector').show();
+            } else {
+                $('#selector').hide();
+                $("#NombreOrganizacion").val('');
+                $("#OrganizacionId").val('');
+            }
+        });
+
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Proceso</div>
+    <div class="panel-body">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.GDGP.ProcesoId)
+            @Html.HiddenFor(model => model.DocumentoId)
+            @Html.HiddenFor(model => model.OrganizacionId)
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-horizontal">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DefinicionProcesoId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.DefinicionProcesoId, null, "Seleccione...", htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DefinicionProcesoId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div id="selector">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NombreOrganizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.NombreOrganizacion, null, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingrese razón social o número de registro" } })
+                            @Html.ValidationMessageFor(model => model.NombreOrganizacion, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.UserId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.UserId, null, "Seleccione...", htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Observacion, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Observacion, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Observacion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Iniciar proceso" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (Model.GDGP != null)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">Proceso del Gestor de Procesos</div>
+        <div class="panel-body">
+            <table class="table table-striped table-bordered dataTable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.FechaIngreso)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.DestinoUnidadDescripcion)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.ProcesoGP.NombreFuncionario)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.ProcesoId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.Materia)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.NumeroExterno)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.Referencia)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.Observacion)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.IngresoExterno)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.GDGP.ProcesoGP.EstadoProcesoGP.Descripcion)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.FechaIngreso)
+                        </td>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.DestinoUnidadDescripcion)
+                        </td>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.ProcesoGP.NombreFuncionario)
+                        </td>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.ProcesoId)
+                        </td>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.Materia)
+                        </td>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.NumeroExterno)
+                        </td>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.Referencia)
+                        </td>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.Observacion)
+                        </td>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.IngresoExterno)
+                        </td>
+                        <td>
+                        
+                            @Html.DisplayFor(model => model.GDGP.ProcesoGP.EstadoProcesoGP.Descripcion)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            @*<dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.FechaIngreso)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.FechaIngreso)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.DestinoUnidadDescripcion)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.DestinoUnidadDescripcion)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.ProcesoGP.NombreFuncionario)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.ProcesoGP.NombreFuncionario)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.ProcesoId)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.ProcesoId)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.Materia)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.Materia)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.NumeroExterno)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.NumeroExterno)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.Referencia)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.Referencia)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.Observacion)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.Observacion)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.IngresoExterno)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.IngresoExterno)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GDGP.ProcesoGP.EstadoProcesoGP.Descripcion)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.GDGP.ProcesoGP.EstadoProcesoGP.Descripcion)
+                </dd>
+            </dl>*@
+        </div>
+    </div>
+}
+
+@if (Model.DocumentoGP != null)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">Archivos adjuntos</div>
+        <div class="panel-body">
+            @Html.Grid(Model.DocumentoGP).Columns(columns =>
+            {
+                columns.Add(q=>q.FileName).Encoded(false).Sanitized(false).SetWidth(25).RenderValueAs(q => @<a href="@Url.Action("DownloadGP", "DocumentoGP", new { id = q.DocumentoId })" target="_blank">@q.FileName</a>).Titled("Archivo").Sortable(true).Filterable(true);
+columns.Add(q => q.Fecha).Titled("Fecha creación").RenderValueAs(q => string.Format("{0:dd-MM-yyyy}", q.Fecha)).Sortable(true).Filterable(true);
+columns.Add(q => q.Descripcion).Titled("Descripción").Sortable(true).Filterable(true);
+//columns.Add(q => q.Adj_TotalPaginas).Titled("Total páginas").Sortable(true).Filterable(true);
+//columns.Add(q => q.Adj_TotalPaginasSubidas).Titled("Total páginas subidas").Sortable(true).Filterable(true);
+}).WithPaging(10).EmptyText("No se encontraron registros.").SetLanguage("es").Selectable(false).WithMultipleFilters()
+        </div>
+    </div>
+}
+
+@if (Model.WorkflowGP != null)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">Historial de aprobaciones</div>
+        <div class="panel-body">
+            @Html.Grid(Model.WorkflowGP).Columns(columns =>
+       {
+           columns.Add(q => q.FechaCreacion).Titled("Fecha creación").RenderValueAs(q => string.Format("{0:dd-MM-yyyy HH:mm:ss}", q.FechaCreacion)).Sortable(true).Filterable(true);
+           columns.Add(q => q.FechaTermino).Titled("Fecha termino").RenderValueAs(q => string.Format("{0:dd-MM-yyyy HH:mm:ss}", q.FechaTermino)).Sortable(true).Filterable(true);
+           columns.Add(q => q.Pl_UndDes).Titled("Unidad origen").Sortable(true).Filterable(true);
+           columns.Add(q => q.NombreFuncionario).Titled("Funcionario origen").Sortable(true).Filterable(true);
+           //columns.Add(q => q.).Titled("Unidad destino").Sortable(true).Filterable(true);
+           //columns.Add(q => q.Pdo_NombreUsuarioDestino).Titled("Funcionario destino").Sortable(true).Filterable(true);
+       }).WithPaging(10).EmptyText("No se encontraron registros.").SetLanguage("es").Selectable(false).WithMultipleFilters()
+        </div>
+    </div>
+}
+@Html.ActionLink("Volver al inicio", "Index", "Home")

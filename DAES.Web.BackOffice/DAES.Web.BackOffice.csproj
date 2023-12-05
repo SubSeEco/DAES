@@ -1086,6 +1086,8 @@
     <Content Include="Views\Organizacion\_TransitorioEdit.cshtml" />
     <Content Include="Views\Task\_VistaFormularioOfi.cshtml" />
     <Content Include="Views\Organizacion\_ObservacionReformaPostEdit.cshtml" />
+    <Content Include="Views\Proceso\DocumentoCreateGP.cshtml" />
+    <Content Include="Views\Proceso\DocumentoGP.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

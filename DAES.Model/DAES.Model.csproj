@@ -105,6 +105,7 @@
     <Compile Include="DTO\DTOCEstatutosAnterior.cs" />
     <Compile Include="DTO\DTOConstitucion.cs" />
     <Compile Include="DTO\DTOCooperativaAbierta.cs" />
+    <Compile Include="DTO\DTODocumentoGP.cs" />
     <Compile Include="DTO\DTOEstudioSocioeconomico.cs" />
     <Compile Include="DTO\DTOExistencia.cs" />
     <Compile Include="DTO\DTODisolucion.cs" />
@@ -137,6 +138,16 @@
     <Compile Include="DTO\DTOTipoDocumento.cs" />
     <Compile Include="DTO\DTOTransformacionCooperativa.cs" />
     <Compile Include="DTO\WorkflowDTO.cs" />
+    <Compile Include="GestionProcesos\DefinicionProcesoGP.cs" />
+    <Compile Include="GestionProcesos\DefinicionWorkflowGP.cs" />
+    <Compile Include="GestionProcesos\DocumentoGP.cs" />
+    <Compile Include="GestionProcesos\EstadoProcesoGP.cs" />
+    <Compile Include="GestionProcesos\GDGP.cs" />
+    <Compile Include="GestionProcesos\GrupoGP.cs" />
+    <Compile Include="GestionProcesos\ProcesoGP.cs" />
+    <Compile Include="GestionProcesos\TipoAprobacionGP.cs" />
+    <Compile Include="GestionProcesos\TipoDocumentoGP.cs" />
+    <Compile Include="GestionProcesos\WorkflowGP.cs" />
     <Compile Include="Sigper\DGCOMUNAS.cs" />
     <Compile Include="Sigper\DGCONTRATOS.cs" />
     <Compile Include="Sigper\DGESCALAFONES.cs" />

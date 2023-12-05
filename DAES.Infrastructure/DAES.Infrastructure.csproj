@@ -195,6 +195,7 @@
     <Compile Include="File\File.cs" />
     <Compile Include="Folio\Folio.cs" />
     <Compile Include="GestionDocumental\GestionDocumentalContext.cs" />
+    <Compile Include="GestionProcesos\GestionProcesosContext.cs" />
     <Compile Include="Hsm\AgileSignerFacadeWS.cs" />
     <Compile Include="Hsm\HSM.cs" />
     <Compile Include="GestionProcesos\GestionProcesos.cs" />

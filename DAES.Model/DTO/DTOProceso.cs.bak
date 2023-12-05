@@ -1,9 +1,8 @@
-﻿using DAES.Model.GestionDocumental;
-using DAES.Model.GestionProcesos;
-using DAES.Model.SistemaIntegrado;
-using ExpressiveAnnotations.Attributes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using DAES.Model.SistemaIntegrado;
+using DAES.Model.GestionDocumental;
+using ExpressiveAnnotations.Attributes;
 
 namespace DAES.Model.DTO
 {

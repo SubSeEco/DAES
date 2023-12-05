@@ -244,31 +244,28 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
 
                             </dl>
                             @*@{
-                                    //si la tarea no tiene aprobacion (tipo de aprobacion = 1)
-                                    if (workflow.TipoAprobacionId == 1)
-                                    {
-                                        //Aca van las opciones solicitadas (Detalles | Editar | Terminar) de WorkFlow
-                                        <p>
-                                            <a href="/Workflow/Details?id=@workflow.WorkflowId">Detalles</a> |
-                                            <a href="/Workflow/Edit?id=@workflow.WorkflowId">Editar</a> |
-                                            <a href="/Workflow/Stop?id=@workflow.WorkflowId">Terminar</a>
-                                        </p>
+            //si la tarea no tiene aprobacion (tipo de aprobacion = 1)
+            if (workflow.TipoAprobacionId == 1)
+            {
+                //Aca van las opciones solicitadas (Detalles | Editar | Terminar) de WorkFlow
+                <p>
+                    <a href="/Workflow/Details?id=@workflow.WorkflowId">Detalles</a> |
+                    <a href="/Workflow/Edit?id=@workflow.WorkflowId">Editar</a> |
+                    <a href="/Workflow/Stop?id=@workflow.WorkflowId">Terminar</a>
+                </p>
+
                                     }
                                     else
                                     {
-                                        <p>
-                                            <a href="/Workflow/Details?id=@workflow.WorkflowId" class="disabled">Detalles</a> |
-                                            <a href="/Workflow/Edit?id=@workflow.WorkflowId" class="disabled">Editar</a> |
-                                            <a href="/Workflow/Stop?id=@workflow.WorkflowId" class="disabled">Terminar</a>
-                                        </p>
+                                        <!-- Manejar el caso cuando firstDoc o firstDoc.WorkFlowId es null -->
                                     }
-                                }*@
 
+                                }
                             @if (workflow.Documentos.Any(q => q.Activo == true))
                             {
                                 <hr />
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Documentos de la tarea</div>
+                                    <div class="panel-heading">Documentos de la  tarea</div>
                                     <div class="panel-body">
                                         @ViewBag.persona
                                         <table class="table table-hover table-striped datatable">
@@ -304,6 +301,7 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
                                                                 //si el documento tiene contenido
                                                                 if (item.Content != null)
                                                                 {
+
                                                                     if (!string.IsNullOrWhiteSpace(item.FileName))
                                                                     {
                                                                         @Html.ActionLink(item.FileName, "Download", "Documento", new { id = item.DocumentoId }, null)
@@ -324,6 +322,9 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
                                                             {
                                                                 <a href="@item.Url" target="_blank">@item.FileName</a>
                                                             }
+
+
+
                                                         </td>
                                                         <td>
                                                             @string.Format("{0:dd-MM-yyyy HH:mm:ss}", item.FechaCreacion)
