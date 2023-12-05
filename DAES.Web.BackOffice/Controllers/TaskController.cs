@@ -215,37 +215,39 @@ namespace DAES.Web.BackOffice.Controllers
             var direc = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.Organizacion.Direccion;
             var correo = db.Proceso.FirstOrDefault()?.Organizacion.Email;
 
-            var prueba2 = db.DocOficios.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
-           
+            //var existeDocOfice = db.DocOficios.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
+            var existeDocOfice = db.DocOficios.Where(q => q.WorkFlowId == WorkflowId).Any();
 
-            if (db.DocOficios.Where(q => q.WorkFlowId == WorkflowId).Any() == false)
+            if (!existeDocOfice)
             {
                 var documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
                 model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
               
             }
 
-            DocOficio prueba = new DocOficio();
-            if (prueba2 == null)
-            {
 
-                if (prueba.DE_DOC == null)
+            if (!existeDocOfice)
+            {
+                List<DocOficio> listaOficioTemp = new List<DocOficio>();
+                DocOficio OficioTemp = new DocOficio();
+                listaOficioTemp.Add(OficioTemp);
+                if (listaOficioTemp.FirstOrDefault().DE_DOC == null)
                 {
-                    prueba.DE_DOC = $"{deNombre}<br>{deUnidad}";
+                    listaOficioTemp.FirstOrDefault().DE_DOC = $"{deNombre}<br>{deUnidad}";
                 }
-                if (prueba.A_DOC == null)
+                if (listaOficioTemp.FirstOrDefault().A_DOC == null)
                 {
-                    prueba.A_DOC = datos;
+                    listaOficioTemp.FirstOrDefault().A_DOC = datos;
                 }
-                if (prueba.DIRECCION == null)
+                if (listaOficioTemp.FirstOrDefault().DIRECCION == null)
                 {
-                    prueba.DIRECCION = direc;
+                    listaOficioTemp.FirstOrDefault().DIRECCION = direc;
                 }
-                if (prueba.CORREO == null)
+                if (listaOficioTemp.FirstOrDefault().CORREO == null)
                 {
-                    prueba.CORREO = correo;
+                    listaOficioTemp.FirstOrDefault().CORREO = correo;
                 }
-                prueba2 = prueba;
+                model.Workflow.DocOficio = listaOficioTemp;
             }
             else
             {
@@ -269,7 +271,7 @@ namespace DAES.Web.BackOffice.Controllers
                 }
             }
                         
-                model.Workflow.DocOficio.Add(prueba2);
+                //model.Workflow.DocOficio.Add(prueba2);
 
               //  var mirar = model.Workflow.DocOficio;
 
