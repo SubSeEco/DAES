@@ -19,6 +19,16 @@
         word-wrap: break-word;
         margin-bottom: 20px;
     }
+    .editable2 {
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 500px;
+        height: 300px;
+        display: inline-block;
+        word-wrap: break-word;
+        margin-bottom: 20px;
+        overflow: auto;
+    }
 
     .tooltip {
         display: none;
@@ -57,7 +67,7 @@
 
 <div class="panel panel-default">
 
-    <div class="panel-heading">Creacion Oficio Online</div>
+    <div class="panel-heading">Editor de Oficio</div>
     <div class="panel-body">
 
         @Html.AntiForgeryToken()
@@ -223,7 +233,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Tabla, htmlAttributes: new { @class = "control-label col-md-6" })
 
                         <div class="col-md-12">
-                            <div id="Tabla" name="Tabla" class="form-control col-md-12 editable" contenteditable="true">
+                            <div id="Tabla" name="Tabla" class="form-control col-md-12 editable2" contenteditable="true">
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var Tabla = Model.Workflow.DocOficio.FirstOrDefault()?.Tabla;
@@ -245,10 +255,11 @@
             @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
             {
                 var firstDoc = Model.Workflow.DocOficio.FirstOrDefault();
-                if (firstDoc != null)
+                if (firstDoc != null && firstDoc.DocOficioId != 0)
                 {
                     <embed src="@Url.Action("ShowDoc", "Task", new { id = firstDoc.WorkFlowId })" width="96%" height="990px" type="application/pdf" />
-                }
+                    <br /><br />
+                    }
                 else
                 {
                     @* No hay contenido para mostrar *@
@@ -284,8 +295,6 @@
             $("#divEditable").html(texto);
         }
 
-         //var $Parrafo1 = $('#Parrafo1');
-        //var $Parrafo2 = $('#Parrafo2');
         var $Tabla = $('#Tabla');
         var $boldButton = $('#boldButton');
         var $italicButton = $('#italicButton');
@@ -295,14 +304,6 @@
 
         var $guardar = $('#guardar');
 
-        /*$Parrafo1.on('mouseup', function (e) {
-            palabras(e);
-
-        });
-        $Parrafo2.on('mouseup', function (e) {
-            palabras(e);
-
-        });*/
         $Tabla.on('mouseup', function (e) {
             palabras(e);
 
@@ -433,9 +434,6 @@
             console.log("URL no contiene parámetros.");
         }
 
-       
-            
-             
                 var tablaElement = document.getElementById("Tabla");
 
                 
@@ -511,93 +509,7 @@
         container.appendChild(element.cloneNode(true));
         return container.innerHTML;
     }
-   /* function inicializarDespuesDeCargar() {
-        // Asignar eventos a elementos dentro de la PartialView
-         $(document).on('click', '#GuardarDocOf', function () {
-         console.log("estoy arriba del data ");
-        
-         var tablaElement = document.getElementById("Tabla");
-
-         console.log("tabla" + tablaElement);
-         var texto = tablaElement.innerHTML;
-
-         //texto = texto.replace(/<[^>]*>/g, '');
-         //texto = texto.replace(/style="[^"]*"/g, '');
-         //var cart_div = document.getElementById("Tabla").innerHTML();
-         var div = document.createElement("div");
-
-         div.innerHTML = texto;
-         console.log("soy el div \n:" + div);
-         var prueba = convertToHTML(tablaElement);
-         var x = tablaElement.innerText;
-         var y = x.innerHTML;
-
-
-
-         var nuevoElemento = document.createElement("div");
-         nuevoElemento.innerText = tablaElement.innerText;
-         var contenidoHTML = nuevoElemento.innerHTML;
-
-         //console.log("este es el sin div pero con br \n:" + contenidoHTML);
-         // var contenidoEnriquecido = div.textContent;
-         console.log("este es el que tiene div  \n:" + texto);
-         //console.log("texto enriquecido" + contenidoEnriquecido);
-         texto = texto.replace(/^\n+/, ""); //quitar espacios al inicio
-         texto = texto.replace(/<\/b>\s*<div>/g, "</b><div>");// Reemplaza los saltos de línea entre </b> y <div> con una cadena vacía
-         texto = texto.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
-         texto = texto.replace(/\n+/g, ' ');  // Reemplaza múltiples saltos de línea con un espacio
-         texto = texto.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio
-
-         var mate = document.getElementById("MATERIA").innerHTML.trim();
-         mate = mate.replace(/^\n+/, ""); //quitar espacios al inicio
-         mate = mate.replace(/<\/b>\s*<div>/g, "</b><div>");// Reemplaza los saltos de línea entre </b> y <div> con una cadena vacía
-         mate = mate.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
-         mate = mate.replace(/\n+/g, ' ');  // Reemplaza múltiples saltos de línea con un espacio
-         mate = mate.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio*/
-
-       //    var proce=@Model.Workflow.ProcesoId;
-       /*   var data = {
-                       //var valorDiv = $("#miDiv").text();
-
-
-              ProcesoId: proce,
-                 NUMERO_REGISTRO: document.getElementById("NUMERO_REGISTRO").innerHTML.trim(),
-              ANTECEDENTES: document.getElementById("ANTECEDENTES").innerHTML.trim(),
-              MATERIA: mate, //document.getElementById("MATERIA").innerHTML.trim(),
-                 DE_DOC: document.getElementById("DE_DOC").innerHTML.trim(),
-              A_DOC: document.getElementById("A_DOC").innerHTML.trim(),
-              DIRECCION: document.getElementById("DIRECCION").innerHTML.trim(),
-              CORREO: document.getElementById("CORREO").innerHTML.trim(),
-                 //Parrafo1: document.getElementById("Parrafo1").innerHTML.trim(),
-                 WorkflowId: workflowId,
-                 //Parrafo2: document.getElementById("Parrafo2").innerHTML.trim(),
-                 //Parrafo3: document.getElementById("Parrafo3").innerHTML.trim(),
-              DocOficioId: null,
-              Tabla: texto,//contenidoHTML,//document.getElementById("Tabla").innerHTML,
-                 Content :null,
-                 FileName :null,
-                 FechaCreacion :null
-
-
-                     //tabla: document.getElementById("Tabla").innerHTML
-
-         };
-     $.ajax({
-         type: "POST",
-         url: "/Task/GuardarDocOfi",
-         data : data ,
-         success: function (result) {
-             $("#DocOf").html(result);
-             //$("#elemento").empty();
-
-             inicializarDespuesDeCargar();
-             //$("#elemento").html(result);
-         }
-     });
-
-
-     });
-    }*/
+   
 
 </script>
 
