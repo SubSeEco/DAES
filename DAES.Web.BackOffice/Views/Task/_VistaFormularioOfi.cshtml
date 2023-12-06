@@ -258,7 +258,8 @@
                 if (firstDoc != null && firstDoc.DocOficioId != 0)
                 {
                     <embed src="@Url.Action("ShowDoc", "Task", new { id = firstDoc.WorkFlowId })" width="96%" height="990px" type="application/pdf" />
-                }
+                    <br /><br />
+                    }
                 else
                 {
                     @* No hay contenido para mostrar *@
