@@ -13,7 +13,7 @@
     .editable {
         border: 1px solid #ccc;
         padding: 10px;
-        width: 500px;
+        max-width: 100%;
         height: auto;
         display: inline-block;
         word-wrap: break-word;
@@ -22,7 +22,7 @@
     .editable2 {
         border: 1px solid #ccc;
         padding: 10px;
-        width: 500px;
+        max-width: 100%;
         height: 300px;
         display: inline-block;
         word-wrap: break-word;
@@ -80,7 +80,7 @@
             <button id="italicButton" class="btn btn-sm botonfuentes"><img src="~/Content/cursiva.png"></button>
             <button id="subButton" class="btn btn-sm botonfuentes"><img src="~/Content/subrayar.png"></button>
             <!-- <button onclick="agregarTabla()">Agregar Tabla Personalizada</button> -->
-
+            <br /><br />
             <table>
                 <tr>
                     <td>
@@ -259,7 +259,7 @@
                 {
                     <embed src="@Url.Action("ShowDoc", "Task", new { id = firstDoc.WorkFlowId })" width="96%" height="990px" type="application/pdf" />
                     <br /><br />
-                    }
+                }
                 else
                 {
                     @* No hay contenido para mostrar *@
@@ -273,8 +273,9 @@
 
 
         </div>
-        <div>
-            <button id="GuardarDocOf" type="submit" class="btn btn-danger">Vista Previa</button>
+
+        <div col-md-6>
+            <button id="GuardarDocOf" type="submit" class="btn btn-danger">Guardar y Visualizar</button>
         </div>
 
     </div>

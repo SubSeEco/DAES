@@ -1098,7 +1098,7 @@ namespace DAES.BLL
             Font _fontStandard = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.DARK_GRAY);
             Font _fontStandardBold = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
             Font _fontNegrita = new Font(Font.HELVETICA, 10, Font.BOLD);
-
+            Font _fontBlanco = new Font(Font.HELVETICA, 10, Font.BOLD, Color.WHITE);
             MemoryStream memStream = new MemoryStream();
             Document doc = new Document(PageSize.LEGAL);
             PdfWriter write = PdfWriter.GetInstance(doc, memStream);
@@ -1226,7 +1226,6 @@ namespace DAES.BLL
             .ToList();
             foreach (var element in htmlE)
             {
-                var mirarmirar = reg;
                 cellOAM.AddElement(element);
             }
 
@@ -1235,7 +1234,6 @@ namespace DAES.BLL
             .ToList();
             foreach (var element in htmlEl)
             {
-                var mirarmirar = ante;
                 cellOAM.AddElement(element);
             }
 
@@ -1244,10 +1242,10 @@ namespace DAES.BLL
             .ToList();
             foreach (var element in htmlElem)
             {
-                var mirarmirar = mat;
                 cellOAM.AddElement(element);
             }
-
+            var vacio = new Paragraph("soy vacio", _fontBlanco);
+            cellOAM.AddElement(vacio);
             cellOAM.Border = Rectangle.NO_BORDER;
             cellOAM.HorizontalAlignment = Element.ALIGN_RIGHT;
 
@@ -1284,7 +1282,6 @@ namespace DAES.BLL
             .ToList();
             foreach (var element in htmlElementoD1)
             {
-                var mirarmirar = DE_DOC;
                 cellDE1.AddElement(element);
             }
 
@@ -1301,7 +1298,6 @@ namespace DAES.BLL
             .ToList();
             foreach (var element in htmlElementoDE2)
             {
-                var mirarmirar = DEDO;
                 cellDE2.AddElement(element);
             }
 
@@ -1317,7 +1313,6 @@ namespace DAES.BLL
             .ToList();
             foreach (var element in htmlElementoA1)
             {
-                var mirarmirar = A_DOC;
                 cellA1.AddElement(element);
             }
 
