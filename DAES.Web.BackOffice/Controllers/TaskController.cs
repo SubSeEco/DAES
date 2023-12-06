@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using static org.apache.commons.lang.ObjectUtils;
 
 namespace DAES.Web.BackOffice.Controllers
 {
@@ -196,6 +197,100 @@ namespace DAES.Web.BackOffice.Controllers
 
             return View(model);
         }
+
+        public ActionResult CrearDocumentoWeb(int WorkflowId)
+        {
+
+            ViewBag.TipoDocumentoId = new SelectList(db.TipoDocumento.OrderBy(q => q.Nombre), "TipoDocumentoId", "Nombre");
+            ViewBag.TipoPrivacidadId = new SelectList(db.TipoPrivacidad.OrderBy(q => q.Nombre), "TipoPrivacidadId", "Nombre");
+
+            var workflow = db.Workflow.FirstOrDefault(q => q.WorkflowId == WorkflowId);
+            var model = new TaskModel();
+            model.Workflow = workflow;
+            model.Documentos = db.Documento.Where(q => q.Workflow.ProcesoId == model.Workflow.ProcesoId).OrderBy(q => q.FechaCreacion).ToList();
+            //INI
+            var deNombre = db.Firmante.Where(q => q.EsActivo).FirstOrDefault()?.Nombre;
+            var deUnidad = db.Firmante.Where(q => q.EsActivo).FirstOrDefault()?.Cargo;
+            var datos = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.Organizacion.RazonSocial;
+            var direc = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.Organizacion.Direccion;
+            var registro = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.ProcesoId;
+            var correo = db.Proceso.FirstOrDefault()?.Organizacion.Email;
+
+            //var existeDocOfice = db.DocOficios.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
+            var existeDocOfice = db.DocOficios.Where(q => q.WorkFlowId == WorkflowId).Any();
+            //List<DocOficio> documentoAnterior = new List<DocOficio>();
+            DocOficio documentoAnterior = new DocOficio();
+
+            if (!existeDocOfice)
+            {
+                documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
+                model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
+              
+            }
+
+
+            if (!existeDocOfice && documentoAnterior.DocOficioId == 0)
+            {
+                List<DocOficio> listaOficioTemp = new List<DocOficio>();
+                DocOficio OficioTemp = new DocOficio();
+                listaOficioTemp.Add(OficioTemp);
+                if (listaOficioTemp.FirstOrDefault().DE_DOC == null)
+                {
+                    listaOficioTemp.FirstOrDefault().DE_DOC = $"{deNombre}<br>{deUnidad}";
+                }
+                if (listaOficioTemp.FirstOrDefault().A_DOC == null)
+                {
+                    listaOficioTemp.FirstOrDefault().A_DOC = datos;
+                }
+                if (listaOficioTemp.FirstOrDefault().DIRECCION == null)
+                {
+                    listaOficioTemp.FirstOrDefault().DIRECCION = direc;
+                }
+                if (listaOficioTemp.FirstOrDefault().CORREO == null)
+                {
+                    listaOficioTemp.FirstOrDefault().CORREO = correo;
+                }
+                if (listaOficioTemp.FirstOrDefault().NUMERO_REGISTRO == null)
+                {
+                    listaOficioTemp.FirstOrDefault().NUMERO_REGISTRO = registro.ToString();
+                }
+                model.Workflow.DocOficio = listaOficioTemp;
+            }
+            else
+            {
+
+
+                if (model.Workflow.DocOficio.FirstOrDefault().DE_DOC == null)
+                {
+                    model.Workflow.DocOficio.FirstOrDefault().DE_DOC = $"{deNombre}<br>{deUnidad}";
+                }
+                if (model.Workflow.DocOficio.FirstOrDefault().A_DOC == null)
+                {
+                    model.Workflow.DocOficio.FirstOrDefault().A_DOC = datos;
+                }
+                if (model.Workflow.DocOficio.FirstOrDefault().DIRECCION == null)
+                {
+                    model.Workflow.DocOficio.FirstOrDefault().DIRECCION = direc;
+                }
+                if (model.Workflow.DocOficio.FirstOrDefault().CORREO == null)
+                {
+                    model.Workflow.DocOficio.FirstOrDefault().CORREO = correo;
+                }
+            }
+                        
+                //model.Workflow.DocOficio.Add(prueba2);
+
+                var mirar = model.Workflow.DocOficio;
+
+            
+            //FIN
+            var tipoDeUsuario = Helper.Helper.CurrentUser.Perfil.Nombre;
+            ViewBag.TipoUsuario = tipoDeUsuario;
+
+            return View(model);
+        }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -1699,6 +1794,7 @@ namespace DAES.Web.BackOffice.Controllers
                     model.Workflow.DocOficio.FirstOrDefault().DIRECCION = ofi.DIRECCION;
                     model.Workflow.DocOficio.FirstOrDefault().CORREO = ofi.CORREO;
                     model.Workflow.DocOficio.FirstOrDefault().Tabla = ofi.Tabla;
+                    model.Workflow.DocOficio.FirstOrDefault().Parrafo1 = ofi.Parrafo1;
                     var mirar = model.Workflow.DocOficio;
                     model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId));
                     db.SaveChanges();
@@ -1719,6 +1815,7 @@ namespace DAES.Web.BackOffice.Controllers
                     CORREO = ofi.CORREO,
                     Firmado = false,
                     Tabla = ofi.Tabla,
+                    Parrafo1 = ofi.Parrafo1,
                     FileName = "DocumentoCreadoTask_" + WorkflowId + "_" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
                 };
                 db.DocOficios.Add(nuevoregistro);
@@ -1836,6 +1933,7 @@ namespace DAES.Web.BackOffice.Controllers
             public string DIRECCION { get; set; }
             public string CORREO { get; set; }
             public string Tabla { get; set; }
+            public string Parrafo1 { get; set; }
             public byte[] Content { get; set; }
             public string FileName { get; set; }
             public DateTime? FechaCreacion { get; set; } = DateTime.Now;
