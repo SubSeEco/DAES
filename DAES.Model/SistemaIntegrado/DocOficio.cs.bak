@@ -52,7 +52,7 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.MultilineText)]
         public string CORREO { get; set; }
 
-        [Display(Name = "Distribucion")]
+        [Display(Name = "Parrafo1")]
         [DataType(DataType.MultilineText)]
         public string Parrafo1 { get; set; }
 

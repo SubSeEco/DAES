@@ -1099,6 +1099,7 @@ namespace DAES.BLL
             Font _fontStandardBold = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
             Font _fontNegrita = new Font(Font.HELVETICA, 10, Font.BOLD);
             Font _fontBlanco = new Font(Font.HELVETICA, 10, Font.BOLD, Color.WHITE);
+            Font _fontNegritaPequeño = new Font(Font.HELVETICA, 8, Font.BOLD);
             MemoryStream memStream = new MemoryStream();
             Document doc = new Document(PageSize.LEGAL);
             PdfWriter write = PdfWriter.GetInstance(doc, memStream);
@@ -1148,7 +1149,7 @@ namespace DAES.BLL
             tableHeader.AddCell(cell);
 
             //title
-            cell = new PdfPCell(new Phrase(docofi.Parrafo1, _fontTitulo));
+            cell = new PdfPCell(new Phrase());
             cell.HorizontalAlignment = Element.ALIGN_CENTER;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.BorderWidth = 0;
@@ -1189,20 +1190,20 @@ namespace DAES.BLL
             tableEncabezadoUno.AddCell(new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER });
 
             //Registro 
-            string ord = "Reg.: N°";
-            var paragrafR = new Paragraph(ord, _fontNegrita);
+            string ord = " <b> Reg.: N° </b>";
+            var paragrafR = new Paragraph(ord, _fontNegritaPequeño);
             var paraNumeroOrden = new Paragraph(docofi.NUMERO_REGISTRO, _fontStandard);
             paragrafR.AddRange(paraNumeroOrden);
             paragrafR.Alignment = Element.ALIGN_RIGHT;
             //Antecedentes
-            string ANT = "ANT.: ";
-            var paragrafAnt = new Paragraph(ANT, _fontNegrita);
+            string ANT = "<b> ANT.: </b>";
+            var paragrafAnt = new Paragraph(ANT, _fontNegritaPequeño);
             var paragrafAntP = new Paragraph(docofi.ANTECEDENTES, _fontStandard);
             paragrafAnt.AddRange(paragrafAntP);
             paragrafAnt.Alignment = Element.ALIGN_RIGHT;
 
-            string MAT = "MAT.: ";
-            var paragrafMat = new Paragraph(MAT, _fontNegrita);
+            string MAT = "<b> MAT.: </b>";
+            var paragrafMat = new Paragraph(MAT, _fontNegritaPequeño);
             var paragrafMATP = new Paragraph(docofi.MATERIA, _fontStandard);
             paragrafMat.AddRange(paragrafMATP);
             paragrafMat.Alignment = Element.ALIGN_RIGHT;
@@ -1272,7 +1273,7 @@ namespace DAES.BLL
             tablaDeA.DefaultCell.BorderWidth = 0;
             tablaDeA.DefaultCell.Border = 0;
             //"DE" en duro para primera celda
-            string DE_DOC = "DE: ";
+            string DE_DOC = "<b>DE: </b>";
             var paragrafDEDOC = new Paragraph(DE_DOC, _fontNegrita);
             paragrafDEDOC.Alignment = Element.ALIGN_RIGHT;
 
@@ -1303,7 +1304,7 @@ namespace DAES.BLL
 
 
             // "A " en duro para primera celda ,segunda fila 
-            string A_DOC = "A: ";
+            string A_DOC = "<b>A: </b>";
             var paragrafA_DOC = new Paragraph(A_DOC, _fontNegrita);
             paragrafA_DOC.Alignment = Element.ALIGN_RIGHT;
 
@@ -1388,6 +1389,32 @@ namespace DAES.BLL
             foreach (var element in htmlEle)
             {
                 var mirarmirar = tablitapar;
+                doc.Add(element);
+            }
+
+            string distribucionenduro = "<b> Distribución: </b>";
+            _fontNegritaPequeño.SetStyle(Font.BOLD);
+            
+            var paragrafDistribucion = new Paragraph(distribucionenduro, _fontNegritaPequeño);
+            paragrafDistribucion.Font.Size = _fontNegritaPequeño.Size;
+            var distribucion1 = new Paragraph();
+            //var distribucion = new Paragraph(docofi.Parrafo1, _fontStandardDistri);
+            var distribucion = "<span style=\"font-size: 10pt;\">" + docofi.Parrafo1 + "</span>";
+
+            distribucion1.Add("<br />");
+            distribucion1.Add(distribucion);
+            paragrafDistribucion.AddRange(distribucion1);
+            paragrafDistribucion.Alignment = Element.ALIGN_RIGHT;
+
+    
+            string distribucionstring = paragrafDistribucion.Content;
+            distribucionstring = EliminarDivYBrTexto(distribucionstring);
+            List<IElement> htmldistri = HTMLWorker.ParseToList(new StringReader(distribucionstring), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var element in htmldistri)
+            {
+                var mirarmirar = distribucionstring;
                 doc.Add(element);
             }
 

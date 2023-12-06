@@ -248,27 +248,6 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-
-                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo1, htmlAttributes: new { @class = "control-label col-md-6" })
-
-                        <div class="col-md-12">
-                            <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable" contenteditable="true">
-                                @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
-                                {
-                                    var Parrafo1 = Model.Workflow.DocOficio.FirstOrDefault()?.Parrafo1;
-                                    @Html.Raw(Parrafo1 ?? string.Empty)
-                                }
-                                else
-                                {
-
-                                    @Html.Raw(string.Empty)
-                                }
-                            </div>
-                        </div>
-                    </td>
-                </tr>
             </table>
         </div>
         <div class="col-md-6">
@@ -499,7 +478,7 @@
                      A_DOC: document.getElementById("A_DOC").innerHTML.trim(),
                      DIRECCION: document.getElementById("DIRECCION").innerHTML.trim(),
                      CORREO: document.getElementById("CORREO").innerHTML.trim(),
-                        Parrafo1: document.getElementById("Parrafo1").innerHTML.trim(),
+                        //Parrafo1: document.getElementById("Parrafo1").innerHTML.trim(),
                         WorkflowId: workflowId,
                         //Parrafo2: document.getElementById("Parrafo2").innerHTML.trim(),
                         //Parrafo3: document.getElementById("Parrafo3").innerHTML.trim(),

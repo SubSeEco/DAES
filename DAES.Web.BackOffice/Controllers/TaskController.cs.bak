@@ -1933,7 +1933,6 @@ namespace DAES.Web.BackOffice.Controllers
             public string DIRECCION { get; set; }
             public string CORREO { get; set; }
             public string Tabla { get; set; }
-            public string Parrafo1 { get; set; }
             public byte[] Content { get; set; }
             public string FileName { get; set; }
             public DateTime? FechaCreacion { get; set; } = DateTime.Now;
