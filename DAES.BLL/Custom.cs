@@ -1189,7 +1189,7 @@ namespace DAES.BLL
             tableEncabezadoUno.AddCell(new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER });
 
             //Registro 
-            string ord = "ORD.: N°";
+            string ord = "Reg.: N°";
             var paragrafR = new Paragraph(ord, _fontNegrita);
             var paraNumeroOrden = new Paragraph(docofi.NUMERO_REGISTRO, _fontStandard);
             paragrafR.AddRange(paraNumeroOrden);

@@ -213,20 +213,23 @@ namespace DAES.Web.BackOffice.Controllers
             var deUnidad = db.Firmante.Where(q => q.EsActivo).FirstOrDefault()?.Cargo;
             var datos = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.Organizacion.RazonSocial;
             var direc = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.Organizacion.Direccion;
+            var registro = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.ProcesoId;
             var correo = db.Proceso.FirstOrDefault()?.Organizacion.Email;
 
             //var existeDocOfice = db.DocOficios.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
             var existeDocOfice = db.DocOficios.Where(q => q.WorkFlowId == WorkflowId).Any();
+            //List<DocOficio> documentoAnterior = new List<DocOficio>();
+            DocOficio documentoAnterior = new DocOficio();
 
             if (!existeDocOfice)
             {
-                var documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
+                documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
                 model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
               
             }
 
 
-            if (!existeDocOfice)
+            if (!existeDocOfice && documentoAnterior.DocOficioId == 0)
             {
                 List<DocOficio> listaOficioTemp = new List<DocOficio>();
                 DocOficio OficioTemp = new DocOficio();
@@ -246,6 +249,10 @@ namespace DAES.Web.BackOffice.Controllers
                 if (listaOficioTemp.FirstOrDefault().CORREO == null)
                 {
                     listaOficioTemp.FirstOrDefault().CORREO = correo;
+                }
+                if (listaOficioTemp.FirstOrDefault().NUMERO_REGISTRO == null)
+                {
+                    listaOficioTemp.FirstOrDefault().NUMERO_REGISTRO = registro.ToString();
                 }
                 model.Workflow.DocOficio = listaOficioTemp;
             }
@@ -273,7 +280,7 @@ namespace DAES.Web.BackOffice.Controllers
                         
                 //model.Workflow.DocOficio.Add(prueba2);
 
-              //  var mirar = model.Workflow.DocOficio;
+                var mirar = model.Workflow.DocOficio;
 
             
             //FIN

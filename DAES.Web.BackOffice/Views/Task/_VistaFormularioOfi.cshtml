@@ -19,6 +19,16 @@
         word-wrap: break-word;
         margin-bottom: 20px;
     }
+    .editable2 {
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 500px;
+        height: 300px;
+        display: inline-block;
+        word-wrap: break-word;
+        margin-bottom: 20px;
+        overflow: auto;
+    }
 
     .tooltip {
         display: none;
@@ -57,7 +67,7 @@
 
 <div class="panel panel-default">
 
-    <div class="panel-heading">Creacion Oficio Online</div>
+    <div class="panel-heading">Editor de Oficio</div>
     <div class="panel-body">
 
         @Html.AntiForgeryToken()
@@ -223,7 +233,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Tabla, htmlAttributes: new { @class = "control-label col-md-6" })
 
                         <div class="col-md-12">
-                            <div id="Tabla" name="Tabla" class="form-control col-md-12 editable" contenteditable="true">
+                            <div id="Tabla" name="Tabla" class="form-control col-md-12 editable2" contenteditable="true">
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var Tabla = Model.Workflow.DocOficio.FirstOrDefault()?.Tabla;
@@ -245,7 +255,7 @@
             @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
             {
                 var firstDoc = Model.Workflow.DocOficio.FirstOrDefault();
-                if (firstDoc != null)
+                if (firstDoc != null && firstDoc.DocOficioId != 0)
                 {
                     <embed src="@Url.Action("ShowDoc", "Task", new { id = firstDoc.WorkFlowId })" width="96%" height="990px" type="application/pdf" />
                 }
