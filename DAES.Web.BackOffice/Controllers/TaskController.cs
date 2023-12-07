@@ -229,8 +229,9 @@ namespace DAES.Web.BackOffice.Controllers
             }
 
 
-            if (!existeDocOfice && documentoAnterior.DocOficioId == 0)
+            if (!existeDocOfice && documentoAnterior == null)
             {
+
                 List<DocOficio> listaOficioTemp = new List<DocOficio>();
                 DocOficio OficioTemp = new DocOficio();
                 listaOficioTemp.Add(OficioTemp);
