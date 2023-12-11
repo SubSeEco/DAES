@@ -213,8 +213,8 @@ namespace DAES.Web.BackOffice.Controllers
             var deUnidad = db.Firmante.Where(q => q.EsActivo).FirstOrDefault()?.Cargo;
             var datos = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.Organizacion.RazonSocial;
             var direc = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.Organizacion.Direccion;
-            var registro = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.ProcesoId;
-            var correo = db.Proceso.FirstOrDefault()?.Organizacion.Email;
+            var registro = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.Organizacion.NumeroRegistro;
+            var correo = db.Proceso.FirstOrDefault(q => q.ProcesoId == model.Workflow.ProcesoId)?.Organizacion.Email;
 
             //var existeDocOfice = db.DocOficios.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
             var existeDocOfice = db.DocOficios.Where(q => q.WorkFlowId == WorkflowId).Any();
