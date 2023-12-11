@@ -20,14 +20,7 @@
         background-color: darkcyan;
     }
 </style>
-@*@if (ViewBag.TipoUsuario == "Administrador")
-    {
-        <div id="capa2">
-            @Html.ActionLink("Cambiar ejecutante ", "CambioBandeja", "Task", new { Model.Workflow.WorkflowId }, new { @class = "btn btn-primary", @style = "position:fixed; background-color:darkcyan" })
 
-        </div>
-
-    }*@
 <div id="capa1">
     @Html.ActionLink("Enviar tarea", "Send", "Task", new { Model.Workflow.WorkflowId }, new { @class = "btn btn-primary", @style = "position:fixed" })
 </div>
@@ -90,12 +83,7 @@
                         <tbody>
                             @for (int i = 0; i < Model.Documentos.Count(); i++)
                             {
-                                @*using (Html.BeginForm())
-                                    {
-                                        @Html.AntiForgeryToken()
-                                        @Html.Hidden("WorkflowId", Model.Documentos.ToArray()[i].WorkflowId)
-                                        @Html.Hidden("DocumentoId", Model.Documentos.ToArray()[i].DocumentoId)
-                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                               
                                 <tr>
                                     <td>
                                         @Html.DisplayFor(model => Model.Documentos.ToArray()[i].DocumentoId)
@@ -122,21 +110,7 @@
                                     <td>
                                         @Html.DisplayFor(model => Model.Documentos.ToArray()[i].Descripcion)
                                     </td>
-                                    <td>
-                                        @*<input type="submit" value="Firmar documento" class="btn btn-primary" />*@
-                                        @*@Html.ActionLink("Firmar documento", "FirmarDocumentosPost", null, new { id = Model.Documentos.ToArray()[i].DocumentoId }, new { @class = "btn btn-primary" })*@
-                                        @*@using (Html.BeginForm("SignResolucion", "Task", new { id = Model.Documentos.ToArray()[i].DocumentoId, idProceso = Model.Documentos.ToArray()[i].ProcesoId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                            {
-
-                                                @Html.DropDownList("RubricaID", null, "Seleccione...", new { @class = "form-control" })
-                                                @Html.AntiForgeryToken()
-                                                @Html.HiddenFor(model => Model.ProcesoId)
-                                                <br /> <br />
-                                                <button class="btn btn-primary" type="submit">Firmar Documento</button>
-                                            }*@
-
-
-                                    </td>
+                            
 
                                     <td style="width:500px">
 

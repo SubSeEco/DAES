@@ -1088,7 +1088,7 @@ namespace DAES.BLL
 
         //TODO: Se crea nuevo metodo para documento configuracion
         //ALEX
-        public byte[] CrearDocumentoConfOficio(DocOficio docofi)
+        public byte[] CrearDocumentoConfOficio(DocOficio docofi, List<Directorio> direc)
         {
 
             EventoTitulos ev = new EventoTitulos();
@@ -1110,9 +1110,7 @@ namespace DAES.BLL
             var mirar3 = docofi.Tabla;
 
             // Contenido HTML con formato enriquecido
-
-
-
+           
             //NEW
             doc.Open();
             doc.AddTitle(docofi.FileName);
@@ -1188,6 +1186,8 @@ namespace DAES.BLL
             tableEncabezadoUno.DefaultCell.BorderWidth = 0;
 
             tableEncabezadoUno.AddCell(new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER });
+
+            
 
             //Registro 
             string ord = " <b> Reg.: N° </b>";
@@ -1392,15 +1392,52 @@ namespace DAES.BLL
                 doc.Add(element);
             }
 
-            string distribucionenduro = "<b> Distribución: </b>";
-            _fontNegritaPequeño.SetStyle(Font.BOLD);
-            
-            var paragrafDistribucion = new Paragraph(distribucionenduro, _fontNegritaPequeño);
-            paragrafDistribucion.Font.Size = _fontNegritaPequeño.Size;
+            //Para la tabla
+            PdfPTable table = new PdfPTable(4);
+            table.WidthPercentage = 100.0f;
+            table.HorizontalAlignment = Element.ALIGN_CENTER;
+            table.DefaultCell.BorderColor = Color.LIGHT_GRAY;
+
+            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
+            table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
+            PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
+            cellDesde.HorizontalAlignment = Element.ALIGN_CENTER;
+            table.AddCell(cellDesde);
+            PdfPCell cellHasta = new PdfPCell(new Phrase("Hasta", _fontStandardBold));
+            cellHasta.HorizontalAlignment = Element.ALIGN_CENTER;
+            table.AddCell(cellHasta);
+            table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
+            foreach (var item in direc.ToList())
+            {
+                    var cargo = context.Cargo.FirstOrDefault(q => q.CargoId == item.CargoId);
+                    table.AddCell(new PdfPCell(new Phrase(cargo.Nombre, _fontStandardBold)));
+                    table.AddCell(new PdfPCell(new Phrase(item.NombreCompleto, _fontStandard)));
+                    PdfPCell cellini = new PdfPCell(new Phrase(item.FechaInicio.HasValue ? string.Format("{0:dd-MM-yyyy}", item.FechaInicio.Value) : string.Empty, _fontStandard));
+                    cellini.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellini);
+                    PdfPCell cellfin = new PdfPCell(new Phrase(item.FechaTermino.HasValue ? string.Format("{0:dd-MM-yyyy}", item.FechaTermino.Value) : string.Empty, _fontStandard));
+                    cellfin.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellfin);
+
+            }
+            doc.Add(table);
+
+            //string distribucionenduro = "<b> Distribución: </b>";
+            //_fontNegritaPequeño.SetStyle(Font.BOLD);
+            var paragrafDistribucion = new Paragraph();
+            //var paragrafDistribucion = new Paragraph(distribucionenduro, _fontNegritaPequeño);
+            // paragrafDistribucion.Font.Size = _fontNegritaPequeño.Size;
             var distribucion1 = new Paragraph();
             //var distribucion = new Paragraph(docofi.Parrafo1, _fontStandardDistri);
-            var distribucion = "<span style=\"font-size: 10pt;\">" + docofi.Parrafo1 + "</span>";
-
+            // var distribucion = "<span style=\"font-size: 10pt;\">" + docofi.Parrafo1 + "</span>";
+            
+            var distribucion = "<span style=\"font-size: 10pt;\">" +
+                                DateTime.Now + " ID " + docofi.ProcesoId +
+                                "<br /><b><span style=\"font-size: 10pt;\"> Distribución:" + "</span></b>"  +
+                                "<br /><span style=\"font-size: 10pt;\"> -Destinatario(" + docofi.CORREO + ")" + "</span>" +
+                                "<br /><span style=\"font-size: 10pt;\"> -Oficina de Partes" + "</span>"  +
+                                "<br /><span style=\"font-size: 10pt;\">-DAES.N° Reg. (" + docofi.NUMERO_REGISTRO + ")" + "</span>"
+                + "</span>"; 
             distribucion1.Add("<br />");
             distribucion1.Add(distribucion);
             paragrafDistribucion.AddRange(distribucion1);
@@ -1488,7 +1525,7 @@ namespace DAES.BLL
                         var persona = sg.GetUserByEmail(email);
 
                         /*se buscar la persona para determinar la subsecretaria*/
-                        if (!string.IsNullOrEmpty(email))
+            if (!string.IsNullOrEmpty(email))
                         {
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");

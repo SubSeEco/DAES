@@ -197,17 +197,28 @@ namespace DAES.Web.BackOffice.Controllers
 
             return View(model);
         }
+        //Ange
+       /* public ActionResult _DirectorioEditWeb(int WorkflowId)
+        {
 
-        public ActionResult CrearDocumentoWeb(int WorkflowId)
+        }*/
+            public ActionResult CrearDocumentoWeb(int WorkflowId)
         {
 
             ViewBag.TipoDocumentoId = new SelectList(db.TipoDocumento.OrderBy(q => q.Nombre), "TipoDocumentoId", "Nombre");
             ViewBag.TipoPrivacidadId = new SelectList(db.TipoPrivacidad.OrderBy(q => q.Nombre), "TipoPrivacidadId", "Nombre");
+            ViewBag.CargoId = new SelectList(db.Cargo.OrderBy(q => q.Nombre), "CargoId", "Nombre");
+            ViewBag.GeneroId = new SelectList(db.Genero.OrderBy(q => q.Nombre), "GeneroId", "Nombre");
 
             var workflow = db.Workflow.FirstOrDefault(q => q.WorkflowId == WorkflowId);
+            var proceso = db.Proceso.FirstOrDefault(q => q.ProcesoId == workflow.ProcesoId);
             var model = new TaskModel();
             model.Workflow = workflow;
+            model.Workflow.Proceso = proceso;
             model.Documentos = db.Documento.Where(q => q.Workflow.ProcesoId == model.Workflow.ProcesoId).OrderBy(q => q.FechaCreacion).ToList();
+
+            //model.Directorios = db.Directorio.Where(q => q.OrganizacionId == model.Workflow.Proceso.OrganizacionId).ToList();
+
             //INI
             var deNombre = db.Firmante.Where(q => q.EsActivo).FirstOrDefault()?.Nombre;
             var deUnidad = db.Firmante.Where(q => q.EsActivo).FirstOrDefault()?.Cargo;
@@ -689,6 +700,9 @@ namespace DAES.Web.BackOffice.Controllers
 
             return PartialView("_DirectorioEdit", model);
         }
+
+       
+
 
         public ActionResult ModificacionAdd(int WorkflowId, int OrganizacionId)
         {
@@ -1797,7 +1811,7 @@ namespace DAES.Web.BackOffice.Controllers
                     model.Workflow.DocOficio.FirstOrDefault().Tabla = ofi.Tabla;
                     model.Workflow.DocOficio.FirstOrDefault().Parrafo1 = ofi.Parrafo1;
                     var mirar = model.Workflow.DocOficio;
-                    model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId));
+                    model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId), model.Workflow.Proceso.Organizacion.Directorios);
                     db.SaveChanges();
                 }           
             }
@@ -1822,7 +1836,7 @@ namespace DAES.Web.BackOffice.Controllers
                 db.DocOficios.Add(nuevoregistro);
                 db.SaveChanges();
                 var exi = model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
-                exi.Content = _custom.CrearDocumentoConfOficio(exi);
+                exi.Content = _custom.CrearDocumentoConfOficio(exi,model.Workflow.Proceso.Organizacion.Directorios);
                 db.SaveChanges();
 
 
