@@ -19,6 +19,7 @@
         word-wrap: break-word;
         margin-bottom: 20px;
     }
+
     .editable2 {
         border: 1px solid #ccc;
         padding: 10px;
@@ -88,7 +89,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().NUMERO_REGISTRO, htmlAttributes: new { @class = "control-label col-md-6" })
 
                         <div class="col-md-12">
-                            <div id="NUMERO_REGISTRO" name="NUMERO_REGISTRO" class="form-control col-md-12 editable" contenteditable="true">
+                            <div id="NUMERO_REGISTRO" name="NUMERO_REGISTRO" class="form-control col-md-12 editable" contenteditable="false">
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var numeroRegistro = Model.Workflow.DocOficio.FirstOrDefault()?.NUMERO_REGISTRO;
@@ -248,34 +249,31 @@
                         </div>
                     </td>
                 </tr>
-                @if (Model.Workflow.Proceso.Organizacion.TipoOrganizacionId == 1)
-                {
-                    <tr>
-                        <td>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">Directorio</div>
-                                <div class="panel-body">
-                                    <div id="directorio">
-                                        @Html.Partial("_DirectorioEditWeb", Model.Workflow.Proceso.Organizacion)
-                                    </div>
-                                </div>
-                            </div>
-            </td>
-
-            </tr>
-        }
-
                 <tr>
                     <td>
+                        <div class="control-label col-md-12">
+                            @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio, htmlAttributes: new { @class = "control-label col-md-12" })
+                            <br />
+                            <input type="checkbox" id="CheckboxTabla" name="CheckboxTabla">
 
-                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo1, htmlAttributes: new { @class = "control-label col-md-6" })
+                        </div>
+
+                        <!--Html.Partial("_DirectorioEditWeb", Model.Workflow.Proceso.Organizacion)-->
+
+                    </td>
+
+                </tr>              
+                <tr style="display:none" id="trExtra">
+                    <td>
+                        <!--no olvidar IF-->
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo2, htmlAttributes: new { @class = "control-label col-md-12" })
 
                         <div class="col-md-12">
-                            <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable2" contenteditable="true">
+                            <div id="Parrafo2" name="Parrafo2" class="form-control col-md-12 editable2" contenteditable="true">
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
-                                    var Parrafo1 = Model.Workflow.DocOficio.FirstOrDefault()?.Parrafo1;
-                                    @Html.Raw(Parrafo1 ?? string.Empty)
+                                    var Parrafo2 = Model.Workflow.DocOficio.FirstOrDefault()?.Parrafo2;
+                                    @Html.Raw(Parrafo2 ?? string.Empty)
                                 }
                                 else
                                 {
@@ -285,6 +283,25 @@
                             </div>
                         </div>
                     </td>
+                </tr>
+                <td>
+                    @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo1, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                    <div class="col-md-12">
+                        <div id="Parrafo1" name="Parrafo1" class="form-control col-md-12 editable2" contenteditable="true">
+                            @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                            {
+                                var Parrafo1 = Model.Workflow.DocOficio.FirstOrDefault()?.Parrafo1;
+                                @Html.Raw(Parrafo1 ?? string.Empty)
+                            }
+                            else
+                            {
+
+                                @Html.Raw(string.Empty)
+                            }
+                        </div>
+                    </div>
+                </td>
                 </tr>
                 <tr>
                     <td>
@@ -307,8 +324,8 @@
                         </div>
                     </td>
                 </tr>
-                </table>
-            </div>
+            </table>
+        </div>
         <div class="col-md-6">
 
             @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
@@ -343,14 +360,51 @@
 
 
 </div>
-<script language="JavaScript">
 
+@if (Model.DocOficio != null && Model.DocOficio.FirstOrDefault().TieneDirectorio)
+{
+    <input type="hidden" id="a" value="1" />
+}
+else
+{
+    <input id="a" value="0" type="hidden" />
+}
+<script language="JavaScript">
+    var booleano = $("#CheckboxTabla").val()
+    $("#CheckboxTabla").change(function () {
+        
+        if ($("#CheckboxTabla").is(':checked')) {
+            booleano = true
+            $("#trExtra").show();
+        } else {
+            booleano = false
+            $("#trExtra").hide();
+        }
+    });
 
     $(document).ready(function () {
-        console.log($('#prueba').val());
+
+        if ("#a".val == 1) {
+            $("#CheckboxTabla").prop("checked", true)
+            $("#trExtra").show();
+        } else {
+            $("#trExtra").hide();
+        }
+
+
+        var objeto = document.getElementById('a').value;
+        if (objeto > 0) {
+            $("#trExtra").show();
+            $("#CheckboxTabla").prop("checked", true)
+        }
+        else {
+            $("#trExtra").hide();
+
+        }
+
+
         if ($(".editor-for-input").val() != null)
         {
-            console.log("entre en el if ");
             var texto = $(".editor-for-input").val();
             $("#divEditable").html(texto);
         }
@@ -433,7 +487,7 @@
     //$(document).ready(function () {
     $(document).one('click', '#GuardarDocOf', function () {
 
-     
+
 
         var Tabla = document.getElementById("Tabla");
         Tabla.focus();
@@ -507,7 +561,7 @@
                 nuevoElemento.innerText = tablaElement.innerText;
                 var contenidoHTML = nuevoElemento.innerHTML;
 
-                
+
                 texto = texto.replace(/^\n+/, ""); //quitar espacios al inicio
                 texto = texto.replace(/<\/b>\s*<div>/g, "</b><div>");// Reemplaza los saltos de línea entre </b> y <div> con una cadena vacía
                 texto = texto.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
@@ -520,10 +574,10 @@
                 mate = mate.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
                 mate = mate.replace(/\n+/g, ' ');  // Reemplaza múltiples saltos de línea con un espacio
                 mate = mate.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio */
-           
+
                  var proce=@Model.Workflow.ProcesoId;
                  var data = {
-                             
+
                      ProcesoId: proce,
                         NUMERO_REGISTRO: document.getElementById("NUMERO_REGISTRO").innerHTML.trim(),
                         ANTECEDENTES: document.getElementById("ANTECEDENTES").innerHTML.trim(),
@@ -535,17 +589,18 @@
                         Parrafo1: document.getElementById("Parrafo1").innerHTML.trim(),
                         AUTORES: document.getElementById("AUTORES").innerHTML.trim(),
                         WorkflowId: workflowId,
-                        //Parrafo2: document.getElementById("Parrafo2").innerHTML.trim(),
+                        Parrafo2: document.getElementById("Parrafo2").innerHTML.trim(),
                         //Parrafo3: document.getElementById("Parrafo3").innerHTML.trim(),
                         DocOficioId: null,
                         Tabla: texto,//contenidoHTML,//document.getElementById("Tabla").innerHTML,
                         Content :null,
                         FileName :null,
-                        FechaCreacion :null
+                     FechaCreacion: null,
+                     TieneDirectorio: booleano
 
             };
             console.log("llamando al metodo  \n:");
-            
+
             $.ajax({
                 type: "POST",
                 url: "/Task/GuardarDocOfi",
@@ -556,7 +611,7 @@
 
                     //$("#elemento").html(result);
                 }
-            });                        
+            });
        // });
     });
 
@@ -565,7 +620,7 @@
         container.appendChild(element.cloneNode(true));
         return container.innerHTML;
     }
-   
+
 
 </script>
 

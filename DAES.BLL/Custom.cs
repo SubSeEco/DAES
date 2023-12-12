@@ -1089,9 +1089,9 @@ namespace DAES.BLL
 
         //TODO: Se crea nuevo metodo para documento configuracion
         //ALEX
-        public byte[] CrearDocumentoConfOficio(DocOficio docofi, Organizacion org)
+        public byte[] CrearDocumentoConfOficio(DocOficio docofi, Organizacion org, bool tieneTabla)
         {
-
+            Font _fontNegritaTitulo = new Font(Font.HELVETICA, 15, Font.BOLD);
             EventoTitulos ev = new EventoTitulos();
             Font _fontTitulo = new Font(Font.HELVETICA, 18, Font.BOLD, Color.DARK_GRAY);
             Font _fontNumero = new Font(Font.HELVETICA, 20, Font.BOLD, Color.DARK_GRAY);
@@ -1178,7 +1178,7 @@ namespace DAES.BLL
             StyleSheet styles = new StyleSheet();
             styles.LoadTagStyle("b", "font", "Arial");
             styles.LoadTagStyle("i", "font", "Arial");
-
+            styles.LoadTagStyle("p", "text-align", "justify");
 
             //agregar Registro --Anntecedentes -- materia 
             PdfPTable tableEncabezadoUno = new PdfPTable(2);
@@ -1292,7 +1292,7 @@ namespace DAES.BLL
             var paraDEDOC = new Paragraph(docofi.DE_DOC, _fontStandard);
             paraDEDOC.Alignment = Element.ALIGN_RIGHT;
             string DEDO = paraDEDOC.Content;
-            DEDO = EliminarDivYBr(DEDO);
+            DEDO = EliminarDivYBrTexto(DEDO);
 
             PdfPCell cellDE2 = new PdfPCell();
             List<IElement> htmlElementoDE2 = HTMLWorker.ParseToList(new StringReader(DEDO), styles)
@@ -1319,22 +1319,22 @@ namespace DAES.BLL
             }
 
 
-            // "A " en segunda celda ,segunda fila 
+            // "A " en segunda celda, segunda fila 
             var paraA_DOC = new Paragraph(docofi.A_DOC, _fontStandard);
             string ADO = paraA_DOC.Content;
-            ADO = EliminarDivYBr(ADO);
+            ADO = EliminarDivYBrTexto(ADO);
 
             //Direccion
             var parrafoDireccion = new Paragraph(docofi.DIRECCION, _fontStandard);
             parrafoDireccion.Alignment = Element.ALIGN_LEFT;
             string parrafoDireccionFOR = parrafoDireccion.Content;
-            parrafoDireccionFOR = EliminarDivYBr(parrafoDireccionFOR);
+            parrafoDireccionFOR = EliminarDivYBrTexto(parrafoDireccionFOR);
 
             //Correo
             var parrafoCorreo = new Paragraph(docofi.CORREO, _fontStandard);
             parrafoCorreo.Alignment = Element.ALIGN_LEFT;
             string parrafoCorreoFor = parrafoCorreo.Content;
-            parrafoCorreoFor = EliminarDivYBr(parrafoCorreoFor);
+            parrafoCorreoFor = EliminarDivYBrTexto(parrafoCorreoFor);
 
             PdfPCell cellA2 = new PdfPCell();
             List<IElement> htmlElementoA2 = HTMLWorker.ParseToList(new StringReader(ADO), styles)
@@ -1380,13 +1380,13 @@ namespace DAES.BLL
             doc.Add(tablaDeA);
             doc.Add(SaltoLinea);
             // 1 Antecedentes
-            string ANTE = "1 Antecedentes ";
-            var paragrafANTE = new Paragraph(ANTE, _fontNegrita);
+            /*string ANTE = "1 Antecedentes ";
+            var paragrafANTE = new Paragraph(ANTE, _fontNegritaTitulo);
             paragrafANTE.Alignment = Element.ALIGN_LEFT;
 
-            doc.Add(paragrafANTE);
+            doc.Add(paragrafANTE);*/
             var tablitaparrafo = new Paragraph(docofi.Tabla, _fontStandard);
-            tablitaparrafo.Alignment = Element.ALIGN_LEFT;
+            tablitaparrafo.Alignment = Element.ALIGN_JUSTIFIED;
             string tablitapar = tablitaparrafo.Content;
             tablitapar = EliminarDivYBrTexto(tablitapar);
             List<IElement> htmlEle = HTMLWorker.ParseToList(new StringReader(tablitapar), styles)
@@ -1394,29 +1394,27 @@ namespace DAES.BLL
             .ToList();
             foreach (var element in htmlEle)
             {
-                var mirarmirar = tablitapar;
                 doc.Add(element);
             }
             doc.Add(SaltoLinea);
 
             // Texto en Duro para despues de la tabla de Directorios
 
-            string text_coop;
-           
-            if(org.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa) {
-                text_coop = " 2.	Informa actualización del registro del directorio " +
-                              "Habiéndose exhibido las constancias de un nuevo proceso eleccionario, y conforme a lo previsto en el artículo 6 del Decreto Ley 2757 de 1979, en adelante Decreto Ley, se ha procedido a actualizar el registro del directorio, conforme se detalla a continuacion";
-            }
-            else
+
+
+            if (tieneTabla)
             {
-                text_coop = " 3.	Informa actualización del registro del directorio " +
-                              "Habiéndose exhibido las constancias de un nuevo proceso eleccionario, y conforme a lo previsto en el artículo 6 del Decreto Ley 2757 de 1979, en adelante Decreto Ley, se ha procedido a actualizar el registro del directorio, conforme se detalla a continuación:";
-            }
-            //(int)Infrastructure.Enum.TipoOrganizacion.Cooperativa
-            if (org.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa)
-            {
-                var text_coop2 = new Paragraph(text_coop, _fontStandard);
-                doc.Add(text_coop2);
+                var text_coop2 = new Paragraph(docofi.Parrafo2, _fontStandard);
+                text_coop2.Alignment = Element.ALIGN_JUSTIFIED;
+                string text_coop3 = text_coop2.Content;
+                text_coop3 = EliminarDivYBrTexto(text_coop3);
+                List<IElement> htmlElep2 = HTMLWorker.ParseToList(new StringReader(text_coop3), styles)
+                .OfType<IElement>()
+                .ToList();
+                foreach (var element in htmlElep2)
+                {
+                    doc.Add(element);
+                }
                 doc.Add(SaltoLinea);
 
                 //Para la tabla de Directorio
@@ -1470,7 +1468,7 @@ namespace DAES.BLL
 
             //Informacion del Oficio
             var parrafo1 = new Paragraph(docofi.Parrafo1, _fontStandard);
-            parrafo1.Alignment = Element.ALIGN_LEFT;
+            parrafo1.Alignment = Element.ALIGN_JUSTIFIED;
             string parrafo1For = parrafo1.Content;
             parrafo1For = EliminarDivYBr(parrafo1For);
             List<IElement> htmlParrafo = HTMLWorker.ParseToList(new StringReader(parrafo1For), styles)

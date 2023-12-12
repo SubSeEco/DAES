@@ -263,12 +263,68 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
                                         </p>
                                     }
                                 }*@
+                            @if (workflow.DocOficio != null && workflow.DocOficio.Any())
+                            {
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Oficio Formulario Online</div>
+                                    <div class="panel-body">
+                                        <table class="table table-hover table-striped datatable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Archivo</th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => workflow.DocOficio.FirstOrDefault().FechaCreacion)
+                                                    </th>
+                                                    <th>
+                                                        Autor
+                                                    </th>
+                                                    <th>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
 
+                                                @foreach (var item in workflow.DocOficio)
+                                                {
+                                                <td>
+                                                    @Html.DisplayFor(model => item.FileName)
+                                                </td>
+                                                <td>
+                                                    @string.Format("{0:dd-MM-yyyy HH:mm:ss}", item.FechaCreacion)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => workflow.User.UserName)
+                                                </td>
+                                                <td>
+                                                    @if (item.WorkFlowId == workflow.WorkflowId)
+                                                    {
+
+                                                        if (item.Content != null) 
+                                                        {
+
+
+                                                            <embed src="@Url.Action("ShowDoc", "Task", new { id = item.WorkFlowId })" width="100%" height="300" type="application/pdf" />
+
+                                                        }
+                                                        else
+                                                        {
+                                                            @* No hay contenido para mostrar *@
+                                                        }
+
+
+                                                    }
+                                                </td>
+                                            }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
                             @if (workflow.Documentos.Any(q => q.Activo == true))
                             {
                                 <hr />
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Documentos de la tarea</div>
+                                    <div class="panel-heading">Documentos de la  tarea</div>
                                     <div class="panel-body">
                                         @ViewBag.persona
                                         <table class="table table-hover table-striped datatable">

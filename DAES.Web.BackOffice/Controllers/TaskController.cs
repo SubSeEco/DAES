@@ -1810,9 +1810,10 @@ namespace DAES.Web.BackOffice.Controllers
                     model.Workflow.DocOficio.FirstOrDefault().CORREO = ofi.CORREO;
                     model.Workflow.DocOficio.FirstOrDefault().Tabla = ofi.Tabla;
                     model.Workflow.DocOficio.FirstOrDefault().Parrafo1 = ofi.Parrafo1;
+                    model.Workflow.DocOficio.FirstOrDefault().Parrafo2 = ofi.Parrafo2;
                     model.Workflow.DocOficio.FirstOrDefault().AUTORES = ofi.AUTORES;
-                    var mirar = model.Workflow.DocOficio;
-                    model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId), model.Workflow.Proceso.Organizacion);
+                    model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio = ofi.TieneDirectorio;
+                    model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId), model.Workflow.Proceso.Organizacion, ofi.TieneDirectorio);
                     db.SaveChanges();
                 }           
             }
@@ -1832,13 +1833,15 @@ namespace DAES.Web.BackOffice.Controllers
                     Firmado = false,
                     Tabla = ofi.Tabla,
                     Parrafo1 = ofi.Parrafo1,
+                    Parrafo2 = ofi.Parrafo2,
                     AUTORES = ofi.AUTORES,
+                    TieneDirectorio = ofi.TieneDirectorio,
                     FileName = "DocumentoCreadoTask_" + WorkflowId + "_" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
                 };
                 db.DocOficios.Add(nuevoregistro);
                 db.SaveChanges();
                 var exi = model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
-                exi.Content = _custom.CrearDocumentoConfOficio(exi,model.Workflow.Proceso.Organizacion);
+                exi.Content = _custom.CrearDocumentoConfOficio(exi,model.Workflow.Proceso.Organizacion,ofi.TieneDirectorio);
                 db.SaveChanges();
 
 
@@ -1951,10 +1954,12 @@ namespace DAES.Web.BackOffice.Controllers
             public string CORREO { get; set; }
             public string Tabla { get; set; }
             public string Parrafo1 { get; set; }
+            public string Parrafo2 { get; set; }
             public byte[] Content { get; set; }
             public string AUTORES { get; set; }
             public string FileName { get; set; }
             public DateTime? FechaCreacion { get; set; } = DateTime.Now;
+            public bool TieneDirectorio { get; set; }
         }
     }
 }

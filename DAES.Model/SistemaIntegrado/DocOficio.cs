@@ -56,7 +56,7 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.MultilineText)]
         public string Parrafo1 { get; set; }
 
-        [Display(Name = "Parrafo2")]
+        [Display(Name = "Informa actualización/registro del Com. Adm./Directorio")]
         [DataType(DataType.MultilineText)]
         public string Parrafo2 { get; set; }
 
@@ -64,7 +64,7 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.MultilineText)]
         public string Parrafo3 { get; set; }
 
-        [Display(Name = "1. Antecedentes")]
+        [Display(Name = "Antecedentes")]
         public string Tabla { get; set; }
 
         public byte[] Content { get; set; }
@@ -91,5 +91,7 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Autores")]
         public string AUTORES { get; set; }
 
+        [Display(Name = "Insertar “Consejo de administración” o “Directorio”.")]
+        public bool TieneDirectorio { get; set; } = false;
     }
 }
