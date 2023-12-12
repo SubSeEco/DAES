@@ -33,6 +33,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using iTextSharp.text.html.simpleparser;
 using System.Text.RegularExpressions;
 using DAES.Infrastructure.GestionProcesos;
+using System.Security.Cryptography;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -1088,7 +1089,7 @@ namespace DAES.BLL
 
         //TODO: Se crea nuevo metodo para documento configuracion
         //ALEX
-        public byte[] CrearDocumentoConfOficio(DocOficio docofi, List<Directorio> direc)
+        public byte[] CrearDocumentoConfOficio(DocOficio docofi, Organizacion org)
         {
 
             EventoTitulos ev = new EventoTitulos();
@@ -1378,7 +1379,12 @@ namespace DAES.BLL
 
             doc.Add(tablaDeA);
             doc.Add(SaltoLinea);
+            // 1 Antecedentes
+            string ANTE = "1 Antecedentes ";
+            var paragrafANTE = new Paragraph(ANTE, _fontNegrita);
+            paragrafANTE.Alignment = Element.ALIGN_LEFT;
 
+            doc.Add(paragrafANTE);
             var tablitaparrafo = new Paragraph(docofi.Tabla, _fontStandard);
             tablitaparrafo.Alignment = Element.ALIGN_LEFT;
             string tablitapar = tablitaparrafo.Content;
@@ -1391,24 +1397,45 @@ namespace DAES.BLL
                 var mirarmirar = tablitapar;
                 doc.Add(element);
             }
+            doc.Add(SaltoLinea);
 
-            //Para la tabla
-            PdfPTable table = new PdfPTable(4);
-            table.WidthPercentage = 100.0f;
-            table.HorizontalAlignment = Element.ALIGN_CENTER;
-            table.DefaultCell.BorderColor = Color.LIGHT_GRAY;
+            // Texto en Duro para despues de la tabla de Directorios
 
-            table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
-            table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
-            PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
-            cellDesde.HorizontalAlignment = Element.ALIGN_CENTER;
-            table.AddCell(cellDesde);
-            PdfPCell cellHasta = new PdfPCell(new Phrase("Hasta", _fontStandardBold));
-            cellHasta.HorizontalAlignment = Element.ALIGN_CENTER;
-            table.AddCell(cellHasta);
-            table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
-            foreach (var item in direc.ToList())
+            string text_coop;
+           
+            if(org.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa) {
+                text_coop = " 2.	Informa actualización del registro del directorio " +
+                              "Habiéndose exhibido las constancias de un nuevo proceso eleccionario, y conforme a lo previsto en el artículo 6 del Decreto Ley 2757 de 1979, en adelante Decreto Ley, se ha procedido a actualizar el registro del directorio, conforme se detalla a continuacion";
+            }
+            else
             {
+                text_coop = " 3.	Informa actualización del registro del directorio " +
+                              "Habiéndose exhibido las constancias de un nuevo proceso eleccionario, y conforme a lo previsto en el artículo 6 del Decreto Ley 2757 de 1979, en adelante Decreto Ley, se ha procedido a actualizar el registro del directorio, conforme se detalla a continuación:";
+            }
+            //(int)Infrastructure.Enum.TipoOrganizacion.Cooperativa
+            if (org.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.AsociacionGremial)
+            {
+                var text_coop2 = new Paragraph(text_coop, _fontStandard);
+                doc.Add(text_coop2);
+                doc.Add(SaltoLinea);
+
+                //Para la tabla de Directorio
+                PdfPTable table = new PdfPTable(4);
+                table.WidthPercentage = 100.0f;
+                table.HorizontalAlignment = Element.ALIGN_CENTER;
+                table.DefaultCell.BorderColor = Color.LIGHT_GRAY;
+
+                table.AddCell(new PdfPCell(new Phrase("Cargo", _fontStandardBold)));
+                table.AddCell(new PdfPCell(new Phrase("Nombre", _fontStandardBold)));
+                PdfPCell cellDesde = new PdfPCell(new Phrase("Desde", _fontStandardBold));
+                cellDesde.HorizontalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cellDesde);
+                PdfPCell cellHasta = new PdfPCell(new Phrase("Hasta", _fontStandardBold));
+                cellHasta.HorizontalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cellHasta);
+                table.SetWidths(new float[] { 4f, 6f, 3f, 3f });
+                foreach (var item in org.Directorios.ToList())
+                {
                     var cargo = context.Cargo.FirstOrDefault(q => q.CargoId == item.CargoId);
                     table.AddCell(new PdfPCell(new Phrase(cargo.Nombre, _fontStandardBold)));
                     table.AddCell(new PdfPCell(new Phrase(item.NombreCompleto, _fontStandard)));
@@ -1418,9 +1445,43 @@ namespace DAES.BLL
                     PdfPCell cellfin = new PdfPCell(new Phrase(item.FechaTermino.HasValue ? string.Format("{0:dd-MM-yyyy}", item.FechaTermino.Value) : string.Empty, _fontStandard));
                     cellfin.HorizontalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cellfin);
+                    doc.Add(table);
+                }
+                
+                // Texto en Duro para despues de la tabla de Directorios
+                var text_Tabla = "<span style=\"font-size: 10pt;\"><i> Cabe hacer presente que, la información contenida en el cuadro precedente es meramente informativa.Para los " +
+                    "efectos de acreditar la vigencia y la composición del órgano directivo, deberán obtener el certificado respectivo, " +
+                    "accediendo a nuestra página web asociatividad.economia.cl </i> </span>";
+                var text_Tabla2 = new Paragraph(text_Tabla, _fontStandard);
 
+                string text3 = text_Tabla2.Content;
+
+                List<IElement> htmlText = HTMLWorker.ParseToList(new StringReader(text3), styles)
+                .OfType<IElement>()
+                .ToList();
+                foreach (var element in htmlText)
+                {
+                    doc.Add(element);
+                }
+
+                //doc.Add(text_Tabla2);
             }
-            doc.Add(table);
+            doc.Add(SaltoLinea);
+
+            //Informacion del Oficio
+            var parrafo1 = new Paragraph(docofi.Parrafo1, _fontStandard);
+            parrafo1.Alignment = Element.ALIGN_LEFT;
+            string parrafo1For = parrafo1.Content;
+            parrafo1For = EliminarDivYBr(parrafo1For);
+            List<IElement> htmlParrafo = HTMLWorker.ParseToList(new StringReader(parrafo1For), styles)
+            .OfType<IElement>()
+            .ToList();
+            foreach (var elem in htmlParrafo)
+            {
+                doc.Add(elem);
+            }
+           // doc.Add(parrafo1);
+            doc.Add(SaltoLinea);
 
             //string distribucionenduro = "<b> Distribución: </b>";
             //_fontNegritaPequeño.SetStyle(Font.BOLD);
@@ -1430,13 +1491,17 @@ namespace DAES.BLL
             var distribucion1 = new Paragraph();
             //var distribucion = new Paragraph(docofi.Parrafo1, _fontStandardDistri);
             // var distribucion = "<span style=\"font-size: 10pt;\">" + docofi.Parrafo1 + "</span>";
-            
+            //var region = db.Organizacion.FirstOrDefault(q => q.OrganizacionId == direc.FirstOrDefault().OrganizacionId);
+            var fecha = string.Format("{0:dd-MM-yyyy}", DateTime.Now);
+
             var distribucion = "<span style=\"font-size: 10pt;\">" +
-                                DateTime.Now + " ID " + docofi.ProcesoId +
+                                "<br /><span style=\"font-size: 10pt;\">" + docofi.AUTORES + "</span><br />" +
+                                fecha + " - ID " + docofi.ProcesoId +
                                 "<br /><b><span style=\"font-size: 10pt;\"> Distribución:" + "</span></b>"  +
-                                "<br /><span style=\"font-size: 10pt;\"> -Destinatario(" + docofi.CORREO + ")" + "</span>" +
-                                "<br /><span style=\"font-size: 10pt;\"> -Oficina de Partes" + "</span>"  +
-                                "<br /><span style=\"font-size: 10pt;\">-DAES.N° Reg. (" + docofi.NUMERO_REGISTRO + ")" + "</span>"
+                                "<br /><span style=\"font-size: 10pt;\"> - Destinatario(" + docofi.CORREO + ")" + "</span>" +
+                                "<br /><span style=\"font-size: 10pt;\"> - Oficina de Partes" + "</span>"  +
+                                "<br /><span style=\"font-size: 10pt;\"> - SEREMI de Economia " + org.Region.Nombre  + "</span>" +
+                                "<br /><span style=\"font-size: 10pt;\"> - Archivos DAES.N° Reg. (" + docofi.NUMERO_REGISTRO + ")" + "</span>"
                 + "</span>"; 
             distribucion1.Add("<br />");
             distribucion1.Add(distribucion);

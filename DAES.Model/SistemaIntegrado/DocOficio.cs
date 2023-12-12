@@ -27,7 +27,7 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.MultilineText)]
         public string NUMERO_REGISTRO { get; set; }
 
-        [Display(Name = "Antecedentes")]
+        [Display(Name = "ANT")]
         [DataType(DataType.MultilineText)]
         public string ANTECEDENTES { get; set; }
 
@@ -52,7 +52,7 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.MultilineText)]
         public string CORREO { get; set; }
 
-        [Display(Name = "Parrafo1")]
+        [Display(Name = "Información del Oficio")]
         [DataType(DataType.MultilineText)]
         public string Parrafo1 { get; set; }
 
@@ -64,7 +64,7 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.MultilineText)]
         public string Parrafo3 { get; set; }
 
-        [Display(Name = "Información del Oficio")]
+        [Display(Name = "1. Antecedentes")]
         public string Tabla { get; set; }
 
         public byte[] Content { get; set; }
@@ -87,6 +87,9 @@ namespace DAES.Model.SistemaIntegrado
 
         [Display(Name = "Folio")]
         public string Folio { get; set; }
+
+        [Display(Name = "Autores")]
+        public string AUTORES { get; set; }
 
     }
 }

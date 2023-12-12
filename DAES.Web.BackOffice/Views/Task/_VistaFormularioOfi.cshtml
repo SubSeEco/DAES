@@ -248,17 +248,17 @@
                               </div>
                           </td>
                       </tr>
-                     <tr>
-                          <td>
-                              
+                      @if (Model.Workflow.Proceso.Organizacion.TipoOrganizacionId == 2)
+                      {
+                          <tr>
+                              <td>
                                   <div id="directorio">
                                       @Html.Partial("_DirectorioEditWeb", Model.Workflow.Proceso.Organizacion)
                                   </div>
+                              </td>
+                          </tr>
+                      }
 
-                             
-                        </td>
-                      </tr> 
-                                       
                       <tr>
                           <td>
 
@@ -270,6 +270,27 @@
                                       {
                                           var Parrafo1 = Model.Workflow.DocOficio.FirstOrDefault()?.Parrafo1;
                                           @Html.Raw(Parrafo1 ?? string.Empty)
+                                      }
+                                      else
+                                      {
+
+                                          @Html.Raw(string.Empty)
+                                      }
+                                  </div>
+                              </div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+
+                              @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().AUTORES, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                              <div class="col-md-12">
+                                  <div id="AUTORES" name="AUTORES" class="form-control col-md-12 editable" contenteditable="true">
+                                      @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
+                                      {
+                                          var AUTORES = Model.Workflow.DocOficio.FirstOrDefault()?.AUTORES;
+                                          @Html.Raw(AUTORES ?? string.Empty)
                                       }
                                       else
                                       {
@@ -506,6 +527,7 @@
                         DIRECCION: document.getElementById("DIRECCION").innerHTML.trim(),
                         CORREO: document.getElementById("CORREO").innerHTML.trim(),
                         Parrafo1: document.getElementById("Parrafo1").innerHTML.trim(),
+                        AUTORES: document.getElementById("AUTORES").innerHTML.trim(),
                         WorkflowId: workflowId,
                         //Parrafo2: document.getElementById("Parrafo2").innerHTML.trim(),
                         //Parrafo3: document.getElementById("Parrafo3").innerHTML.trim(),
