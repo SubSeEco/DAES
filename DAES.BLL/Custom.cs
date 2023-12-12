@@ -1413,7 +1413,7 @@ namespace DAES.BLL
                               "Habiéndose exhibido las constancias de un nuevo proceso eleccionario, y conforme a lo previsto en el artículo 6 del Decreto Ley 2757 de 1979, en adelante Decreto Ley, se ha procedido a actualizar el registro del directorio, conforme se detalla a continuación:";
             }
             //(int)Infrastructure.Enum.TipoOrganizacion.Cooperativa
-            if (org.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.AsociacionGremial)
+            if (org.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.Cooperativa)
             {
                 var text_coop2 = new Paragraph(text_coop, _fontStandard);
                 doc.Add(text_coop2);
@@ -1445,9 +1445,9 @@ namespace DAES.BLL
                     PdfPCell cellfin = new PdfPCell(new Phrase(item.FechaTermino.HasValue ? string.Format("{0:dd-MM-yyyy}", item.FechaTermino.Value) : string.Empty, _fontStandard));
                     cellfin.HorizontalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cellfin);
-                    doc.Add(table);
+                    
                 }
-                
+                doc.Add(table);
                 // Texto en Duro para despues de la tabla de Directorios
                 var text_Tabla = "<span style=\"font-size: 10pt;\"><i> Cabe hacer presente que, la información contenida en el cuadro precedente es meramente informativa.Para los " +
                     "efectos de acreditar la vigencia y la composición del órgano directivo, deberán obtener el certificado respectivo, " +
