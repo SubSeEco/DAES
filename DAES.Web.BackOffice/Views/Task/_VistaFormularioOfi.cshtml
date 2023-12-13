@@ -66,7 +66,7 @@
     }
 </style>
 
-<div class="panel panel-default">
+<div class="panel panel-default"  id="DocOf">
 
     <div class="panel-heading">Editor de Oficio</div>
     <div class="panel-body">
@@ -254,7 +254,7 @@
                         <div class="control-label col-md-12">
                             @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio, htmlAttributes: new { @class = "control-label col-md-12" })
                             <br />
-                            <input type="checkbox" id="CheckboxTabla" name="CheckboxTabla">
+                            <input type="checkbox" id="CheckboxTabla" name="CheckboxTabla" checked>
 
                         </div>
 
@@ -262,7 +262,7 @@
 
                     </td>
 
-                </tr>              
+                </tr>
                 <tr style="display:none" id="trExtra">
                     <td>
                         <!--no olvidar IF-->
@@ -356,27 +356,33 @@
 
     </div>
     <div id="elemento"></div>
+    @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio)
+    {
+       
+        <input type="hidden" id="a" value="1" />
+    }
+    else
+    {
 
+        <input id="a" value="0" type="hidden" />
+    }
 
 
 </div>
 
-@if (Model.DocOficio != null && Model.DocOficio.FirstOrDefault().TieneDirectorio)
-{
-    <input type="hidden" id="a" value="1" />
-}
-else
-{
-    <input id="a" value="0" type="hidden" />
-}
+
 <script language="JavaScript">
-    var booleano = $("#CheckboxTabla").val()
+    var booleano = $("#CheckboxTabla").prop("checked") ? true : false;
+   
     $("#CheckboxTabla").change(function () {
-        
+
+        console.log(booleano);
         if ($("#CheckboxTabla").is(':checked')) {
             booleano = true
             $("#trExtra").show();
         } else {
+            
+
             booleano = false
             $("#trExtra").hide();
         }
@@ -388,16 +394,21 @@ else
             $("#CheckboxTabla").prop("checked", true)
             $("#trExtra").show();
         } else {
+            $("#CheckboxTabla").prop("checked", false)
             $("#trExtra").hide();
         }
 
 
-        var objeto = document.getElementById('a').value;
-        if (objeto > 0) {
-            $("#trExtra").show();
+        var objeto = document.getElementById("a");
+        var obje = objeto.value;
+
+        if (obje > 0) {
+            
             $("#CheckboxTabla").prop("checked", true)
+            $("#trExtra").show();
         }
         else {
+            $("#CheckboxTabla").prop("checked", false)
             $("#trExtra").hide();
 
         }
@@ -539,8 +550,6 @@ else
             }
 
             if (workflowId !== null) {
-                // Realiza tu lógica con el valor de WorkflowId
-                console.log("Valor de WorkflowId: " + workflowId);
             } else {
                 console.log("WorkflowId no encontrado en la URL.");
             }
@@ -551,8 +560,8 @@ else
                var texto = tablaElement.innerHTML;
                var div = document.createElement("div");
 
-                div.innerHTML = texto;
-                console.log("soy el div onclick \n:" + div);
+                 div.innerHTML = texto;
+                 console.log("soy tranformacion \n:" + booleano);
                 var prueba = convertToHTML(tablaElement);
                 var x = tablaElement.innerText;
                 var y = x.innerHTML;
@@ -603,13 +612,13 @@ else
 
             $.ajax({
                 type: "POST",
-                url: "/Task/GuardarDocOfi",
-                data : data ,
+                url: "/Task/GuardarDocOfi" ,
+                data: data,
+                
                 success: function (result) {
                     $("#DocOf").html(result);
-                    //$("#elemento").empty();
+                    init();
 
-                    //$("#elemento").html(result);
                 }
             });
        // });
@@ -621,6 +630,111 @@ else
         return container.innerHTML;
     }
 
+    function init() {
+        if ("#a".val == 1) {
+            $("#CheckboxTabla").prop("checked", true)
+            $("#trExtra").show();
+        } else {
+            $("#CheckboxTabla").prop("checked", false)
+            $("#trExtra").hide();
+        }
+
+
+        var objeto = document.getElementById("a");
+        var obje = objeto.value;
+
+        if (obje > 0) {
+
+            $("#CheckboxTabla").prop("checked", true)
+            $("#trExtra").show();
+        }
+        else {
+            $("#CheckboxTabla").prop("checked", false)
+            $("#trExtra").hide();
+
+        }
+
+
+        if ($(".editor-for-input").val() != null) {
+            var texto = $(".editor-for-input").val();
+            $("#divEditable").html(texto);
+        }
+
+        var $Tabla = $('#Tabla');
+        var $boldButton = $('#boldButton');
+        var $italicButton = $('#italicButton');
+        var $subButton = $('#subButton');
+        //var ediDiv = $('#ediDiv');
+        var $ediDiv = $('#ediDiv');
+
+        var $guardar = $('#guardar');
+
+        $Tabla.on('mouseup', function (e) {
+            palabras(e);
+
+        });
+
+        $ediDiv.on('mouseup', function (e) {
+            palabras(e);
+
+        });
+
+        function palabras(e) {
+
+            var selectedText = window.getSelection().toString();
+
+            if (selectedText.length > 0) {
+                console.log("soy los botones");
+                $boldButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX,
+
+                }).show();
+
+                $italicButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX + 60,
+                }).show();
+
+                $subButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX + 100,
+                }).show();
+
+            } else {
+
+                $boldButton.show();
+                $italicButton.show();
+                $subButton.show();
+            }
+        };
+
+
+        $boldButton.on('click', function () {
+            document.execCommand('bold', false, null); // negrita
+            $boldButton.show();
+        });
+        $italicButton.on('click', function () {
+            document.execCommand('italic', false, null); // italica
+            $italicButton.show();
+        });
+        $subButton.on('click', function () {
+            document.execCommand('underline', false, null);//Subrayada
+            $subButton.show();
+        });
+
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('#ediDiv').length === 0 && $(e.target).closest('#Tabla').length === 0 && $(e.target).closest('#boldButton').length === 0 && $(e.target).closest('#italicButton').length === 0 && $(e.target).closest('#subButton').length === 0) {
+                $boldButton.show();
+                $italicButton.show();
+                $subButton.show();
+
+            }
+        });
+
+
+
+    }
 
 </script>
 

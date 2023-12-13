@@ -1386,8 +1386,18 @@ namespace DAES.BLL
 
             doc.Add(paragrafANTE);*/
             var tablitaparrafo = new Paragraph(docofi.Tabla, _fontStandard);
-            tablitaparrafo.Alignment = Element.ALIGN_JUSTIFIED;
+            tablitaparrafo.Alignment = Element.ALIGN_JUSTIFIED_ALL;
             string tablitapar = tablitaparrafo.Content;
+            if (tablitapar.Contains("<span"))
+            {
+                // Agrega text-align: justify; al estilo existente
+                tablitapar = tablitapar.Replace("style=\"", "style=\"text-align: justify; ");
+            }
+            else
+            {
+                // Si no hay un estilo, crea uno nuevo con text-align: justify;
+                tablitapar = $"<span style=\"text-align: justify;\">{tablitapar}</span>";
+            }
             tablitapar = EliminarDivYBrTexto(tablitapar);
             List<IElement> htmlEle = HTMLWorker.ParseToList(new StringReader(tablitapar), styles)
             .OfType<IElement>()
@@ -1405,14 +1415,25 @@ namespace DAES.BLL
             if (tieneTabla)
             {
                 var text_coop2 = new Paragraph(docofi.Parrafo2, _fontStandard);
-                text_coop2.Alignment = Element.ALIGN_JUSTIFIED;
+                text_coop2.Alignment = Element.ALIGN_JUSTIFIED_ALL;
                 string text_coop3 = text_coop2.Content;
+                if (text_coop3.Contains("<span"))
+                {
+                    // Agrega text-align: justify; al estilo existente
+                    text_coop3 = text_coop3.Replace("style=\"", "style=\"text-align: justify; ");
+                }
+                else
+                {
+                    // Si no hay un estilo, crea uno nuevo con text-align: justify;
+                    text_coop3 = $"<span style=\"text-align: justify;\">{text_coop3}</span>";
+                }
                 text_coop3 = EliminarDivYBrTexto(text_coop3);
                 List<IElement> htmlElep2 = HTMLWorker.ParseToList(new StringReader(text_coop3), styles)
                 .OfType<IElement>()
                 .ToList();
                 foreach (var element in htmlElep2)
                 {
+                    var mirar = element;
                     doc.Add(element);
                 }
                 doc.Add(SaltoLinea);
@@ -1468,14 +1489,27 @@ namespace DAES.BLL
 
             //Informacion del Oficio
             var parrafo1 = new Paragraph(docofi.Parrafo1, _fontStandard);
-            parrafo1.Alignment = Element.ALIGN_JUSTIFIED;
+            parrafo1.Alignment = Element.ALIGN_JUSTIFIED_ALL;
             string parrafo1For = parrafo1.Content;
+            
+            
+            if (parrafo1For.Contains("<span"))
+            {
+                // Agrega text-align: justify; al estilo existente
+                parrafo1For = parrafo1For.Replace("style=\"", "style=\"text-align: justify; ");
+            }
+            else
+            {
+                // Si no hay un estilo, crea uno nuevo con text-align: justify;
+                parrafo1For = $"<span style=\"text-align: justify;\">{parrafo1For}</span>";
+            }
             parrafo1For = EliminarDivYBr(parrafo1For);
             List<IElement> htmlParrafo = HTMLWorker.ParseToList(new StringReader(parrafo1For), styles)
             .OfType<IElement>()
             .ToList();
             foreach (var elem in htmlParrafo)
             {
+                var mirar = elem;
                 doc.Add(elem);
             }
            // doc.Add(parrafo1);
