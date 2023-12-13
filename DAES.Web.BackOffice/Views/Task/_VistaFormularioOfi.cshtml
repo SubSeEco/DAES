@@ -24,7 +24,7 @@
         border: 1px solid #ccc;
         padding: 10px;
         max-width: 100%;
-        height: 100px;
+        height: 200px;
         display: inline-block;
         word-wrap: break-word;
         margin-bottom: 20px;
@@ -251,12 +251,13 @@
                 </tr>
                 <tr>
                     <td>
-                        <div class="control-label col-md-12">
-                            @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio, htmlAttributes: new { @class = "control-label col-md-12" })
-                            <br />
-                            <input type="checkbox" id="CheckboxTabla" name="CheckboxTabla" checked>
+                    <div>
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio, htmlAttributes: new { @class = "control-label col-md-12" })
 
-                        </div>
+
+                        <input type="checkbox" id="CheckboxTabla" name="CheckboxTabla" checked>
+                    </div>
+
 
                         <!--Html.Partial("_DirectorioEditWeb", Model.Workflow.Proceso.Organizacion)-->
 
@@ -735,7 +736,36 @@
 
 
     }
+    //pruebas
+    /*document.addEventListener('DOMContentLoaded', function () {
+        var boldButton = document.getElementById('boldButton');
 
+        boldButton.addEventListener('click', function () {
+            applyBoldStyle();
+        });
+
+        function applyBoldStyle() {
+            // Obtener el elemento editor actualmente enfocado
+            var focusedElement = document.activeElement;
+
+            // Verificar si el elemento enfocado es un elemento editable
+            if (focusedElement && focusedElement.isContentEditable) {
+                // Obtener la selección actual
+                var selection = window.getSelection();
+
+                // Verificar si hay un rango de selección y si el rango tiene contenido
+                if (selection.rangeCount > 0 && selection.toString().trim() !== '') {
+                    var range = selection.getRangeAt(0);
+
+                    // Crear un elemento <strong> (negrita) y aplicar el estilo al contenido seleccionado
+                    var boldElement = document.createElement('strong');
+                    boldElement.appendChild(range.extractContents());
+                    range.deleteContents();
+                    range.insertNode(boldElement);
+                }
+            }
+        }
+    });*/
 </script>
 
 
