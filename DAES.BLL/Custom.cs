@@ -1534,6 +1534,7 @@ namespace DAES.BLL
         }
         public string EliminarDivYBrTexto(string html)
         {
+            html = Regex.Replace(html, "</div>*?<div> ", "");
             html = Regex.Replace(html, "<div.*?>", "<br />");
             html = html.Replace("</div>", "");
             html = html.Replace("<br>", "<br />");

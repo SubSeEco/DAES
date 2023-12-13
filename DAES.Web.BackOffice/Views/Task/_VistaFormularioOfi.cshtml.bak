@@ -77,9 +77,9 @@
         @Html.HiddenFor(model => model.Workflow.Proceso.OrganizacionId)
 
         <div class="col-md-6">
-            <button id="boldButton" class="btn btn-sm botonfuentes" enable><img src="~/Content/negrita.png"></button>
-            <button id="italicButton" class="btn btn-sm botonfuentes" enable><img src="~/Content/cursiva.png"></button>
-            <button id="subButton" class="btn btn-sm botonfuentes" enable><img src="~/Content/subrayar.png"></button>
+            <button id="boldButton" class="btn btn-sm botonfuentes"><img src="~/Content/negrita.png"></button>
+            <button id="italicButton" class="btn btn-sm botonfuentes"><img src="~/Content/cursiva.png"></button>
+            <button id="subButton" class="btn btn-sm botonfuentes"><img src="~/Content/subrayar.png"></button>
             <!-- <button onclick="agregarTabla()">Agregar Tabla Personalizada</button> -->
             <br /><br />
             <table>
@@ -251,16 +251,17 @@
                 </tr>
                 <tr>
                     <td>
-                        <div class="col-md-12">
+                    <div>
+                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio, htmlAttributes: new { @class = "control-label col-md-12" })
+
+
                         <input type="checkbox" id="CheckboxTabla" name="CheckboxTabla" checked>
-                        @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio, htmlAttributes: new { @class = "control-label text-left" })
-                        </div>
+                    </div>
 
 
+                        <!--Html.Partial("_DirectorioEditWeb", Model.Workflow.Proceso.Organizacion)-->
 
-                            <!--Html.Partial("_DirectorioEditWeb", Model.Workflow.Proceso.Organizacion)-->
-
-</td>
+                    </td>
 
                 </tr>
                 <tr style="display:none" id="trExtra">
@@ -420,81 +421,79 @@
             $("#divEditable").html(texto);
         }
 
-        
-     
-    });
+        var $Tabla = $('#Tabla');
+        var $boldButton = $('#boldButton');
+        var $italicButton = $('#italicButton');
+        var $subButton = $('#subButton');
+        //var ediDiv = $('#ediDiv');
+        var $ediDiv = $('#ediDiv');
 
-    var $Tabla = $('#Tabla');
-    var $boldButton = $('#boldButton');
-    var $italicButton = $('#italicButton');
-    var $subButton = $('#subButton');
-    //var ediDiv = $('#ediDiv');
-    var $ediDiv = $('#ediDiv');
+        var $guardar = $('#guardar');
 
-    var $guardar = $('#guardar');
+        $Tabla.on('mouseup', function (e) {
+            palabras(e);
 
-    $Tabla.on('mouseup', function (e) {
-        palabras(e);
+        });
 
-    });
+        $ediDiv.on('mouseup', function (e) {
+            palabras(e);
 
-    $ediDiv.on('mouseup', function (e) {
-        palabras(e);
+        });
 
-    });
+        function palabras(e) {
 
-    function palabras(e) {
-        console.log("palabra");
-        var selectedText = window.getSelection().toString();
+            var selectedText = window.getSelection().toString();
 
-        if (selectedText.length > 0) {
-            console.log("soy los botones");
-            $boldButton.css({
-                top: e.pageY - 20,
-                left: e.pageX,
+            if (selectedText.length > 0) {
+                console.log("soy los botones");
+                $boldButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX,
 
-            }).show();
+                }).show();
 
-            $italicButton.css({
-                top: e.pageY - 20,
-                left: e.pageX + 60,
-            }).show();
+                $italicButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX + 60,
+                }).show();
 
-            $subButton.css({
-                top: e.pageY - 20,
-                left: e.pageX + 100,
-            }).show();
+                $subButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX + 100,
+                }).show();
 
-        } else {
+            } else {
 
+                $boldButton.show();
+                $italicButton.show();
+                $subButton.show();
+            }
+        };
+
+
+        $boldButton.on('click', function () {
+            document.execCommand('bold', false, null); // negrita
             $boldButton.show();
+        });
+        $italicButton.on('click', function () {
+            document.execCommand('italic', false, null); // italica
             $italicButton.show();
+        });
+        $subButton.on('click', function () {
+            document.execCommand('underline', false, null);//Subrayada
             $subButton.show();
-        }
-    };
+        });
 
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('#ediDiv').length === 0 && $(e.target).closest('#Tabla').length === 0 && $(e.target).closest('#boldButton').length === 0 && $(e.target).closest('#italicButton').length === 0 && $(e.target).closest('#subButton').length === 0) {
+                $boldButton.show();
+                $italicButton.show();
+                $subButton.show();
 
-    $boldButton.on('click', function () {
-        document.execCommand('bold', false, null); // negrita
-        $boldButton.show();
-    });
-    $italicButton.on('click', function () {
-        document.execCommand('italic', false, null); // italica
-        $italicButton.show();
-    });
-    $subButton.on('click', function () {
-        document.execCommand('underline', false, null);//Subrayada
-        $subButton.show();
+            }
+        });
     });
 
-    $(document).on('click', function (e) {
-        if ($(e.target).closest('#ediDiv').length === 0 && $(e.target).closest('#Tabla').length === 0 && $(e.target).closest('#boldButton').length === 0 && $(e.target).closest('#italicButton').length === 0 && $(e.target).closest('#subButton').length === 0) {
-            $boldButton.show();
-            $italicButton.show();
-            $subButton.show();
-
-        }
-    });
 
 
     //$(document).ready(function () {
@@ -620,9 +619,6 @@
                 success: function (result) {
                     $("#DocOf").html(result);
                     init();
-                    $("#boldButton").prop("disabled", false);
-                    $("#italicButton").prop("disabled", false);
-                    $("#subButton").prop("disabled", false);
 
                 }
             });
@@ -665,12 +661,111 @@
             $("#divEditable").html(texto);
         }
 
-        
+        var $Tabla = $('#Tabla');
+        var $boldButton = $('#boldButton');
+        var $italicButton = $('#italicButton');
+        var $subButton = $('#subButton');
+        //var ediDiv = $('#ediDiv');
+        var $ediDiv = $('#ediDiv');
+
+        var $guardar = $('#guardar');
+
+        $Tabla.on('mouseup', function (e) {
+            palabras(e);
+
+        });
+
+        $ediDiv.on('mouseup', function (e) {
+            palabras(e);
+
+        });
+
+        function palabras(e) {
+
+            var selectedText = window.getSelection().toString();
+
+            if (selectedText.length > 0) {
+                console.log("soy los botones");
+                $boldButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX,
+
+                }).show();
+
+                $italicButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX + 60,
+                }).show();
+
+                $subButton.css({
+                    top: e.pageY - 20,
+                    left: e.pageX + 100,
+                }).show();
+
+            } else {
+
+                $boldButton.show();
+                $italicButton.show();
+                $subButton.show();
+            }
+        };
+
+
+        $boldButton.on('click', function () {
+            document.execCommand('bold', false, null); // negrita
+            $boldButton.show();
+        });
+        $italicButton.on('click', function () {
+            document.execCommand('italic', false, null); // italica
+            $italicButton.show();
+        });
+        $subButton.on('click', function () {
+            document.execCommand('underline', false, null);//Subrayada
+            $subButton.show();
+        });
+
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('#ediDiv').length === 0 && $(e.target).closest('#Tabla').length === 0 && $(e.target).closest('#boldButton').length === 0 && $(e.target).closest('#italicButton').length === 0 && $(e.target).closest('#subButton').length === 0) {
+                $boldButton.show();
+                $italicButton.show();
+                $subButton.show();
+
+            }
+        });
 
 
 
     }
+    //pruebas
+    /*document.addEventListener('DOMContentLoaded', function () {
+        var boldButton = document.getElementById('boldButton');
 
+        boldButton.addEventListener('click', function () {
+            applyBoldStyle();
+        });
+
+        function applyBoldStyle() {
+            // Obtener el elemento editor actualmente enfocado
+            var focusedElement = document.activeElement;
+
+            // Verificar si el elemento enfocado es un elemento editable
+            if (focusedElement && focusedElement.isContentEditable) {
+                // Obtener la selección actual
+                var selection = window.getSelection();
+
+                // Verificar si hay un rango de selección y si el rango tiene contenido
+                if (selection.rangeCount > 0 && selection.toString().trim() !== '') {
+                    var range = selection.getRangeAt(0);
+
+                    // Crear un elemento <strong> (negrita) y aplicar el estilo al contenido seleccionado
+                    var boldElement = document.createElement('strong');
+                    boldElement.appendChild(range.extractContents());
+                    range.deleteContents();
+                    range.insertNode(boldElement);
+                }
+            }
+        }
+    });*/
 </script>
 
 
