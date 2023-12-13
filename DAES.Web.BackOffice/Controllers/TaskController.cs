@@ -1836,7 +1836,7 @@ namespace DAES.Web.BackOffice.Controllers
                     Parrafo2 = ofi.Parrafo2,
                     AUTORES = ofi.AUTORES,
                     TieneDirectorio = ofi.TieneDirectorio,
-                    FileName = "DocumentoCreadoTask_" + WorkflowId + "_" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
+                    FileName = "Oficio_" + WorkflowId + "_" + string.Format("{0:dd/MM/yyyy}", DateTime.Now) + ".pdf"
                 };
                 db.DocOficios.Add(nuevoregistro);
                 db.SaveChanges();
