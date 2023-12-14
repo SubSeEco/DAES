@@ -23,24 +23,24 @@ namespace DAES.Model.SistemaIntegrado
         [Display(Name = "Proceso")]
         public int? ProcesoId { get; set; }
 
-        [Display(Name = "Numero Registro")]
+        [Display(Name = "Reg:")]
         [DataType(DataType.MultilineText)]
         public string NUMERO_REGISTRO { get; set; }
 
-        [Display(Name = "Antecedentes")]
+        [Display(Name = "ANT:")]
         [DataType(DataType.MultilineText)]
         public string ANTECEDENTES { get; set; }
 
-        [Display(Name = "Materia")]
+        [Display(Name = "MAT:")]
         [DataType(DataType.MultilineText)]
         public string MATERIA { get; set; }
 
-        [Display(Name = "DE")]
+        [Display(Name = "DE:")]
         [DataType(DataType.MultilineText)]
         public string DE_DOC { get; set; }
 
 
-        [Display(Name = "A")]
+        [Display(Name = "A:")]
         [DataType(DataType.MultilineText)]
         public string A_DOC { get; set; }
 
@@ -52,11 +52,11 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.MultilineText)]
         public string CORREO { get; set; }
 
-        [Display(Name = "Distribucion")]
+        [Display(Name = "PARRAFO 2")]
         [DataType(DataType.MultilineText)]
         public string Parrafo1 { get; set; }
 
-        [Display(Name = "Parrafo2")]
+        [Display(Name = "Informa actualización/registro del Com. Adm./Directorio")]
         [DataType(DataType.MultilineText)]
         public string Parrafo2 { get; set; }
 
@@ -64,7 +64,7 @@ namespace DAES.Model.SistemaIntegrado
         [DataType(DataType.MultilineText)]
         public string Parrafo3 { get; set; }
 
-        [Display(Name = "Información del Oficio")]
+        [Display(Name = "PARRAFO 1")]
         public string Tabla { get; set; }
 
         public byte[] Content { get; set; }
@@ -87,5 +87,11 @@ namespace DAES.Model.SistemaIntegrado
 
         [Display(Name = "Folio")]
         public string Folio { get; set; }
+
+        [Display(Name = "Autores")]
+        public string AUTORES { get; set; }
+
+        [Display(Name = "Insertar “Consejo de administración” o “Directorio”.")]
+        public bool TieneDirectorio { get; set; } = false;
     }
 }

@@ -1089,6 +1089,7 @@
     <Content Include="Views\Proceso\DocumentoCreateGP.cshtml" />
     <Content Include="Views\Proceso\DocumentoGP.cshtml" />
     <Content Include="Views\Task\CrearDocumentoWeb.cshtml" />
+    <Content Include="Views\Task\_DirectorioEditWeb.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
