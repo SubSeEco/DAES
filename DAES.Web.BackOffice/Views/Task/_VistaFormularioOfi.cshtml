@@ -14,8 +14,9 @@
         border: 1px solid #ccc;
         padding: 10px;
         max-width: 100%;
+        width: 500px;
         height: auto;
-        display: inline-block;
+        display: block;
         word-wrap: break-word;
         margin-bottom: 20px;
     }
@@ -24,8 +25,9 @@
         border: 1px solid #ccc;
         padding: 10px;
         max-width: 100%;
+        width: 500px;
         height: 200px;
-        display: inline-block;
+        display: block;
         word-wrap: break-word;
         margin-bottom: 20px;
         overflow: auto;
@@ -89,7 +91,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().NUMERO_REGISTRO, htmlAttributes: new { @class = "control-label col-md-6" })
 
                         <div class="col-md-12">
-                            <div id="NUMERO_REGISTRO" name="NUMERO_REGISTRO" class="form-control col-md-12 editable" contenteditable="false">
+                            <div id="NUMERO_REGISTRO" name="NUMERO_REGISTRO" class="form-control col-md-12 editable" contenteditable="false" >
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var numeroRegistro = Model.Workflow.DocOficio.FirstOrDefault()?.NUMERO_REGISTRO;
@@ -110,7 +112,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().ANTECEDENTES, htmlAttributes: new { @class = "control-label col-md-6" })
 
                         <div class="col-md-12">
-                            <div id="ANTECEDENTES" name="ANTECEDENTES" class="form-control col-md-12 editable" contenteditable="true">
+                            <div id="ANTECEDENTES" name="ANTECEDENTES" class="form-control col-md-12 editable custom-editable" contenteditable="true" >
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var ANTECEDENTES = Model.Workflow.DocOficio.FirstOrDefault()?.ANTECEDENTES;
@@ -131,7 +133,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().MATERIA, htmlAttributes: new { @class = "control-label col-md-6" })
 
                         <div class="col-md-12">
-                            <div id="MATERIA" name="MATERIA" class="form-control col-md-12 editable" contenteditable="true">
+                            <div id="MATERIA" name="MATERIA" class="form-control col-md-12 editable" contenteditable="true" >
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var MATERIA = Model.Workflow.DocOficio.FirstOrDefault()?.MATERIA;
@@ -151,7 +153,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().DE_DOC, htmlAttributes: new { @class = "control-label col-md-6" })
 
                         <div class="col-md-12">
-                            <div id="DE_DOC" name="DE_DOC" class="form-control col-md-12 editable" contenteditable="true">
+                            <div id="DE_DOC" name="DE_DOC" class="form-control col-md-12 editable" contenteditable="true" >
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var DE_DOC = Model.Workflow.DocOficio.FirstOrDefault()?.DE_DOC;
@@ -234,7 +236,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Tabla, htmlAttributes: new { @class = "control-label col-md-6" })
 
                         <div class="col-md-12">
-                            <div id="Tabla" name="Tabla" class="form-control col-md-12 editable2" contenteditable="true">
+                            <div id="Tabla" name="Tabla" class="form-control col-md-12 editable2" contenteditable="true" >
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var Tabla = Model.Workflow.DocOficio.FirstOrDefault()?.Tabla;
@@ -269,7 +271,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().Parrafo2, htmlAttributes: new { @class = "control-label col-md-12" })
 
                         <div class="col-md-12">
-                            <div id="Parrafo2" name="Parrafo2" class="form-control col-md-12 editable2" contenteditable="true">
+                            <div id="Parrafo2" name="Parrafo2" class="form-control col-md-12 editable2" contenteditable="true" >
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var Parrafo2 = Model.Workflow.DocOficio.FirstOrDefault()?.Parrafo2;
@@ -311,7 +313,7 @@
                         @Html.LabelFor(model => model.Workflow.DocOficio.FirstOrDefault().AUTORES, htmlAttributes: new { @class = "control-label col-md-6" })
 
                         <div class="col-md-12">
-                            <div id="AUTORES" name="AUTORES" class="form-control col-md-12 editable" contenteditable="true">
+                            <div id="AUTORES" name="AUTORES" class="form-control col-md-12 editable" contenteditable="true" >
                                 @if (Model.Workflow.DocOficio != null && Model.Workflow.DocOficio.Any())
                                 {
                                     var AUTORES = Model.Workflow.DocOficio.FirstOrDefault()?.AUTORES;
@@ -362,9 +364,7 @@
     {
        
         <input type="hidden" id="a" value="1" />
-    }
-    else
-    {
+    }else{
 
         <input id="a" value="0" type="hidden" />
     }
@@ -374,11 +374,11 @@
 
 
 <script language="JavaScript">
-    var booleano = $("#CheckboxTabla").prop("checked") ? true : false;
-   
+    //var booleano = $("#CheckboxTabla").prop("checked") ? false : true ;
+    var booleano;
     $("#CheckboxTabla").change(function () {
 
-        console.log(booleano);
+        
         if ($("#CheckboxTabla").is(':checked')) {
             booleano = true
             $("#trExtra").show();
@@ -391,18 +391,21 @@
     });
 
     $(document).ready(function () {
-
-        if ("#a".val == 1) {
+        var objeto = document.getElementById("a");
+        var obje = objeto.value;
+        console.log("funcion Ready ??? " + obje + " val ??");
+        if (obje == 1) {
             $("#CheckboxTabla").prop("checked", true)
             $("#trExtra").show();
+            console.log("checkboxtrue??? val ??" );
         } else {
             $("#CheckboxTabla").prop("checked", false)
             $("#trExtra").hide();
+            console.log("checkboxfalse??? val ??" );
         }
 
 
-        var objeto = document.getElementById("a");
-        var obje = objeto.value;
+        
 
         if (obje > 0) {
             
@@ -450,7 +453,6 @@
         var selectedText = window.getSelection().toString();
 
         if (selectedText.length > 0) {
-            console.log("soy los botones");
             $boldButton.css({
                 top: e.pageY - 20,
                 left: e.pageX,
@@ -565,7 +567,6 @@
                var div = document.createElement("div");
 
                  div.innerHTML = texto;
-                 console.log("soy tranformacion \n:" + booleano);
                 var prueba = convertToHTML(tablaElement);
                 var x = tablaElement.innerText;
                 var y = x.innerHTML;
@@ -587,6 +588,7 @@
                 mate = mate.replace(/<\/b><div>/g, "</b><div>");// Reemplaza cualquier ocurrencia adicional de </b><div> con una cadena vacía
                 mate = mate.replace(/\n+/g, ' ');  // Reemplaza múltiples saltos de línea con un espacio
                 mate = mate.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio */
+                //booleano = (booleano != null && booleano == true) ? false : true;
 
                  var proce=@Model.Workflow.ProcesoId;
                  var data = {
@@ -608,8 +610,8 @@
                         Tabla: texto,//contenidoHTML,//document.getElementById("Tabla").innerHTML,
                         Content :null,
                         FileName :null,
-                     FechaCreacion: null,
-                     TieneDirectorio: booleano
+                        FechaCreacion: null,
+                       TieneDirectorio: booleano
 
             };
             console.log("llamando al metodo  \n:");
@@ -638,25 +640,32 @@
     }
 
     function init() {
-        if ("#a".val == 1) {
+        var objeto = document.getElementById("a");
+
+        var obje = objeto.value;
+        console.log("valor del obje ?? " + obje + " val abajo ??");
+        if (obje == 1) {
             $("#CheckboxTabla").prop("checked", true)
             $("#trExtra").show();
+            console.log("checkboxtrue??? val abajo ??");
         } else {
             $("#CheckboxTabla").prop("checked", false)
             $("#trExtra").hide();
+            console.log("checkboxfalse??? val  abajo ??");
         }
 
 
-        var objeto = document.getElementById("a");
-        var obje = objeto.value;
+        
 
         if (obje > 0) {
 
             $("#CheckboxTabla").prop("checked", true)
+            console.log("obje mayor 0??? val abajo ??");
             $("#trExtra").show();
         }
         else {
             $("#CheckboxTabla").prop("checked", false)
+            console.log("obje menor a  0??? val abajo ??");
             $("#trExtra").hide();
 
         }
