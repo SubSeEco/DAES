@@ -1814,6 +1814,7 @@ namespace DAES.Web.BackOffice.Controllers
                     model.Workflow.DocOficio.FirstOrDefault().AUTORES = ofi.AUTORES;
                     model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio = ofi.TieneDirectorio;
                     model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId), model.Workflow.Proceso.Organizacion, ofi.TieneDirectorio);
+                    model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio = ofi.TieneDirectorio;
                     db.SaveChanges();
                 }           
             }

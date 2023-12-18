@@ -1278,7 +1278,7 @@ namespace DAES.BLL
             paraDEDOC.Alignment = Element.ALIGN_RIGHT;
             string DEDO = paraDEDOC.Content;
             DEDO = EliminarDivYBrTexto(DEDO);
-
+            DEDO = DEDO.ToUpper();
             PdfPCell cellDE2 = new PdfPCell();
             List<IElement> htmlElementoDE2 = HTMLWorker.ParseToList(new StringReader(DEDO), styles)
             .OfType<IElement>()
@@ -1595,8 +1595,12 @@ namespace DAES.BLL
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
-                            if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
+
+                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
                                 response.Errors.Add("No se encontró la subsecretaría del firmante");
+
+                            //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
+                            //  response.Errors.Add("No se encontró la subsecretaría del firmante");
                         }
 
                         /*Se busca proceso para determinar tipo de documento*/

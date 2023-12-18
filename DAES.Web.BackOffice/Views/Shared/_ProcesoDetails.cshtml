@@ -290,7 +290,7 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
                                                     @Html.DisplayFor(model => item.FileName)
                                                 </td>
                                                 <td>
-                                                    @string.Format("{0:dd-MM-yyyy HH:mm:ss}", item.FechaCreacion)
+                                                    @(item.FechaCreacion != null ? string.Format("{0:dd-MM-yyyy HH:mm:ss}", item.FechaCreacion) : string.Empty)
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(model => workflow.User.UserName)
