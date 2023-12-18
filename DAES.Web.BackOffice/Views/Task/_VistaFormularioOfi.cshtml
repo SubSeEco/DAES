@@ -374,8 +374,8 @@
 
 
 <script language="JavaScript">
-    var booleano = $("#CheckboxTabla").prop("checked") ? false : true ;
-   
+    //var booleano = $("#CheckboxTabla").prop("checked") ? false : true ;
+    var booleano;
     $("#CheckboxTabla").change(function () {
 
         
@@ -393,7 +393,8 @@
     $(document).ready(function () {
         var objeto = document.getElementById("a");
         var obje = objeto.value;
-        /*if (obje == 1) {
+        console.log("funcion Ready ??? " + obje + " val ??");
+        if (obje == 1) {
             $("#CheckboxTabla").prop("checked", true)
             $("#trExtra").show();
             console.log("checkboxtrue??? val ??" );
@@ -401,7 +402,7 @@
             $("#CheckboxTabla").prop("checked", false)
             $("#trExtra").hide();
             console.log("checkboxfalse??? val ??" );
-        }*/
+        }
 
 
         
@@ -640,8 +641,10 @@
 
     function init() {
         var objeto = document.getElementById("a");
+
         var obje = objeto.value;
-        /*if (obje == 1) {
+        console.log("valor del obje ?? " + obje + " val abajo ??");
+        if (obje == 1) {
             $("#CheckboxTabla").prop("checked", true)
             $("#trExtra").show();
             console.log("checkboxtrue??? val abajo ??");
@@ -649,7 +652,7 @@
             $("#CheckboxTabla").prop("checked", false)
             $("#trExtra").hide();
             console.log("checkboxfalse??? val  abajo ??");
-        }*/
+        }
 
 
         
@@ -657,10 +660,12 @@
         if (obje > 0) {
 
             $("#CheckboxTabla").prop("checked", true)
+            console.log("obje mayor 0??? val abajo ??");
             $("#trExtra").show();
         }
         else {
             $("#CheckboxTabla").prop("checked", false)
+            console.log("obje menor a  0??? val abajo ??");
             $("#trExtra").hide();
 
         }
