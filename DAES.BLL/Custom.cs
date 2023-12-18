@@ -1456,8 +1456,9 @@ namespace DAES.BLL
                 {
                     doc.Add(element);
                 }
+                doc.Add(SaltoLinea);
             }
-            doc.Add(SaltoLinea);
+            
 
             //Informacion del Oficio
             var parrafo1 = new Paragraph(docofi.Parrafo1, _fontStandard);
