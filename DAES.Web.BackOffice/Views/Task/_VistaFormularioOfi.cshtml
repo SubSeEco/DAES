@@ -393,15 +393,13 @@
     $(document).ready(function () {
         var objeto = document.getElementById("a");
         var obje = objeto.value;
-        console.log("funcion Ready ??? " + obje + " val ??");
         if (obje == 1) {
             $("#CheckboxTabla").prop("checked", true)
             $("#trExtra").show();
-            console.log("checkboxtrue??? val ??" );
         } else {
             $("#CheckboxTabla").prop("checked", false)
             $("#trExtra").hide();
-            console.log("checkboxfalse??? val ??" );
+           
         }
 
 
@@ -590,7 +588,9 @@
                 mate = mate.replace(/\s+/g, ' ');  // Reemplaza múltiples espacios con un solo espacio */
                 //booleano = (booleano != null && booleano == true) ? false : true;
 
-                 var proce=@Model.Workflow.ProcesoId;
+                var proce =@Model.Workflow.ProcesoId;
+                var tiene = document.getElementById("CheckboxTabla");
+        
                  var data = {
 
                      ProcesoId: proce,
@@ -611,7 +611,7 @@
                         Content :null,
                         FileName :null,
                         FechaCreacion: null,
-                       TieneDirectorio: booleano
+                     TieneDirectorio: tiene.checked
 
             };
             console.log("llamando al metodo  \n:");
@@ -643,15 +643,14 @@
         var objeto = document.getElementById("a");
 
         var obje = objeto.value;
-        console.log("valor del obje ?? " + obje + " val abajo ??");
         if (obje == 1) {
             $("#CheckboxTabla").prop("checked", true)
             $("#trExtra").show();
-            console.log("checkboxtrue??? val abajo ??");
+           
         } else {
             $("#CheckboxTabla").prop("checked", false)
             $("#trExtra").hide();
-            console.log("checkboxfalse??? val  abajo ??");
+           
         }
 
 
@@ -660,12 +659,12 @@
         if (obje > 0) {
 
             $("#CheckboxTabla").prop("checked", true)
-            console.log("obje mayor 0??? val abajo ??");
+           
             $("#trExtra").show();
         }
         else {
             $("#CheckboxTabla").prop("checked", false)
-            console.log("obje menor a  0??? val abajo ??");
+            
             $("#trExtra").hide();
 
         }
