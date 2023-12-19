@@ -34,6 +34,8 @@ using iTextSharp.text.html.simpleparser;
 using System.Text.RegularExpressions;
 using DAES.Infrastructure.GestionProcesos;
 using System.Security.Cryptography;
+using System.Web.UI;
+using System.Text;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -1498,7 +1500,14 @@ namespace DAES.BLL
                                 "<br /><span style=\"font-size: 8pt;\"> - Oficina de Partes" + "</span>"  +
                                 "<br /><span style=\"font-size: 8pt;\"> - SEREMI DE ECONOMIA " + org.Region.Nombre  + "</span>" +
                                 "<br /><span style=\"font-size: 8pt;\"> - Archivos DAES.N° Reg. (" + docofi.NUMERO_REGISTRO + ")" + "</span>"
-                + "</span>"; 
+                + "</span>";
+
+
+            
+
+         
+            
+            doc.Add(distribucion1);
             distribucion1.Add(distribucion);
 
             var tableDistri = new PdfPTable(1);
@@ -1519,12 +1528,18 @@ namespace DAES.BLL
             tableDistri.AddCell(cellDistri);
             tableDistri.DefaultCell.Border = Rectangle.NO_BORDER;
             tableDistri.HorizontalAlignment = Element.ALIGN_LEFT;
-            doc.Add(tableDistri);
 
+
+
+           
+          
+            doc.Add(tableDistri);
             doc.Close();
+        
             return memStream.ToArray();
         }
 
+       
         public string EliminarDivYBr(string html)
         {
             html = Regex.Replace(html, "<div.*?>", "", RegexOptions.Singleline);
@@ -1597,11 +1612,11 @@ namespace DAES.BLL
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
 
-                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
-                                response.Errors.Add("No se encontró la subsecretaría del firmante");
+                            //if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
+                              //  response.Errors.Add("No se encontró la subsecretaría del firmante");
 
-                            //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
-                            //  response.Errors.Add("No se encontró la subsecretaría del firmante");
+                            if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
+                             response.Errors.Add("No se encontró la subsecretaría del firmante");
                         }
 
                         /*Se busca proceso para determinar tipo de documento*/
