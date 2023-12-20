@@ -36,6 +36,7 @@ using DAES.Infrastructure.GestionProcesos;
 using System.Security.Cryptography;
 using System.Web.UI;
 using System.Text;
+using System.Xml;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -1108,9 +1109,6 @@ namespace DAES.BLL
             write.PageEvent = ev;
             Chunk SaltoLinea = Chunk.NEWLINE;
 
-
-            var mirar3 = docofi.Tabla;
-
             // Contenido HTML con formato enriquecido
 
             //NEW
@@ -1118,7 +1116,7 @@ namespace DAES.BLL
             float marginRight = 85;
             float marginTop = doc.TopMargin;
             float marginBottom = doc.BottomMargin;
-            doc.SetMargins(marginLeft, marginRight, marginTop, 72);
+            doc.SetMargins(marginLeft, marginRight, marginTop, 165);
             doc.Open();
             doc.AddTitle(docofi.FileName);
 
@@ -1205,13 +1203,23 @@ namespace DAES.BLL
 
 
             string reg = paragrafR.Content;
-            reg = EliminarDivYBr(reg);
+            reg = EliminarDiv(reg);
 
             string ante = paragrafAnt.Content;
-            ante = EliminarDivYBr(ante);
+            ante = EliminarDiv(ante);
 
             string mat = paragrafMat.Content;
-            mat = EliminarDivYBr(mat);
+            if (mat.Contains("<span"))
+            {
+                // Agrega text-align: justify; al estilo existente
+                mat = mat.Replace("style=\"", "style=\"text-align: justify; ");
+            }
+            else
+            {
+                // Si no hay un estilo, crea uno nuevo con text-align: justify;
+                mat = $"<span style=\"text-align: justify;\">{mat}</span>";
+            }
+            mat = EliminarDiv(mat);
 
 
             PdfPCell cellOAM = new PdfPCell();
@@ -1279,7 +1287,7 @@ namespace DAES.BLL
             var paraDEDOC = new Paragraph(docofi.DE_DOC, _fontStandard);
             paraDEDOC.Alignment = Element.ALIGN_RIGHT;
             string DEDO = paraDEDOC.Content;
-            DEDO = EliminarDivYBrTexto(DEDO);
+            DEDO = EliminarDiv(DEDO);
             DEDO = DEDO.ToUpper();
             PdfPCell cellDE2 = new PdfPCell();
             List<IElement> htmlElementoDE2 = HTMLWorker.ParseToList(new StringReader(DEDO), styles)
@@ -1309,19 +1317,19 @@ namespace DAES.BLL
             // "A " en segunda celda, segunda fila 
             var paraA_DOC = new Paragraph(docofi.A_DOC, _fontStandard);
             string ADO = paraA_DOC.Content;
-            ADO = EliminarDivYBrTexto(ADO);
+            ADO = EliminarDiv(ADO);
 
             //Direccion
             var parrafoDireccion = new Paragraph(docofi.DIRECCION, _fontStandard);
             parrafoDireccion.Alignment = Element.ALIGN_LEFT;
             string parrafoDireccionFOR = parrafoDireccion.Content;
-            parrafoDireccionFOR = EliminarDivYBrTexto(parrafoDireccionFOR);
+            parrafoDireccionFOR = EliminarDiv(parrafoDireccionFOR);
 
             //Correo
             var parrafoCorreo = new Paragraph(docofi.CORREO, _fontStandard);
             parrafoCorreo.Alignment = Element.ALIGN_LEFT;
             string parrafoCorreoFor = parrafoCorreo.Content;
-            parrafoCorreoFor = EliminarDivYBrTexto(parrafoCorreoFor);
+            parrafoCorreoFor = EliminarDiv(parrafoCorreoFor);
 
             PdfPCell cellA2 = new PdfPCell();
             List<IElement> htmlElementoA2 = HTMLWorker.ParseToList(new StringReader(ADO), styles)
@@ -1378,7 +1386,7 @@ namespace DAES.BLL
                 // Si no hay un estilo, crea uno nuevo con text-align: justify;
                 tablitapar = $"<span style=\"text-align: justify;\">{tablitapar}</span>";
             }
-            tablitapar = EliminarDivYBrTexto(tablitapar);
+            tablitapar = EliminarDiv(tablitapar);
             List<IElement> htmlEle = HTMLWorker.ParseToList(new StringReader(tablitapar), styles)
             .OfType<IElement>()
             .ToList();
@@ -1403,13 +1411,12 @@ namespace DAES.BLL
                     // Si no hay un estilo, crea uno nuevo con text-align: justify;
                     text_coop3 = $"<span style=\"text-align: justify;\">{text_coop3}</span>";
                 }
-                    text_coop3 = EliminarDivYBrTexto(text_coop3);
+                    text_coop3 = EliminarDiv(text_coop3);
                     List<IElement> htmlElep2 = HTMLWorker.ParseToList(new StringReader(text_coop3), styles)
                     .OfType<IElement>()
                     .ToList();
                     foreach (var element in htmlElep2)
                     {
-                        var mirar = element;
                         doc.Add(element);
                     }
                     doc.Add(SaltoLinea);
@@ -1478,82 +1485,62 @@ namespace DAES.BLL
                 // Si no hay un estilo, crea uno nuevo con text-align: justify;
                 parrafo1For = $"<span style=\"text-align: justify;\">{parrafo1For}</span>";
             }
-            parrafo1For = EliminarDivYBr(parrafo1For);
+            parrafo1For = EliminarDiv(parrafo1For);
             List<IElement> htmlParrafo = HTMLWorker.ParseToList(new StringReader(parrafo1For), styles)
             .OfType<IElement>()
             .ToList();
             foreach (var elem in htmlParrafo)
             {
-                var mirar = elem;
                 doc.Add(elem);
             }
-           // doc.Add(parrafo1);
             doc.Add(SaltoLinea);
 
             var distribucion1 = new Paragraph();
             var fecha = string.Format("{0:dd-MM-yyyy}", DateTime.Now);
-            var distribucion = "<span style=\"font-size: 8pt;\">" +
-                                "<span style=\"font-size: 8pt;\">" + docofi.AUTORES + "</span><br />" +
+            var distribucion = "<table><tr><td>" +
+                                "<span style=\"font-size: 10pt;\">" + docofi.AUTORES + "<br />" +
                                 fecha + " - ID " + docofi.ProcesoId +
-                                "<br /><b><span style=\"font-size: 8pt;\"> Distribución:" + "</span></b>"  +
-                                "<br /><span style=\"font-size: 8pt;\"> - Destinatario(" + docofi.CORREO + ")" + "</span>" +
-                                "<br /><span style=\"font-size: 8pt;\"> - Oficina de Partes" + "</span>"  +
-                                "<br /><span style=\"font-size: 8pt;\"> - SEREMI DE ECONOMIA " + org.Region.Nombre  + "</span>" +
-                                "<br /><span style=\"font-size: 8pt;\"> - Archivos DAES.N° Reg. (" + docofi.NUMERO_REGISTRO + ")" + "</span>"
-                + "</span>";
-
-
-            
-
-         
-            
-            doc.Add(distribucion1);
-            distribucion1.Add(distribucion);
+                                "<br /><b> Distribución:" + "</b>" +
+                                "<br /> - Destinatario(" + docofi.CORREO + ")" +
+                                "<br /> - Oficina de Partes" + "" +
+                                "<br /> - SEREMI DE ECONOMIA " + org.Region.Nombre +
+                                "<br /> - Archivos DAES.N° Reg. (" + docofi.NUMERO_REGISTRO + ")" + "</span>"
+                                + "</td> </tr> </table>";
 
             var tableDistri = new PdfPTable(1);
             var cellDistri = new PdfPCell();
+            cellDistri.Padding = 0f;
             cellDistri.UseVariableBorders = true;
             cellDistri.Border = Rectangle.NO_BORDER;
             string distribucionstring = distribucion1.Content;
-            distribucionstring = EliminarDivYBrTexto(distribucionstring);
-            List<IElement> htmldistri = HTMLWorker.ParseToList(new StringReader(distribucionstring), styles)
+            distribucion = EliminarDiv(distribucion);
+            List<IElement> htmldistri = HTMLWorker.ParseToList(new StringReader(distribucion), styles)
             .OfType<IElement>()
             .ToList();
             foreach (var element in htmldistri)
             {
-                var mirarmirar = distribucionstring;
-                //doc.Add(element);
-                cellDistri.AddElement(element);
+                distribucion1.Add(element);
             }
-            tableDistri.AddCell(cellDistri);
-            tableDistri.DefaultCell.Border = Rectangle.NO_BORDER;
-            tableDistri.HorizontalAlignment = Element.ALIGN_LEFT;
 
-
-
-           
-          
-            doc.Add(tableDistri);
+            doc.Add(distribucion1);
             doc.Close();
         
             return memStream.ToArray();
         }
 
        
-        public string EliminarDivYBr(string html)
+
+        public string EliminarDiv(string html)
         {
-            html = Regex.Replace(html, "<div.*?>", "", RegexOptions.Singleline);
+            /*html = Regex.Replace(html, "</div>*?<div> ", "");
             html = Regex.Replace(html, "<div.*?>", "<br />");
             html = html.Replace("</div>", "");
-            html = html.Replace("<br>", "<br />");
-            return html;
-        }
-        public string EliminarDivYBrTexto(string html)
-        {
-            html = Regex.Replace(html, "</div>*?<div> ", "");
-            html = Regex.Replace(html, "<div.*?>", "<br />");
+            html = html.Replace("<br>", "<br />");*/
             html = html.Replace("</div>", "");
-            html = html.Replace("<br>", "<br />");
+            html = html.Replace("<div>", "");
+            html = html.Replace("<span style=\"text-align: justify;\">", "<span style=\"text-align: justify;\"><p>");
+            html = html.Replace("<br>", "</p><br><p>");
+            html = html.Replace("</span>", "</p></span>");
             return html;
         }
         public ResponseMessage SignResoOficio(DocOficio obj, string email, int HorasExtrasId)
