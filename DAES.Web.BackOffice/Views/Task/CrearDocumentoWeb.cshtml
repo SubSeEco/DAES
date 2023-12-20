@@ -147,7 +147,7 @@
                 </p>
 
                 <div class="col-md-5">
-                    @using (Html.BeginForm("CrearDocumento", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    @using (Html.BeginForm("CrearDocumentoWeb", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(model => model.Workflow.WorkflowId)
@@ -263,7 +263,7 @@
                                     <td>
                                         @if (Model.Documentos[i].Autor == User.Identity.Name || ViewBag.TipoUsuario == "Administrador")
                                         {
-                                            @Html.ActionLink("Eliminar", "CrearDocumentoDelete", "Task", new { Model.Documentos[i].DocumentoId, Model.Workflow.WorkflowId }, null)
+                                            @Html.ActionLink("Eliminar", "CrearDocumentoDeleteWeb", "Task", new { Model.Documentos[i].DocumentoId, Model.Workflow.WorkflowId }, null)
                                         }
                                     </td>
                                     <td>
