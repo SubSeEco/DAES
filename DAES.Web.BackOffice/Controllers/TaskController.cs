@@ -349,6 +349,51 @@ namespace DAES.Web.BackOffice.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CrearDocumentoWeb(TaskModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var file = Request.Files[0];
+                var target = new MemoryStream();
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    file.InputStream.CopyTo(target);
+                    //extension del archivo
+                    string filename = Path.GetFileName(file.FileName);
+                    string fileEx = System.IO.Path.GetExtension(filename); // Obtenga el nombre del sufijo requerido
+                    db.Documento.Add(new Documento()
+                    {
+                        FechaCreacion = DateTime.Now,
+                        Autor = User.Identity.Name,
+                        Descripcion = model.Documento.Descripcion,
+                        FileName = file.FileName,
+                        Content = target.ToArray(),
+                        FechaRecordatorio = model.Documento.FechaRespuesta,
+                        Recordatorio = model.Documento.Recordatorio,
+                        Resuelto = false,
+                        TipoDocumentoId = model.TipoDocumentoId,
+                        Firmado = false,
+                        //Signed = false,
+                        WorkflowId = model.Workflow.WorkflowId,
+                        ProcesoId = model.Workflow.ProcesoId,
+                        OrganizacionId = model.Workflow.Proceso.OrganizacionId,
+                        TipoPrivacidadId = model.TipoPrivacidadId
+                    });
+                    db.SaveChanges();
+                    TempData["Message"] = Properties.Settings.Default.Success;
+                    return RedirectToAction("CrearDocumentoWeb", new { model.Workflow.WorkflowId });
+                }
+            }
+
+            ViewBag.TipoDocumentoId = new SelectList(db.TipoDocumento.OrderBy(q => q.Nombre), "TipoDocumentoId", "Nombre", model.Documento.TipoDocumentoId);
+            ViewBag.TipoPrivacidadId = new SelectList(db.TipoPrivacidad.OrderBy(q => q.Nombre), "TipoPrivacidadId", "Nombre", model.Documento.TipoPrivacidadId);
+
+            return View(model);
+        }
+
         public ActionResult CrearDocumentoDelete(int DocumentoId, int WorkflowId)
         {
             var doc = db.Documento.FirstOrDefault(q => q.DocumentoId == DocumentoId);
@@ -360,6 +405,19 @@ namespace DAES.Web.BackOffice.Controllers
                 TempData["Message"] = Properties.Settings.Default.Success;
             }
             return RedirectToAction("CrearDocumento", new { WorkflowId });
+        }
+
+        public ActionResult CrearDocumentoDeleteWeb(int DocumentoId, int WorkflowId)
+        {
+            var doc = db.Documento.FirstOrDefault(q => q.DocumentoId == DocumentoId);
+            if (doc != null)
+            {
+                db.Documento.Remove(doc);
+                db.SaveChanges();
+
+                TempData["Message"] = Properties.Settings.Default.Success;
+            }
+            return RedirectToAction("CrearDocumentoWeb", new { WorkflowId });
         }
 
         public ActionResult ActualizarOrganizacion(int WorkflowId)

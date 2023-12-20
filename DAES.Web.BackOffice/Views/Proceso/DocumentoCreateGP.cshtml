@@ -263,11 +263,11 @@
 @if (Model.DocumentoGP != null)
 {
     <div class="panel panel-default">
-        <div class="panel-heading">Archivos adjuntos</div>
+        <div class="panel-heading">Archivos adjuntos </div>
         <div class="panel-body">
             @Html.Grid(Model.DocumentoGP).Columns(columns =>
             {
-                columns.Add(q=>q.FileName).Encoded(false).Sanitized(false).SetWidth(25).RenderValueAs(q => @<a href="@Url.Action("DownloadGP", "DocumentoGP", new { id = q.DocumentoId })" target="_blank">@q.FileName</a>).Titled("Archivo").Sortable(true).Filterable(true);
+                columns.Add(q=>q.FileName).Encoded(false).Sanitized(false).SetWidth(25).RenderValueAs(q => @<a href="@Url.Action("DownloadGP", "Proceso", new { id = q.DocumentoId })" target="_blank">@q.FileName</a>).Titled("Archivo").Sortable(true).Filterable(true);
 columns.Add(q => q.Fecha).Titled("Fecha creación").RenderValueAs(q => string.Format("{0:dd-MM-yyyy}", q.Fecha)).Sortable(true).Filterable(true);
 columns.Add(q => q.Descripcion).Titled("Descripción").Sortable(true).Filterable(true);
 //columns.Add(q => q.Adj_TotalPaginas).Titled("Total páginas").Sortable(true).Filterable(true);
