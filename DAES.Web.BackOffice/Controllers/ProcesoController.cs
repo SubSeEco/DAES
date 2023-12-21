@@ -236,6 +236,11 @@ namespace DAES.Web.BackOffice.Controllers
 
             return View(modelWork);
         }
+        public FileResult DownloadGP(int id)
+        {
+            var documento = _context.DocumentoGP.Find(id);
+            return File(documento.File, System.Net.Mime.MediaTypeNames.Application.Octet, documento.FileName);
+        }
 
         public ActionResult DocumentoCreateGP(int? id)
         {

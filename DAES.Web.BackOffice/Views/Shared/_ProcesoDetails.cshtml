@@ -263,8 +263,13 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
                                         </p>
                                     }
                                 }*@
-                            @if (workflow.DocOficio != null && workflow.DocOficio.Any())
+                            @if (workflow.DocOficio != null && workflow.DocOficio.Any()  )
                             {
+                                var primerDocOficio = workflow.DocOficio.FirstOrDefault();
+                                if (primerDocOficio != null && primerDocOficio.DocOficioId != null) {
+
+                                     if (primerDocOficio.DocOficioId != 0) { 
+
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Oficio Formulario Online</div>
                                     <div class="panel-body">
@@ -290,16 +295,17 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
                                                     @Html.DisplayFor(model => item.FileName)
                                                 </td>
                                                 <td>
-                                                    @string.Format("{0:dd-MM-yyyy HH:mm:ss}", item.FechaCreacion)
+                                                    @(item != null ? string.Format("{0:dd-MM-yyyy HH:mm:ss}", item.FechaCreacion) : string.Empty)
+
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(model => workflow.User.UserName)
                                                 </td>
                                                 <td>
-                                                    @if (item.WorkFlowId == workflow.WorkflowId)
+                                                    @if (item != null && item.WorkFlowId == workflow.WorkflowId)
                                                     {
 
-                                                        if (item.Content != null) 
+                                                        if (item.Content != null)
                                                         {
 
 
@@ -314,12 +320,17 @@ else if (!Model.Terminada && DateTime.Now.Date == Model.FechaVencimiento.Date)
 
                                                     }
                                                 </td>
-                                            }
+                                                }
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
+                                    }
                                 }
+                                else {
+                                }
+
+                            }
                             @if (workflow.Documentos.Any(q => q.Activo == true))
                             {
                                 <hr />
