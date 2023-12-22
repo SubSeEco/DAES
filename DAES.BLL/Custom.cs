@@ -37,6 +37,7 @@ using System.Security.Cryptography;
 using System.Web.UI;
 using System.Text;
 using System.Xml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -1279,6 +1280,7 @@ namespace DAES.BLL
             .ToList();
             foreach (var element in htmlElementoD1)
             {
+                var MIRAR = element;
                 cellDE1.AddElement(element);
             }
 
@@ -1536,10 +1538,24 @@ namespace DAES.BLL
             html = Regex.Replace(html, "<div.*?>", "<br />");
             html = html.Replace("</div>", "");
             html = html.Replace("<br>", "<br />");*/
-            html = html.Replace("</div>", "");
-            html = html.Replace("<div>", "");
+            html = html.Replace("&nbsp;", " ");
+            html = html.Replace("\n", "<br>");
             html = html.Replace("<span style=\"text-align: justify;\">", "<span style=\"text-align: justify;\"><p>");
-            html = html.Replace("<br>", "</p><br><p>");
+            if(html.Contains("<span style=\"text-align: justify;\"><p>"))
+            {
+                html = html.Replace("</div>", "");
+                html = html.Replace("<div>", "");
+                html = html.Replace("<br>", "</p><br><p>");
+            }
+            else
+            {
+                html = html.Replace("</div>", "");
+                html = html.Replace("<div><br>", "<br>");
+                html = html.Replace("<div><div>", "<br>");
+                html = html.Replace("<div>", "<br>");
+
+            }
+            
             html = html.Replace("</span>", "</p></span>");
             return html;
         }
@@ -1598,12 +1614,12 @@ namespace DAES.BLL
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
-
-                            //if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
-                              //  response.Errors.Add("No se encontró la subsecretaría del firmante");
-
-                            if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
-                             response.Errors.Add("No se encontró la subsecretaría del firmante");
+                            //Se comenta solo para desarrollo
+                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
+                              response.Errors.Add("No se encontró la subsecretaría del firmante");
+                            //Se comenta cuando se hace pull request
+                            //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
+                            // response.Errors.Add("No se encontró la subsecretaría del firmante");
                         }
 
                         /*Se busca proceso para determinar tipo de documento*/
