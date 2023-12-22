@@ -4,6 +4,13 @@ Este archivo esta basado en el formato Keep a Changelog(https://keepachangelog.c
 
 Cambios realizados en la solución, tanto adherencias, como modificaciones y eliminaciones hechas durante el proceso de desarrollo del tramite N°2 Certificado de Disolucion
 
+## [2.5.8 DAES BackOffice] - 22-12-2023
+
+### Changed
+
+- Se agregaron los cambios de InnovaGroup.
+- Se comentaron las referencias a SIGPER en `Custom.cs` y la variable `persona` o `sg.`.
+
 ## [2.5.7.4 DAES BackOffice] - 05-12-2023
 
 ### Added
