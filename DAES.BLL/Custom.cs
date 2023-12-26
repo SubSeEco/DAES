@@ -1297,6 +1297,7 @@ namespace DAES.BLL
             .ToList();
             foreach (var element in htmlElementoDE2)
             {
+                
                 cellDE2.AddElement(element);
             }
 
@@ -1541,7 +1542,8 @@ namespace DAES.BLL
             html = html.Replace("&nbsp;", " ");
             html = html.Replace("\n", "<br>");
             html = html.Replace("<span style=\"text-align: justify;\">", "<span style=\"text-align: justify;\"><p>");
-            if(html.Contains("<span style=\"text-align: justify;\"><p>"))
+            html = html.Replace("<b><br>", "<b>");
+            if (html.Contains("<span style=\"text-align: justify;\"><p>"))
             {
                 html = html.Replace("</div>", "");
                 html = html.Replace("<div>", "");
@@ -1549,6 +1551,7 @@ namespace DAES.BLL
             }
             else
             {
+
                 html = html.Replace("</div>", "");
                 html = html.Replace("<div><br>", "<br>");
                 html = html.Replace("<div><div>", "<br>");
