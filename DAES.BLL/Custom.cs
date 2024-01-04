@@ -2228,7 +2228,7 @@ namespace DAES.BLL
                     }
                     else
                     {
-                        throw new Exception(string.Format("Error al emitir, el apartado Transitorio no existe"));
+                        throw new Exception(string.Format("No es posible emitir su certificado de manera inmediata, por favor, solicítelo en la opción “8vo Transitorio (Solicitar Emisión)”"));
                     }
 
 
@@ -2386,7 +2386,7 @@ namespace DAES.BLL
                             parrafo_uno = parrafo_uno.Replace("[AUTORIZADOPOR]", legalAnt.Autorizado != null ? "#" + legalAnt.Autorizado + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[FECHAPUBLICACION]", legalAnt.FechaPublicacion.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", legalAnt.FechaPublicacion.Value) + "#" : "[ERROR_legalAnt]");
                             parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial != null ? "#" + organizacion.RazonSocial + "#" : "[ERROR_legalAnt]");
-                            parrafo_uno = parrafo_uno.Replace("[SIGLA] ", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#, " : "");//Opcional
+                            parrafo_uno = parrafo_uno.Replace("[SIGLA]", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#, " : "");//Opcional
                             parrafo_uno = parrafo_uno.Replace("[NUMEROREGISTRO]", organizacion.NumeroRegistro != null ? "#" + organizacion.NumeroRegistro + "#" : "[ERROR_legalAnt]");
 
                             string[] parafo1;
@@ -2876,7 +2876,7 @@ namespace DAES.BLL
                             // PARRAFO 1 - INI estatuto posterior 2003
                             var legalPost = organizacion.ExistenciaPosteriors.FirstOrDefault();
                             parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial != null ? "#" + organizacion.RazonSocial + "#" : "");
-                            parrafo_uno = parrafo_uno.Replace("[SIGLA] ", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#, " : "");//Opcional
+                            parrafo_uno = parrafo_uno.Replace("[SIGLA]", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#, " : "");//Opcional
                             parrafo_uno = parrafo_uno.Replace("[NUMEROREGISTRO]", organizacion.NumeroRegistro != null ? "#" + organizacion.NumeroRegistro + "#" : "");
 
                             string[] parafo1;
@@ -3209,7 +3209,7 @@ namespace DAES.BLL
                     {
                         // PARRAFO 1 - INI estatuto gremial
                         parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial != null ? "#" + organizacion.RazonSocial.ToString() + "#" : "[RAZONSOCIAL]");
-                        parrafo_uno = parrafo_uno.Replace("[SIGLA]  ", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#, " : "");
+                        parrafo_uno = parrafo_uno.Replace("[SIGLA]", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#, " : "");
                         parrafo_uno = parrafo_uno.Replace("[NUMEROREGISTRO]", organizacion.NumeroRegistro != null ? "#" + organizacion.NumeroRegistro.ToString() + "#" : "[NUMEROREGISTRO]");
                         string[] parafo1;
                         parafo1 = parrafo_uno.Split('#');
@@ -3788,7 +3788,7 @@ namespace DAES.BLL
 
                     parrafo_uno = parrafo_uno.Replace("[ROL]", organizacion.NumeroRegistro != null ? "#" + organizacion.NumeroRegistro + "#" : "[ERROR_Org]");
                     parrafo_uno = parrafo_uno.Replace("[RAZONSOCIAL]", organizacion.RazonSocial != null ? "#" + organizacion.RazonSocial + "#" : "[ERROR_Org]");
-                    parrafo_uno = parrafo_uno.Replace("[SIGLA] ", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#, " : "");
+                    parrafo_uno = parrafo_uno.Replace("[SIGLA]", organizacion.Sigla != null ? "la que podrá usar indistintamente para todos los efectos legales el nombre de fantasía #" + organizacion.Sigla + "#, " : "");
                     //parrafo_uno = parrafo_uno.Replace("[REGION]", organizacion.Region.Nombre != null ? "#" + organizacion.Region.Nombre + "#" : "[ERROR_Org]");
                     //parrafo_uno = parrafo_uno.Replace("[DOMICILLIOSOCIAL]", organizacion.Direccion != null ? "#" + organizacion.Direccion + "#" : "[ERROR_Org]");
                     if (parrafo_uno.Contains("ERROR_Org"))
@@ -4201,7 +4201,7 @@ namespace DAES.BLL
                         if (organizacion.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.AsociacionGremial ||
                                 organizacion.TipoOrganizacionId == (int)Infrastructure.Enum.TipoOrganizacion.AsociacionConsumidores)
                         {
-                            parrafoone = parrafoone.Replace("[SIGLA] ", organizacion.Sigla ?? string.Empty);
+                            parrafoone = parrafoone.Replace("[SIGLA]", organizacion.Sigla ?? string.Empty);
                             parrafoone = parrafoone.Replace("[RAZONSOCIAL]", organizacion.RazonSocial ?? string.Empty);
                             parrafoone = parrafoone.Replace("[TIPOORGANIZACION]", organizacion.TipoOrganizacion.Nombre ?? string.Empty);
                             parrafoone = parrafoone.Replace("[ROL]", organizacion.NumeroRegistro ?? string.Empty);
@@ -4431,7 +4431,7 @@ namespace DAES.BLL
                             foreach (var item in directorio.ToList())
                             {
                                 var cargo = context.Cargo.FirstOrDefault(q => q.CargoId == item.CargoId);
-                                if (item.NombreCompleto != null && cargo.Nombre != null && item.FechaInicio.HasValue == true && item.FechaTermino.HasValue == true)
+                                if (item.NombreCompleto != null && cargo.Nombre != null)// && item.FechaInicio.HasValue == true && item.FechaTermino.HasValue == true
                                 {
                                     filaCompleta = true;
                                     break;
@@ -4489,7 +4489,7 @@ namespace DAES.BLL
                             foreach (var item in directorio.ToList())
                             {
                                 var cargo = context.Cargo.FirstOrDefault(q => q.CargoId == item.CargoId);
-                                if (item.NombreCompleto != null && cargo.Nombre != null && item.FechaInicio.HasValue == true && item.FechaTermino.HasValue == true)
+                                if (item.NombreCompleto != null && cargo.Nombre != null) // && item.FechaInicio.HasValue == true && item.FechaTermino.HasValue == true
                                 {
                                     filaCompleta = true;
                                     break;
@@ -4546,7 +4546,7 @@ namespace DAES.BLL
                             foreach (var item in directorio.ToList())
                             {
                                 var cargo = context.Cargo.FirstOrDefault(q => q.CargoId == item.CargoId);
-                                if (item.NombreCompleto != null && cargo.Nombre != null && item.FechaInicio.HasValue == true && item.FechaTermino.HasValue == true)
+                                if (item.NombreCompleto != null && cargo.Nombre != null)//&& item.FechaInicio.HasValue == true && item.FechaTermino.HasValue == true
                                 {
                                     filaCompleta = true;
                                     break;
