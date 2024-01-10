@@ -4,6 +4,67 @@ Este archivo esta basado en el formato Keep a Changelog(https://keepachangelog.c
 
 Cambios realizados en la solución, tanto adherencias, como modificaciones y eliminaciones hechas durante el proceso de desarrollo del tramite N°2 Certificado de Disolucion
 
+## [2.5.8 DAES BackOffice] - 22-12-2023
+
+### Changed
+
+- Se agregaron los cambios de InnovaGroup.
+- Se comentaron las referencias a SIGPER en `Custom.cs` y la variable `persona` o `sg.`.
+
+## [2.5.7.4 DAES BackOffice] - 05-12-2023
+
+### Added
+
+- Se instalo Bootstrap 5.3.2 en BackOffice para corregir vistas y referencias de otras librerias.
+- Se agrego ProcesoGPId y DocumentoGP, un bool, para controlar si el documento viene desde Gestor de Procesos o No.
+- Se agrego DefinicionWorkflowGP para poder obtener y anexar el flujo desde GP hacia DAES.
+- Se agregaron clases del proyecto de Gestión de Procesos
+  - DefinicionProcesoGP
+  - DocumentoGP
+  - EstadoProcesoGP
+  - GDGP
+  - GrupoGP
+  - ProcesoDocumentoDAESGP
+  - ProcesoGP
+  - TipoDocumentoGP
+  - WorkflowGP
+- Se creo controlador de DocumentoGP para manejar la descarga de los documentos que extraer del proceso de GP.
+- Se creo vista para crear el proceso en DAES como replica del Gestor Documental Antiguo.
+
+### Changed
+
+- Se modifico Custom.cs agregando ProcesoGPId, WorkflowGPId y DocumentoGP a la base de datos de Documentos de DAES.
+- Se modifico Enum agregando definiciones de GP.
+- Se modifico el flujo de la creacion de tarea de DAES extrayendo la informacion desde GP.
+- Se modifica metodo Details de `ProcesoConsultorController.cs` corrigiedo la redireccion al momento de terminar de crear el Proceso desde GP.
+- Se modifico web.config agregando la conexion a las bases de datos de GestorProcesos y DAES, ambos en Desarrollo.
+
+### Deleted
+
+- Se elimina parte de un script que estaba mal indexado.
+- Archivo .bak, los cuales fueron solicitados a Innova, eliminados pero de todas maneras seguian apareciendo en el PR#23.
+
+## [2.5.7.3 DAES Completo] - 17-11-2023
+
+### Changed
+
+- Correciones en la generación de certificados.
+- Correccion al momento de guardar datos desde Editar Organizacion.
+- Correccion de modulos en vistas parciales de Editar Organizacion.
+- Se ordenaron modulos en el edit organizacion(BO):
+  - Saneamiento
+  - Existencias
+  - Disolución
+- Se reordeno la parte superior del documento(todos) ahora imagen, titulo y folio lo muestra en "cascada".
+- El saludo junto con el responsable(final del PDF) ya no se coloca sobre la firma y no se "corta" entre paginas.
+- Algunos de los campos que lo guardaba en "create" se solucionaron.
+
+## [2.5.7.2 DAES Completo] - 15.11-2023
+
+### Changed
+
+- Modificaciones realizadas por InnovaGroup, todas documentadas en la carpeta compartida.
+
 ## [2.5.7 DAES Completo] - 06-11-2023
 
 ### Changed

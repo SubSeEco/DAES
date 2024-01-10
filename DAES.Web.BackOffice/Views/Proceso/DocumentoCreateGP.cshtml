@@ -53,6 +53,7 @@
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.GDGP.GDId)
             @Html.HiddenFor(model => model.GDGP.ProcesoId)
             @Html.HiddenFor(model => model.DocumentoId)
             @Html.HiddenFor(model => model.OrganizacionId)

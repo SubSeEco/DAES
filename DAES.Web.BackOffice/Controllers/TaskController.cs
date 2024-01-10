@@ -2,7 +2,6 @@
 using DAES.BLL.Interfaces;
 using DAES.Infrastructure.Interfaces;
 using DAES.Infrastructure.SistemaIntegrado;
-using DAES.Model.Core;
 using DAES.Model.FirmaDocumento;
 using DAES.Model.SistemaIntegrado;
 using DAES.Web.BackOffice.Helper;
@@ -16,7 +15,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using static org.apache.commons.lang.ObjectUtils;
 
 namespace DAES.Web.BackOffice.Controllers
 {
@@ -198,11 +196,11 @@ namespace DAES.Web.BackOffice.Controllers
             return View(model);
         }
         //Ange
-       /* public ActionResult _DirectorioEditWeb(int WorkflowId)
-        {
+        /* public ActionResult _DirectorioEditWeb(int WorkflowId)
+         {
 
-        }*/
-            public ActionResult CrearDocumentoWeb(int WorkflowId)
+         }*/
+        public ActionResult CrearDocumentoWeb(int WorkflowId)
         {
 
             ViewBag.TipoDocumentoId = new SelectList(db.TipoDocumento.OrderBy(q => q.Nombre), "TipoDocumentoId", "Nombre");
@@ -236,7 +234,7 @@ namespace DAES.Web.BackOffice.Controllers
             {
                 documentoAnterior = db.DocOficios.Where(q => q.ProcesoId == model.Workflow.ProcesoId && q.FechaCreacion < DateTime.Now).OrderByDescending(q => q.FechaCreacion).FirstOrDefault();
                 model.Workflow.DocOficio = new List<DocOficio> { documentoAnterior };
-              
+
             }
 
 
@@ -272,7 +270,7 @@ namespace DAES.Web.BackOffice.Controllers
             {
 
 
-                if (model.Workflow.DocOficio.FirstOrDefault().DE_DOC == null )
+                if (model.Workflow.DocOficio.FirstOrDefault().DE_DOC == null)
                 {
                     model.Workflow.DocOficio.FirstOrDefault().DE_DOC = $"{deNombre}<br>{deUnidad}";
                 }
@@ -289,12 +287,12 @@ namespace DAES.Web.BackOffice.Controllers
                     model.Workflow.DocOficio.FirstOrDefault().CORREO = correo;
                 }
             }
-                        
-                //model.Workflow.DocOficio.Add(prueba2);
 
-                var mirar = model.Workflow.DocOficio;
+            //model.Workflow.DocOficio.Add(prueba2);
 
-            
+            var mirar = model.Workflow.DocOficio;
+
+
             //FIN
             var tipoDeUsuario = Helper.Helper.CurrentUser.Perfil.Nombre;
             ViewBag.TipoUsuario = tipoDeUsuario;
@@ -759,7 +757,7 @@ namespace DAES.Web.BackOffice.Controllers
             return PartialView("_DirectorioEdit", model);
         }
 
-       
+
 
 
         public ActionResult ModificacionAdd(int WorkflowId, int OrganizacionId)
@@ -1856,8 +1854,9 @@ namespace DAES.Web.BackOffice.Controllers
 
             if (model.Workflow.DocOficio.Any())
             {
-                if (model.Workflow.DocOficio.FirstOrDefault().Firmado == false) { 
-              
+                if (model.Workflow.DocOficio.FirstOrDefault().Firmado == false)
+                {
+
                     model.Workflow.DocOficio.FirstOrDefault().NUMERO_REGISTRO = ofi.NUMERO_REGISTRO;
                     model.Workflow.DocOficio.FirstOrDefault().ProcesoId = ofi.ProcesoId;
                     model.Workflow.DocOficio.FirstOrDefault().ANTECEDENTES = ofi.ANTECEDENTES;
@@ -1874,7 +1873,7 @@ namespace DAES.Web.BackOffice.Controllers
                     model.Workflow.DocOficio.FirstOrDefault().Content = _custom.CrearDocumentoConfOficio(model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId), model.Workflow.Proceso.Organizacion, ofi.TieneDirectorio);
                     model.Workflow.DocOficio.FirstOrDefault().TieneDirectorio = ofi.TieneDirectorio;
                     db.SaveChanges();
-                }           
+                }
             }
             else
             {
@@ -1900,7 +1899,7 @@ namespace DAES.Web.BackOffice.Controllers
                 db.DocOficios.Add(nuevoregistro);
                 db.SaveChanges();
                 var exi = model.Workflow.DocOficio.FirstOrDefault(q => q.WorkFlowId == WorkflowId);
-                exi.Content = _custom.CrearDocumentoConfOficio(exi,model.Workflow.Proceso.Organizacion,ofi.TieneDirectorio);
+                exi.Content = _custom.CrearDocumentoConfOficio(exi, model.Workflow.Proceso.Organizacion, ofi.TieneDirectorio);
                 db.SaveChanges();
 
 
