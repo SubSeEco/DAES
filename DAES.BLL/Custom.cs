@@ -2734,13 +2734,13 @@ namespace DAES.BLL
                                 if(organizacion.Saneamientos.Any())
                                 {
                                     doc.Add(comb3);
-                                    doc.Add(SaltoLinea);
+                                    //doc.Add(SaltoLinea);
                                 }
 
                             }
                             //PARRAFO 3 - FIN
                             //PARRAFO 4 - INI estatuto anterior 2003
-
+                            //xuxu contituida anterior anterior
                             if (organizacion.ReformaAnteriors.Any()) // estatuto anterior 2003 reforma ante 
                             {
                                 var ReformaParrafo = configuracioncertificado.Parrafo2ExAnterior;
@@ -2750,6 +2750,10 @@ namespace DAES.BLL
                                 var cantiReforma = organizacion.ReformaAnteriors.Count();
                                 foreach (var Re in Reforma)
                                 {
+                                    if (organizacion.Saneamientos.Any() || (!organizacion.Saneamientos.Any() && IndReforma > 0))
+                                    {
+                                        doc.Add(SaltoLinea);
+                                    }
                                     Paragraph comb4SuperiorR = new Paragraph();
                                     Paragraph comb4InferiorR = new Paragraph();
                                     var parrafoActual = ReformaParrafo;
@@ -2795,7 +2799,7 @@ namespace DAES.BLL
                                         index++;
                                     }
                                     comb4SuperiorR.Add(SaltoLinea);
-                                    comb4SuperiorR.Add(SaltoLinea);
+                                    //comb4SuperiorR.Add(SaltoLinea);
                                     comb4SuperiorR.Alignment = Element.ALIGN_JUSTIFIED;
                                     comb4InferiorR.Alignment = Element.ALIGN_JUSTIFIED;
                                     doc.Add(comb4SuperiorR);
@@ -2817,6 +2821,18 @@ namespace DAES.BLL
                                 var cantiReforma = organizacion.ReformaPosteriors.Count();
                                 foreach (var Re in Reforma)
                                 {
+                                    if (organizacion.ReformaAnteriors.Any())
+                                    {
+                                        doc.Add(SaltoLinea);
+                                    }
+                                    else
+                                    {
+                                        if (organizacion.Saneamientos.Any() || (!organizacion.Saneamientos.Any() && IndReforma > 0))
+                                        {
+                                            doc.Add(SaltoLinea);
+                                        }
+                                    }
+
                                     Paragraph comb4SuperiorR = new Paragraph();
                                     Paragraph comb4InferiorR = new Paragraph();
                                     conjuntoSuperior.Add(parrafo4[0]);
@@ -2892,7 +2908,7 @@ namespace DAES.BLL
                                     }
                                     comb4SuperiorR.AddRange(comb4InferiorR);
                                     comb4SuperiorR.Add(SaltoLinea);
-                                    comb4SuperiorR.Add(SaltoLinea);
+                                    //comb4SuperiorR.Add(SaltoLinea);
                                     comb4SuperiorR.Alignment = Element.ALIGN_JUSTIFIED;
                                     comb4InferiorR.Alignment = Element.ALIGN_JUSTIFIED;
                                     doc.Add(comb4SuperiorR);
@@ -3129,15 +3145,15 @@ namespace DAES.BLL
                                 if (saneamientoAnt != null)
                                 {
                                     doc.Add(comb3);
-                                    doc.Add(SaltoLinea);
+                                    //doc.Add(SaltoLinea);
                                 }
 
                             }
                             //PARRAFO 3 - FIN
                             //PARRAFO 4 - INI estatuto posterior 2003
-
+                            //xuxu reformaPost de post
                             if (organizacion.ReformaPosteriors.Any())
-                            {
+                            {      
                                 var ReformaParrafo = configuracioncertificado.Parrafo2ExPosterior;
                                 var ReformaPost = organizacion.ReformaPosteriors.OrderBy(q => q.FechaPubliDiario);
                                     string[] parrafo4;
@@ -3151,6 +3167,11 @@ namespace DAES.BLL
                                     var cantiReforma = organizacion.ReformaPosteriors.Count();
                                     foreach (var Re in ReformaPost)
                                     {
+                                        if (organizacion.Saneamientos.Any() || (!organizacion.Saneamientos.Any() && IndReforma > 0))
+                                        {
+                                            doc.Add(SaltoLinea);
+                                        }
+                                       
                                         Paragraph comb4SuperiorR = new Paragraph();
                                         Paragraph comb4InferiorR = new Paragraph();
                                         conjuntoSuperior.Add(parrafo4[0]);
@@ -3194,9 +3215,9 @@ namespace DAES.BLL
                                                 PhraseCUATROSuperior = new Phrase(item, _fontNegrita);
                                             }
                                             comb4SuperiorR.Add(PhraseCUATROSuperior);
-                                            index++;
-                                        }
-                                        if (ObsReformaPost != null)
+                                        index++;
+                                        }                                       
+                                    if (ObsReformaPost != null)
                                         {
 
                                             parrafoActualInf = parrafoActualInf.Replace("[NUMEROOFICIO]", ObsReformaPost.NumeroOficio != null ? "#" + ObsReformaPost.NumeroOficio + "#" : "ERROR_ObsReforma");
@@ -3221,9 +3242,9 @@ namespace DAES.BLL
                                             }
                                         }
 
-                                        }
+                                    }
                                         comb4SuperiorR.AddRange(comb4InferiorR);
-                                        comb4SuperiorR.Add(SaltoLinea);
+                                        //comb4SuperiorR.Add(SaltoLinea);
                                         comb4SuperiorR.Alignment = Element.ALIGN_JUSTIFIED;
                                         comb4InferiorR.Alignment = Element.ALIGN_JUSTIFIED;
                                         doc.Add(comb4SuperiorR);                          
@@ -4714,7 +4735,7 @@ namespace DAES.BLL
                     throw new Exception("La configuración de url de rúbrica es inválida.");
                 }
 
-                //xuxu ResponsableFinal
+                //ResponsableFinal
                 porOrdenpha.Alignment = Element.ALIGN_LEFT;
                 var tableSaludo = new PdfPTable(1);
                 var cellSaludo = new PdfPCell();
