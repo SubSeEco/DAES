@@ -1,6 +1,9 @@
 ﻿using App.Infrastructure.FirmaElock;
 using DAES.Infrastructure.Interfaces;
+using DAES.Infrastructure.SistemaIntegrado;
+using DAES.Model.SistemaIntegrado;
 using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
 using iTextSharp.text.pdf;
 using Newtonsoft.Json;
 using RestSharp;
@@ -295,7 +298,7 @@ namespace DAES.Infrastructure.Hsm//verlo, posiblemente esta mal
                                 //obtener informacion de la primera pagina
                                 var pagesize = reader.GetPageSize(1);
                                 var pdfContentFirstPage = stamper.GetOverContent(1);
-                                
+
                                 //estampa tipo de organización
                                 ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(string.Format(TipoOrganizacion), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 185, 0);
                                 //ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(string.Format(TipoOrganizacion), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 152, 0);
@@ -303,7 +306,7 @@ namespace DAES.Infrastructure.Hsm//verlo, posiblemente esta mal
                                 ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(string.Format("Folio {0}", folio), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 200, 0);
                                 //ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(string.Format("Folio wachinei{0}", folio), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 167, 0);
                                 //estampa de fecha
-                                ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(DateTime.Now.ToString("dd/MM/yyyy"), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 215, 0); 
+                                ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(DateTime.Now.ToString("dd/MM/yyyy"), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 215, 0);
                                 //ColumnText.ShowTextAligned(pdfContentFirstPage, Element.ALIGN_LEFT, new Phrase(DateTime.Now.ToString("dd/MM/yyyy"), new Font(Font.HELVETICA, 13, Font.BOLD, Color.DARK_GRAY)), pagesize.Width - 182, pagesize.Height - 182, 0);
                             }
                             catch (System.Exception ex)
@@ -396,7 +399,7 @@ namespace DAES.Infrastructure.Hsm//verlo, posiblemente esta mal
             return documentoFirmado;
         }
 
-        public byte[] SignOficio(byte[] documento, List<string> firmantes, int? WorkflowId, string folio, string url, byte[] QR)
+        public byte[] SignOficio(byte[] documento, List<string> firmantes, int? WorkflowId, string folio, string url, byte[] QR, DocOficio docOfi, Proceso proce)
         {
             //validaciones
             if (WorkflowId == 0)
@@ -454,8 +457,47 @@ namespace DAES.Infrastructure.Hsm//verlo, posiblemente esta mal
                             var qrCell = new PdfPCell() { Rowspan = 5 };
                             qrCell.AddElement(img);
 
+                            var fecha = string.Format("{0:dd-MM-yyyy}", DateTime.Now);
+                            var distribucion = "<table><tr><td>" +
+                                               "<span style=\"font-size: 8pt;\">" + docOfi.AUTORES + "<br />" +
+                                               fecha + " - ID " + docOfi.ProcesoId +
+                                               "<br /><b> Distribución:" + "</b>" +
+                                               "<br /> - Destinatario(" + docOfi.CORREO + ")" +
+                                               "<br /> - Oficina de Partes" + "" +
+                                               "<br /> - SEREMI DE ECONOMIA " + proce.Organizacion.Region.Nombre +
+                                               "<br /> - Archivos DAES.N° Reg. (" + docOfi.NUMERO_REGISTRO + ")" + "</span>"
+                                               + "</td> </tr> </table><br/>";
+
+
+
+                            StyleSheet styles = new StyleSheet();
+                            styles.LoadTagStyle("b", "font", "Arial");
+                            styles.LoadTagStyle("i", "font", "Arial");
+
+                            var parafoDistreibucion = new Paragraph(distribucion, fontBold);
+                            parafoDistreibucion.Alignment = Element.ALIGN_RIGHT;
+
+                            PdfPCell cellDis = new PdfPCell()
+                            {
+                                Colspan = 3,
+                                BorderColor = Color.DARK_GRAY,
+                                Border = PdfPCell.NO_BORDER,
+                                PaddingLeft = 40f
+                            };
+                            List<IElement> htmlElemento = HTMLWorker.ParseToList(new StringReader(distribucion), styles)
+                            .OfType<IElement>()
+                            .ToList();
+                            foreach (var element in htmlElemento)
+                            {
+                                cellDis.AddElement(element);
+                            }
+
+
                             table.TotalWidth = 520f;
                             table.SetWidths(new[] { 8f, 25f, 6f });
+
+                            //table.AddCell(new PdfPCell(new Phrase(distribucion, fontBold)) { Colspan = 3, BorderColor = Color.DARK_GRAY, Border = PdfPCell.NO_BORDER });
+                            table.AddCell(cellDis);
                             table.AddCell(new PdfPCell(new Phrase("Información de firma electrónica:", fontBold)) { Colspan = 2, BorderColor = Color.DARK_GRAY });
                             table.AddCell(qrCell);
                             table.AddCell(new PdfPCell(new Phrase("Firmantes", fontBold)));
@@ -466,7 +508,7 @@ namespace DAES.Infrastructure.Hsm//verlo, posiblemente esta mal
                             table.AddCell(new PdfPCell(new Phrase(WorkflowId.ToString(), fontStandard)) { BorderColor = Color.DARK_GRAY });
                             table.AddCell(new PdfPCell(new Phrase("URL de verificación", fontBold)) { BorderColor = Color.DARK_GRAY });
                             table.AddCell(new PdfPCell(new Phrase(url, fontStandard)) { BorderColor = Color.DARK_GRAY });
-                            table.WriteSelectedRows(0, -1, 43, 100, pdfContentLastPage);
+                            table.WriteSelectedRows(0, -1, 43, 200, pdfContentLastPage);
 
                         }
                         catch (System.Exception ex)
