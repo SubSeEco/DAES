@@ -1,43 +1,24 @@
 ﻿using DAES.BLL.Interfaces;
 using DAES.Infrastructure;
 using DAES.Infrastructure.GestionDocumental;
+using DAES.Infrastructure.GestionProcesos;
+using DAES.Infrastructure.Interfaces;
+using DAES.Infrastructure.Sigper;
 using DAES.Infrastructure.SistemaIntegrado;
 using DAES.Model.Core;
 using DAES.Model.FirmaDocumento;
-using DAES.Model.Sigper;
 using DAES.Model.SistemaIntegrado;
-using DAES.Infrastructure.Sigper;
 using FluentDateTime;
 using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
 using iTextSharp.text.pdf;
-using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
-
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Web.ModelBinding;
-using DAES.Infrastructure.Interfaces;
-using Microsoft.AspNet.Identity.EntityFramework;
-using static iTextSharp.text.pdf.AcroFields;
-using System.Web.Services.Description;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
-using System.Web.UI.WebControls;
 using Image = iTextSharp.text.Image;
-using System.Windows.Input;
-using OfficeOpenXml.Style;
-using Org.BouncyCastle.Asn1.X500;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
-using iTextSharp.text.html.simpleparser;
-using System.Text.RegularExpressions;
-using DAES.Infrastructure.GestionProcesos;
-using System.Security.Cryptography;
-using System.Web.UI;
-using System.Text;
-using System.Xml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 //using DAES.bll.Interfaces;
 
 namespace DAES.BLL
@@ -1551,7 +1532,9 @@ namespace DAES.BLL
             html = html.Replace("&nbsp;", " ");
             html = html.Replace("\n", "<br>");
             html = html.Replace("<span style=\"text-align: justify;\">", "<span style=\"text-align: justify;\"><p>");
+
             html = html.Replace("<b><br>", "<b>");
+
             if (html.Contains("<span style=\"text-align: justify;\"><p>"))
             {
                 html = html.Replace("<br></div>", "<br>");
@@ -1622,14 +1605,14 @@ namespace DAES.BLL
                         var persona = sg.GetUserByEmail(email);
 
                         /*se buscar la persona para determinar la subsecretaria*/
-                        if (!string.IsNullOrEmpty(email))
+            if (!string.IsNullOrEmpty(email))
                         {
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
                             //Se comenta solo para desarrollo
                             if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
-                                response.Errors.Add("No se encontró la subsecretaría del firmante");
+                              response.Errors.Add("No se encontró la subsecretaría del firmante");
                             //Se comenta cuando se hace pull request
                             //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
                             // response.Errors.Add("No se encontró la subsecretaría del firmante");
@@ -1684,7 +1667,7 @@ namespace DAES.BLL
                             try
                             {
 
-                                var folios = folio.GetFolio(string.Join(", ", email), TipoDocto, persona.SubSecretaria);
+                                var folios = folio.GetFolio(string.Join(", ", email), TipoDocto, "ECONOMIA");
                                 if (folios == null)
                                     response.Errors.Add("Servicio de folio no entregó respuesta");
 
@@ -3165,38 +3148,38 @@ namespace DAES.BLL
                             {
                                 var ReformaParrafo = configuracioncertificado.Parrafo2ExPosterior;
                                 var ReformaPost = organizacion.ReformaPosteriors.OrderBy(q => q.FechaPubliDiario);
-                                string[] parrafo4;
-                                parrafo4 = ReformaParrafo.Split('#');
-                                subtitulo3 = new Paragraph(parrafo4[0], _fontStandardBoldSubRayado);
-                                string[] parrafo4Superior;
-                                string[] parrafo4Inferior;
-                                List<string> conjuntoSuperior = new List<string> { };
-                                List<string> conjuntoInferior = new List<string> { };
-                                var IndReforma = 0;
-                                var cantiReforma = organizacion.ReformaPosteriors.Count();
-                                foreach (var Re in ReformaPost)
-                                {
-                                    if (organizacion.Saneamientos.Any() || (!organizacion.Saneamientos.Any() && IndReforma > 0))
+                                    string[] parrafo4;
+                                    parrafo4 = ReformaParrafo.Split('#');
+                                    subtitulo3 = new Paragraph(parrafo4[0], _fontStandardBoldSubRayado);
+                                    string[] parrafo4Superior;
+                                    string[] parrafo4Inferior;
+                                    List<string> conjuntoSuperior = new List<string> { };
+                                    List<string> conjuntoInferior = new List<string> { };
+                                    var IndReforma = 0;
+                                    var cantiReforma = organizacion.ReformaPosteriors.Count();
+                                    foreach (var Re in ReformaPost)
                                     {
-                                        doc.Add(SaltoLinea);
-                                    }
-
-                                    Paragraph comb4SuperiorR = new Paragraph();
-                                    Paragraph comb4InferiorR = new Paragraph();
-                                    conjuntoSuperior.Add(parrafo4[0]);
-                                    var parrafoActual = conjuntoSuperior.ElementAt(IndReforma);
-                                    conjuntoInferior.Add(parrafo4[1]);
-                                    var parrafoActualInf = conjuntoInferior.ElementAt(IndReforma);
-                                    IndReforma++;
-                                    var ObsReformaPost = Re.ObservacionReformas.FirstOrDefault();
-                                    if (IndReforma == cantiReforma)
-                                    {
-                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y última");
-                                    }
-                                    else
-                                    {
-                                        parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "°" + "#");
-                                    }
+                                        if (organizacion.Saneamientos.Any() || (!organizacion.Saneamientos.Any() && IndReforma > 0))
+                                        {
+                                            doc.Add(SaltoLinea);
+                                        }
+                                       
+                                        Paragraph comb4SuperiorR = new Paragraph();
+                                        Paragraph comb4InferiorR = new Paragraph();
+                                        conjuntoSuperior.Add(parrafo4[0]);
+                                        var parrafoActual = conjuntoSuperior.ElementAt(IndReforma);
+                                        conjuntoInferior.Add(parrafo4[1]);
+                                        var parrafoActualInf = conjuntoInferior.ElementAt(IndReforma);
+                                        IndReforma++;
+                                        var ObsReformaPost = Re.ObservacionReformas.FirstOrDefault();
+                                        if (IndReforma == cantiReforma)
+                                        {
+                                            parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "° #y última");
+                                        }
+                                        else
+                                        {
+                                            parrafoActual = parrafoActual.Replace("[REFORMA]", "#" + IndReforma + "°" + "#");
+                                        }
 
                                     parrafoActual = parrafoActual.Replace("[TIPOGENERAL]", Re.TipoGeneralId != null ? "#" + Re.TipoGeneral.Nombre + "#" : "ERROR_Reforma");
                                     parrafoActual = parrafoActual.Replace("[FECHAJUNTAGENERALSOCIOS]", Re.FechaJuntGeneralSocios != null ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", Re.FechaJuntGeneralSocios.Value) + "#" : "ERROR_Reforma");
@@ -3229,12 +3212,12 @@ namespace DAES.BLL
                                     if (ObsReformaPost != null)
                                     {
 
-                                        parrafoActualInf = parrafoActualInf.Replace("[NUMEROOFICIO]", ObsReformaPost.NumeroOficio != null ? "#" + ObsReformaPost.NumeroOficio + "#" : "ERROR_ObsReforma");
-                                        parrafoActualInf = parrafoActualInf.Replace("[FECHAOFICIO]", ObsReformaPost.FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ObsReformaPost.FechaOficio.Value) + "#" : "ERROR_ObsReforma");
-                                        parrafoActualInf = parrafoActualInf.Replace("[APROBACION]", ObsReformaPost.AprobacionId != null ? "#" + ObsReformaPost.Aprobacion.Nombre + "#" : "ERROR_ObsReforma");
-                                        parrafo4Inferior = parrafoActualInf.Split('#');
-                                        if (!parrafoActualInf.Contains("ERROR_ObsReforma"))
-                                        {
+                                            parrafoActualInf = parrafoActualInf.Replace("[NUMEROOFICIO]", ObsReformaPost.NumeroOficio != null ? "#" + ObsReformaPost.NumeroOficio + "#" : "ERROR_ObsReforma");
+                                            parrafoActualInf = parrafoActualInf.Replace("[FECHAOFICIO]", ObsReformaPost.FechaOficio.HasValue ? "#" + string.Format("{0:dd} de {0:MMMM} del {0:yyyy}", ObsReformaPost.FechaOficio.Value) + "#" : "ERROR_ObsReforma");
+                                            parrafoActualInf = parrafoActualInf.Replace("[APROBACION]", ObsReformaPost.AprobacionId != null ? "#" + ObsReformaPost.Aprobacion.Nombre + "#" : "ERROR_ObsReforma");
+                                            parrafo4Inferior = parrafoActualInf.Split('#');
+                                            if (!parrafoActualInf.Contains("ERROR_ObsReforma"))
+                                            {
                                             index = 0;
                                             foreach (var item in parrafo4Inferior)
                                             {
@@ -3251,14 +3234,15 @@ namespace DAES.BLL
                                             }
                                         }
 
-                                    }
-                                    comb4SuperiorR.AddRange(comb4InferiorR);
-                                    //comb4SuperiorR.Add(SaltoLinea);
-                                    comb4SuperiorR.Alignment = Element.ALIGN_JUSTIFIED;
-                                    comb4InferiorR.Alignment = Element.ALIGN_JUSTIFIED;
-                                    doc.Add(comb4SuperiorR);
-                                }
 
+                                    }
+                                        comb4SuperiorR.AddRange(comb4InferiorR);
+                                        //comb4SuperiorR.Add(SaltoLinea);
+                                        comb4SuperiorR.Alignment = Element.ALIGN_JUSTIFIED;
+                                        comb4InferiorR.Alignment = Element.ALIGN_JUSTIFIED;
+                                        doc.Add(comb4SuperiorR);                          
+                                    }
+                                
                             }
                             //PARRAFO 4 - FIN
                         }
@@ -7131,10 +7115,10 @@ namespace DAES.BLL
                         {
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
-                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
-                                response.Errors.Add("No se encontró la subsecretaría del firmante");
+                           if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
+                           response.Errors.Add("No se encontró la subsecretaría del firmante");
                             //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
-                            response.Errors.Add("No se encontró la subsecretaría del firmante");
+                                response.Errors.Add("No se encontró la subsecretaría del firmante");
                         }
 
                         /*Se busca proceso para determinar tipo de documento*/
@@ -7305,7 +7289,7 @@ namespace DAES.BLL
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
                             //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
-                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
+                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))                            
                                 response.Errors.Add("No se encontró la subsecretaría del firmante");
                         }
 

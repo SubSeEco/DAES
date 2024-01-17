@@ -315,10 +315,12 @@ namespace DAES.Web.BackOffice.Controllers
             ViewBag.DefinicionProcesoId = new SelectList(db.DefinicionProceso.Where(q => q.Habilitado).OrderBy(q => q.Nombre), "DefinicionProcesoId", "Nombre", model.DefinicionProcesoId);
             ViewBag.UserId = new SelectList(db.Users.Where(q => q.Habilitado).OrderBy(q => q.UserName).ToList(), "Id", "UserName", model.UserId);
 
-            model.Documento = dbgd.Documento.Find(model.DocumentoId);
-            model.Observacion = model.Documento.Doc_Asunto;
-            model.Adjuntos = dbgd.Adjunto.Where(q => q.IdRegistro == model.Documento.Id).ToList();
-            model.ProcesoDocumentos = dbgd.ProcesoDocumento.Where(q => q.Documento_Id == model.Documento.Id).ToList();
+            var gdgpId = model.GDGP.GDId;
+
+            model.GDGP = _context.GDGP.Find(gdgpId);
+            model.ProcesoGP = _context.ProcesoGP.First(q => q.ProcesoId == model.GDGP.ProcesoId);
+            model.WorkflowGP = _context.WorkflowGP.Where(q => q.ProcesoId == model.GDGP.ProcesoId).OrderByDescending(q => q.WorkflowId).ToList();
+            model.DocumentoGP = _context.DocumentoGP.Where(q => q.ProcesoId == model.GDGP.ProcesoId && q.Activo).ToList();
 
             return View(model);
         }
@@ -361,7 +363,7 @@ namespace DAES.Web.BackOffice.Controllers
                 {
 
                     var organizacion = db.Organizacion.First(q => q.OrganizacionId == model.OrganizacionId);
-                    
+
                     proceso.Organizacion = new Organizacion()
                     {
                         OrganizacionId = organizacion.OrganizacionId,
