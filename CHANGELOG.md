@@ -4,6 +4,15 @@ Este archivo esta basado en el formato Keep a Changelog(https://keepachangelog.c
 
 Cambios realizados en la solución, tanto adherencias, como modificaciones y eliminaciones hechas durante el proceso de desarrollo del tramite N°2 Certificado de Disolucion
 
+## [2.5.9 DAES BackOffice] - 04-01-2024
+
+### Changed
+
+- Los siguientes cambios realizados por Innova Group:
+  - Fecha de directorios no obligatoria
+  - Mensaje de error cuando no tienes la información del 8vo transitorio
+  - Variables Sigla y TIPOGENERAL
+
 ## [2.5.8 DAES BackOffice] - 22-12-2023
 
 ### Changed
