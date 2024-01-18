@@ -18,6 +18,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
+using System.Windows.Media.Media3D;
 using Image = iTextSharp.text.Image;
 //using DAES.bll.Interfaces;
 
@@ -1151,6 +1153,9 @@ namespace DAES.BLL
             styles.LoadTagStyle("b", "font", "Arial");
             styles.LoadTagStyle("i", "font", "Arial");
             styles.LoadTagStyle("p", "text-align", "justify");
+            styles.LoadTagStyle("p", "leading", "15");  // Ajusta la altura de la línea
+            styles.LoadTagStyle("p", "space-before", "0");  // Ajusta el espacio antes del párrafo
+            styles.LoadTagStyle("p", "space-after", "0");  // Ajusta el espacio después del párrafo
 
             //agregar Registro --Anntecedentes -- materia 
             PdfPTable tableEncabezadoUno = new PdfPTable(2);
@@ -1434,7 +1439,7 @@ namespace DAES.BLL
                 }
                 doc.Add(table);
                 // Texto en Duro para despues de la tabla de Directorios
-                var text_Tabla = "<span style=\"font-size: 10pt;\"><i> Cabe hacer presente que, la información contenida en el cuadro precedente es meramente " +
+                var text_Tabla = "<span style=\"font-size: 10pt;\"><i>Cabe hacer presente que, la información contenida en el cuadro precedente es meramente " +
                     "informativa.Para los efectos de acreditar la vigencia y la composición del órgano directivo, deberán " +
                     "obtener el certificado respectivo, accediendo a nuestra página web asociatividad.economia.cl </i> </span>";
                 var text_Tabla2 = new Paragraph(text_Tabla, _fontStandard);
@@ -1468,54 +1473,14 @@ namespace DAES.BLL
                 // Si no hay un estilo, crea uno nuevo con text-align: justify;
                 parrafo1For = $"<span style=\"text-align: justify;\">{parrafo1For}</span>";
             }
-            var tableCuerpo = new PdfPTable(1);
-            var cellCuerpo = new PdfPCell();
-            cellCuerpo.Padding = 0f;
-            cellCuerpo.UseVariableBorders = true;
-            cellCuerpo.Border = Rectangle.NO_BORDER;
-            cellCuerpo.HorizontalAlignment = Element.ALIGN_JUSTIFIED;
-
             parrafo1For = EliminarDiv(parrafo1For);
             List<IElement> htmlParrafo = HTMLWorker.ParseToList(new StringReader(parrafo1For), styles)
             .OfType<IElement>()
             .ToList();
             foreach (var elem in htmlParrafo)
             {
-                doc.Add(elem);
-                //cellCuerpo.AddElement(elem);
-            }
-            tableCuerpo.AddCell(cellCuerpo);
-            //doc.Add(tableCuerpo);
-            doc.Add(SaltoLinea);
-            /*
-            var distribucion1 = new Paragraph();
-            var fecha = string.Format("{0:dd-MM-yyyy}", DateTime.Now);
-            var distribucion = "<table><tr><td>" +
-                                "<span style=\"font-size: 10pt;\">" + docofi.AUTORES + "<br />" +
-                                fecha + " - ID " + docofi.ProcesoId +
-                                "<br /><b> Distribución:" + "</b>" +
-                                "<br /> - Destinatario(" + docofi.CORREO + ")" +
-                                "<br /> - Oficina de Partes" + "" +
-                                "<br /> - SEREMI DE ECONOMIA " + org.Region.Nombre +
-                                "<br /> - Archivos DAES.N° Reg. (" + docofi.NUMERO_REGISTRO + ")" + "</span>"
-                                + "</td> </tr> </table>";
-
-            var tableDistri = new PdfPTable(1);
-            var cellDistri = new PdfPCell();
-            cellDistri.Padding = 0f;
-            cellDistri.UseVariableBorders = true;
-            cellDistri.Border = Rectangle.NO_BORDER;
-            string distribucionstring = distribucion1.Content;
-            distribucion = EliminarDiv(distribucion);
-            List<IElement> htmldistri = HTMLWorker.ParseToList(new StringReader(distribucion), styles)
-            .OfType<IElement>()
-            .ToList();
-            foreach (var element in htmldistri)
-            {
-                distribucion1.Add(element);
-            }
-
-            doc.Add(distribucion1);*/
+                doc.Add(elem); 
+            }  
             doc.Close();
 
             return memStream.ToArray();
@@ -1553,6 +1518,7 @@ namespace DAES.BLL
             }
 
             html = html.Replace("</span>", "</p></span>");
+
             return html;
         }
         public ResponseMessage SignResoOficio(DocOficio obj, string email, int HorasExtrasId)
@@ -1602,21 +1568,21 @@ namespace DAES.BLL
 
                     if (response.IsValid)
                     {
-                        var persona = sg.GetUserByEmail(email);
+                        /*var persona = sg.GetUserByEmail(email);
 
-                        /*se buscar la persona para determinar la subsecretaria*/
+                        /*se buscar la persona para determinar la subsecretaria
             if (!string.IsNullOrEmpty(email))
                         {
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
                             //Se comenta solo para desarrollo
-                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
+                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria))
                               response.Errors.Add("No se encontró la subsecretaría del firmante");
                             //Se comenta cuando se hace pull request
                             //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
                             // response.Errors.Add("No se encontró la subsecretaría del firmante");
-                        }
+                        }*/
 
                         /*Se busca proceso para determinar tipo de documento*/
                         string TipoDocto = "OTRO";
@@ -7280,18 +7246,19 @@ namespace DAES.BLL
 
                     if (response.IsValid)
                     {
-                        var persona = sg.GetUserByEmail(rubrica.Email);
+                        /*
+                         var persona = sg.GetUserByEmail(rubrica.Email);
 
-                        /*se buscar la persona para determinar la subsecretaria*/
+                        se buscar la persona para determinar la subsecretaria
                         if (!string.IsNullOrEmpty(email))
                         {
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
                             //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
-                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))                            
+                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria))                            
                                 response.Errors.Add("No se encontró la subsecretaría del firmante");
-                        }
+                        }*/
 
                         /*Se busca proceso para determinar tipo de documento*/
                         string TipoDocto = "OTRO";
