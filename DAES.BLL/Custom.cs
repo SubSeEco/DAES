@@ -1568,21 +1568,21 @@ namespace DAES.BLL
 
                     if (response.IsValid)
                     {
-                        /*var persona = sg.GetUserByEmail(email);
+                        var persona = sg.GetUserByEmail(email);
 
-                        /*se buscar la persona para determinar la subsecretaria
-            if (!string.IsNullOrEmpty(email))
+                        /*se buscar la persona para determinar la subsecretaria*/
+                        if (!string.IsNullOrEmpty(email))
                         {
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
                             //Se comenta solo para desarrollo
-                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria))
-                              response.Errors.Add("No se encontró la subsecretaría del firmante");
+                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
+                                response.Errors.Add("No se encontró la subsecretaría del firmante");
                             //Se comenta cuando se hace pull request
                             //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
                             // response.Errors.Add("No se encontró la subsecretaría del firmante");
-                        }*/
+                        }
 
                         /*Se busca proceso para determinar tipo de documento*/
                         string TipoDocto = "OTRO";
@@ -7246,19 +7246,18 @@ namespace DAES.BLL
 
                     if (response.IsValid)
                     {
-                        /*
-                         var persona = sg.GetUserByEmail(rubrica.Email);
+                        var persona = sg.GetUserByEmail(rubrica.Email);
 
-                        se buscar la persona para determinar la subsecretaria
+                        /*se buscar la persona para determinar la subsecretaria*/
                         if (!string.IsNullOrEmpty(email))
                         {
                             if (persona == null)
                                 response.Errors.Add("No se encontró usuario firmante en sistema Sigper");
 
                             //if (persona != null && string.IsNullOrWhiteSpace(persona.SubSecretaria))
-                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria))                            
+                            if (persona != null && string.IsNullOrWhiteSpace("ECONOMIA" /*persona.SubSecretaria*/))
                                 response.Errors.Add("No se encontró la subsecretaría del firmante");
-                        }*/
+                        }
 
                         /*Se busca proceso para determinar tipo de documento*/
                         string TipoDocto = "OTRO";
